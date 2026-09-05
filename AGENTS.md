@@ -44,6 +44,9 @@ the Edge Functions in `supabase/functions/`.
 14. Every view is created `with (security_invoker = true)`. Without it, views run
     as owner and bypass RLS entirely — a cross-tenant data leak that table-level
     RLS tests will not catch.
+15. supabase/functions/_shared/ mirrors types from packages/shared manually
+    (Deno cannot resolve npm workspace packages). When packages/shared
+    changes, update the mirror in the same commit.
 
 ## Workflow
 - One task per session. Do not start the next task.
