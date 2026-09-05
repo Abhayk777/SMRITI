@@ -30,11 +30,10 @@ else
     err "time-typed column — use integer minutes 0..1439"
   fi
 
-  echo "→ no trigger on events writing to events"
-  if grep -rniE "on events[[:space:]]" $M/*.sql | grep -qi "trigger"; then
-    if grep -rniE "insert into (public\.)?events" $M/*.sql | grep -qv "^$M/0004"; then
-      err "possible trigger loop: something inserts into events"
-    fi
+  echo "→ no trigger function writing back to events"
+  if grep -rniE "insert into (public\.)?events|update (public\.)?events" $M/*.sql \
+     | grep -v "^$M/0004"; then
+    err "something outside 0004 writes to events — check for trigger loop"
   fi
 
   echo "→ migrations numbered uniquely"
