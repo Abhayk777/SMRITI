@@ -39,6 +39,8 @@ the Edge Functions in `supabase/functions/`.
     into `people` or `medications`.
 12. One escalation call per patient covering all due medicines — never one call
     per pill.
+13. Device writes never use `.select()` or `RETURNING`. The device has insert-only
+    access; a read-back fails with a misleading "violates RLS policy" error.
 
 ## Workflow
 - One task per session. Do not start the next task.
