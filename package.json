@@ -1,0 +1,29 @@
+{
+  "name": "smriti",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "workspaces": [
+    "web",
+    "packages/*"
+  ],
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "verify": "./scripts/verify.sh && supabase db reset --debug"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Abhayk777/SMRITI.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Abhayk777/SMRITI/issues"
+  },
+  "homepage": "https://github.com/Abhayk777/SMRITI#readme"
+}
