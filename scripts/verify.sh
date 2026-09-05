@@ -58,5 +58,10 @@ if git ls-files 2>/dev/null | grep -qE "^\.env|/\.env$|\.env\..*[^e]$"; then
   err ".env file is tracked by git"
 fi
 
+echo "→ views use security_invoker"
+if grep -riE "^create (or replace )?view" $M/*.sql | grep -vi "security_invoker"; then
+  err "view without security_invoker=true — RLS will be bypassed"
+fi
+
 if [ $fail -eq 0 ]; then echo "✅ all checks passed"; fi
 exit $fail

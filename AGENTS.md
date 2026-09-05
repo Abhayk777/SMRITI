@@ -41,6 +41,9 @@ the Edge Functions in `supabase/functions/`.
     per pill.
 13. Device writes never use `.select()` or `RETURNING`. The device has insert-only
     access; a read-back fails with a misleading "violates RLS policy" error.
+14. Every view is created `with (security_invoker = true)`. Without it, views run
+    as owner and bypass RLS entirely — a cross-tenant data leak that table-level
+    RLS tests will not catch.
 
 ## Workflow
 - One task per session. Do not start the next task.
