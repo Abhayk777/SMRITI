@@ -62,3 +62,9 @@ packages/shared/       types + zod, imported by web AND functions
 analysis/              Python — owned by the ML engineer, do not touch
 docs/                  specs. Read, never edit.
 ```
+## Verification
+After each task, run `npm run verify` and paste the complete output —
+not a summary. If any check fails, stop and report rather than working around it.
+
+If the spec appears wrong or self-contradictory, say so and stop.
+Do not silently deviate, and do not silently comply with something that looks unsafe.

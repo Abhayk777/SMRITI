@@ -633,7 +633,7 @@ create policy al_no_write on audit_log for insert with check (false);
 -- ─── content version auto-bump ───
 -- The web app does plain CRUD. Versioning is automatic and cannot be forgotten.
 create or replace function bump_content_version()
-returns trigger language plpgsql security definer as $$
+returns trigger language plpgsql security definer set search_path = public as $$
 declare pid uuid;
 begin
   pid := coalesce(new.patient_id, old.patient_id);
@@ -664,7 +664,7 @@ create trigger t_default_chosen before insert on medications
 
 -- ─── ability mirror ───
 create or replace function update_ability_mirror()
-returns trigger language plpgsql security definer as $$
+returns trigger language plpgsql security definer set search_path = public as $$
 begin
   insert into ability_mirror (patient_id, domain, theta, n_trials, updated_at)
   values (new.patient_id, new.domain, new.theta_before, 1, now())
@@ -679,7 +679,7 @@ create trigger t_ability_mirror after insert on events
 
 -- ─── flag count denormalization ───
 create or replace function sync_flag_count()
-returns trigger language plpgsql security definer as $$
+returns trigger language plpgsql security definer set search_path = public as $$
 begin
   update patients set active_flag_count = (
     select count(*) from flags
@@ -800,6 +800,7 @@ begin
 end $$;
 
 -- ═══ Web: overview row per patient — powers the multi-patient landing ═══
+set check_function_bodies = off;
 create or replace function my_patients_overview()
 returns table (
   patient_id uuid, display_name text, role text,
@@ -835,6 +836,7 @@ returns table (
    and dr.day = (now() at time zone p.timezone)::date;
 $$;
 
+set check_function_bodies = on;
 -- ═══ Web: invite by phone ═══
 create or replace function invite_member(
   p_patient_id uuid, p_phone text, p_role text)
@@ -867,7 +869,7 @@ Computed on read. **They can never drift from source**, which matters when a vil
 
 ```sql
 -- ─── per patient, per day: play ───
-create or replace view daily_play as
+create or replace view daily_play with (security_invoker = true) as
 select
   e.patient_id,
   (to_timestamp(e.ts/1000.0) at time zone p.timezone)::date as day,
@@ -888,7 +890,7 @@ from events e join patients p on p.id = e.patient_id
 group by 1,2;
 
 -- ─── per domain ───
-create or replace view daily_domain as
+create or replace view daily_domain with (security_invoker = true)as
 select
   e.patient_id,
   (to_timestamp(e.ts/1000.0) at time zone p.timezone)::date as day,
@@ -902,7 +904,7 @@ from events e join patients p on p.id = e.patient_id
 group by 1,2,3;
 
 -- ─── sessions ───
-create or replace view daily_sessions as
+create or replace view daily_sessions with (security_invoker = true) as
 select
   s.patient_id,
   (to_timestamp(s.started_at/1000.0) at time zone p.timezone)::date as day,
@@ -914,7 +916,7 @@ from sessions s join patients p on p.id = s.patient_id
 group by 1,2;
 
 -- ─── adherence ───
-create or replace view daily_adherence as
+create or replace view daily_adherence with (security_invoker = true) as
 select
   r.patient_id,
   (to_timestamp(r.scheduled_at/1000.0) at time zone p.timezone)::date as day,
@@ -927,7 +929,7 @@ from reminder_events r join patients p on p.id = r.patient_id
 group by 1,2;
 
 -- ─── THE view the dashboard reads ───
-create or replace view daily_report as
+create or replace view daily_report with (security_invoker = true) as
 select
   coalesce(pl.patient_id, ad.patient_id) as patient_id,
   coalesce(pl.day, ad.day)               as day,
