@@ -237,6 +237,7 @@ export const escalationRowSchema = z.object({
   reason: z.string().nullable(),
   twilio_sid: z.string().nullable(),
   requested_at: integerSchema,
+  not_before: timestampSchema,
   executed_at: timestampSchema.nullable(),
   source: escalationSourceSchema,
   created_at: timestampSchema,
@@ -436,6 +437,11 @@ export const watchdogBodySchema = z.object({}).strict();
 
 export const twilioFormBodySchema = z.record(z.string());
 
+export const escalationCallbackContextSchema = z.object({
+  patient_id: uuidSchema,
+  escalation_id: z.string().min(1).max(512),
+}).strict();
+
 export const vapiWebhookBodySchema = z.object({
   message: z.object({
     artifact: z.object({
@@ -447,6 +453,11 @@ export const vapiWebhookBodySchema = z.object({
     analysis: z.object({
       structuredData: z.object({
         took_medication: z.unknown().optional(),
+      }).passthrough().optional(),
+    }).passthrough().optional(),
+    call: z.object({
+      assistantOverrides: z.object({
+        variableValues: z.record(z.unknown()).optional(),
       }).passthrough().optional(),
     }).passthrough().optional(),
   }).passthrough().optional(),
@@ -511,6 +522,7 @@ export type PairDeviceAuthenticatedBody = z.infer<typeof pairDeviceAuthenticated
 export type EscalationWorkerBody = z.infer<typeof escalationWorkerBodySchema>;
 export type WatchdogBody = z.infer<typeof watchdogBodySchema>;
 export type TwilioFormBody = z.infer<typeof twilioFormBodySchema>;
+export type EscalationCallbackContext = z.infer<typeof escalationCallbackContextSchema>;
 export type VapiWebhookBody = z.infer<typeof vapiWebhookBodySchema>;
 export type TwilioWebhookBody = z.infer<typeof twilioWebhookBodySchema>;
 export type OcrPrescriptionBody = z.infer<typeof ocrPrescriptionBodySchema>;

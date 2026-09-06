@@ -226,6 +226,7 @@ export type EscalationInsert = {
   reason?: string | null;
   twilio_sid?: string | null;
   requested_at: number;
+  not_before?: string;
   executed_at?: string | null;
   source?: EscalationSource;
   created_at?: string;
@@ -381,7 +382,7 @@ type TableDefinition<Row, Insert, Update, Relationships extends unknown[] = []> 
   Relationships: Relationships;
 };
 
-/** Supabase client generic generated from migrations 0002 through 0005. */
+/** Supabase client generic matching the current migration-defined schema. */
 export type Database = {
   public: {
     Tables: {
