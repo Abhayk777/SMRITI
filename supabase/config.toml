@@ -387,6 +387,9 @@ verify_jwt = false
 [functions.twilio-webhook]
 verify_jwt = false
 
+[functions.watchdog]
+verify_jwt = false
+
 # [edge_runtime.secrets]
 # secret_key = "env(SECRET_VALUE)"
 

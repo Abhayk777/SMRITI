@@ -1,4 +1,4 @@
-// Manual, dependency-free runtime mirror of the T12/T13 contracts in
+// Manual, dependency-free runtime mirror of the T12-T14 contracts in
 // packages/shared/src/schemas.ts. Supabase's local Edge container cannot mount
 // that workspace package; changes to either copy must be kept in sync.
 
@@ -52,6 +52,8 @@ export type EscalationWorkerBody =
     record: EscalationRecord;
     old_record: EscalationRecord | null;
   };
+
+export type WatchdogBody = Record<string, never>;
 
 export type EscalationCallbackContext = {
   patient_id: string;
@@ -224,6 +226,15 @@ export const escalationWorkerBodySchema = {
         old_record: oldRecord,
       },
     };
+  },
+};
+
+export const watchdogBodySchema = {
+  safeParse(value: unknown): SafeParseResult<WatchdogBody> {
+    if (!isStrictObjectWithKeys(value, [])) {
+      return { success: false, error: 'invalid request body' };
+    }
+    return { success: true, data: {} };
   },
 };
 
