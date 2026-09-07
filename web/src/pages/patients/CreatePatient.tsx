@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { ArrowLeft, ArrowRight, Check, Plus, Trash2 } from 'lucide-react'
@@ -16,6 +16,7 @@ import { Card } from '@/components/ui/card.tsx'
 import { Field, Input, Select } from '@/components/ui/field.tsx'
 import { EmptyState, ErrorState, Notice } from '@/components/ui/feedback.tsx'
 import { PairingPanel } from '@/features/pairing/PairingPanel.tsx'
+import { useEscalationConfig } from '@/features/escalation/useEscalationConfig.ts'
 import {
   MedicineForm,
   emptyMedicine,
@@ -92,18 +93,37 @@ const STEPS = [
   { key: 'pairing', label: 'The tablet' },
 ] as const
 
+const setupStepKey = (patientId: string) => `smriti.setup-step.${patientId}`
+
+function savedSetupStep(patientId: string): number | null {
+  try {
+    const value = Number(window.localStorage.getItem(setupStepKey(patientId)))
+    return Number.isInteger(value) && value >= 1 && value < STEPS.length ? value : null
+  } catch {
+    return null
+  }
+}
+
 export default function CreatePatient() {
   const [params, setParams] = useSearchParams()
   const navigate = useNavigate()
   const queryClient = useQueryClient()
 
   const patientId = params.get('patient')
-  const [step, setStep] = useState(() => (patientId ? 1 : 0))
+  const [step, setStep] = useState(() => (patientId ? (savedSetupStep(patientId) ?? 1) : 0))
   const [finishing, setFinishing] = useState(false)
   const [patientName, setPatientName] = useState(params.get('name') ?? '')
 
   const goTo = (next: number) => {
-    setStep(Math.max(0, Math.min(STEPS.length - 1, next)))
+    const bounded = Math.max(0, Math.min(STEPS.length - 1, next))
+    setStep(bounded)
+    if (patientId && bounded > 0) {
+      try {
+        window.localStorage.setItem(setupStepKey(patientId), String(bounded))
+      } catch {
+        // The wizard still works in private browsing; only resume is unavailable.
+      }
+    }
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
@@ -166,6 +186,11 @@ export default function CreatePatient() {
             onCreated={(id, name) => {
               setParams({ patient: id, name }, { replace: true })
               setPatientName(name)
+              try {
+                window.localStorage.setItem(setupStepKey(id), '1')
+              } catch {
+                // See `goTo`: persistence is helpful, not required for a valid setup.
+              }
               void queryClient.invalidateQueries({ queryKey: qk.overview() })
               goTo(1)
             }}
@@ -534,8 +559,8 @@ function MedicinesStep({ patientId, onNext }: { patientId: string; onNext: () =>
       </p>
 
       <Notice className="mt-5">
-        Have the prescription to hand? You can photograph it on the Medicines page later and
-        check the lines one by one — we never add a medicine without you confirming it.
+        Prescription scanning is not available yet. Add each medicine by hand so every line is
+        checked before it reaches the tablet.
       </Notice>
 
       <div className="mt-6 space-y-3">
@@ -680,6 +705,7 @@ const contactsSchema = z.object({
 
 function AlertsStep({ patientId, onNext }: { patientId: string; onNext: () => void }) {
   const { save } = useContentMutation<Record<string, unknown>>('escalation_config', patientId)
+  const config = useEscalationConfig(patientId)
 
   const form = useForm<z.input<typeof contactsSchema>>({
     resolver: zodResolver(contactsSchema),
@@ -690,6 +716,17 @@ function AlertsStep({ patientId, onNext }: { patientId: string; onNext: () => vo
       secondary_phone: '',
     },
   })
+
+  const { reset } = form
+  useEffect(() => {
+    if (!config.data) return
+    reset({
+      primary_name: config.data.primary_name ?? '',
+      primary_phone: config.data.primary_phone ?? '',
+      secondary_name: config.data.secondary_name ?? '',
+      secondary_phone: config.data.secondary_phone ?? '',
+    })
+  }, [config.data, reset])
 
   return (
     <>
@@ -714,6 +751,7 @@ function AlertsStep({ patientId, onNext }: { patientId: string; onNext: () => vo
           )
         })}
       >
+        {config.error && <ErrorState error={config.error} className="mb-4" />}
         <div className="rounded-card bg-clay p-5">
           <p className="font-heading text-[17px] font-bold">First call</p>
           <div className="mt-4 grid gap-4 sm:grid-cols-2">

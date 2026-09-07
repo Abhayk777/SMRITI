@@ -20,7 +20,7 @@ import type { InviteMemberArgs } from '@smriti/shared'
 /**
  * Manage → Access (frontend.md §8).
  *
- * Only a `caregiver` sees the invite form. A `family_viewer` gets the list and
+ * Only a `caregiver` sees the access form. A `family_viewer` gets the list and
  * nothing else — the RPC refuses them anyway (`invite_member` raises
  * "caregiver only"), so not rendering the form is about not offering someone a
  * control that exists to reject them.
@@ -63,7 +63,7 @@ export default function Access() {
     <>
       <PageHeader
         eyebrow="Manage"
-        title="Who can see this"
+        title="Who can access this"
         description={`Everyone here can see ${firstName}'s day, her trends and her messages. Only caregivers can change her medicines, people and routine.`}
       />
 
@@ -124,10 +124,10 @@ export default function Access() {
               <UserPlus className="size-5" />
             </span>
             <div>
-              <h2 className="text-[19px]">Invite someone</h2>
+              <h2 className="text-[19px]">Add an existing Smriti user</h2>
               <p className="mt-1 max-w-[54ch] text-[14.5px] leading-relaxed text-body">
-                A sibling, a carer, a neighbour. Use the mobile number they will sign in
-                with — Smriti matches on that number and nothing else.
+                This does not send a text or email. Use the number they already used to sign
+                in to Smriti; access is added only to that existing account.
               </p>
             </div>
           </div>
@@ -191,13 +191,13 @@ export default function Access() {
             {invite.error && <ErrorState error={invite.error} className="mt-3" />}
 
             <Button type="submit" variant="accent" className="mt-4" disabled={invite.isPending}>
-              {invite.isPending ? 'Inviting…' : 'Send the invitation'}
+              {invite.isPending ? 'Adding…' : 'Add access'}
             </Button>
           </form>
         </Card>
       ) : (
         <Notice className="mt-6">
-          Only a caregiver can invite people to this profile. Ask whoever set it up.
+          Only a caregiver can add people to this profile. Ask whoever set it up.
         </Notice>
       )}
     </>

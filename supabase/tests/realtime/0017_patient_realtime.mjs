@@ -137,8 +137,10 @@ test('patient-scoped realtime delivers refresh signals without cross-patient eve
     channelB = subscriptionB.channel
     await Promise.all([subscriptionA.ready, subscriptionB.ready])
     // A freshly reset local stack can acknowledge the websocket join just
-    // before its Postgres CDC process has attached to the publication.
-    await new Promise((resolve) => setTimeout(resolve, 1_000))
+    // before its Postgres CDC process has attached to the publication. The
+    // current Realtime image may need a couple of seconds to finish that first
+    // attachment; without this, an otherwise healthy first run is flaky.
+    await new Promise((resolve) => setTimeout(resolve, 2_500))
 
     must(
       await admin

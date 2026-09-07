@@ -84,10 +84,24 @@ export function PatientRoute() {
     )
   }
 
+  if (patientQuery.isPending) return <FullPageLoading label="Loading this profile" />
+
+  if (patientQuery.error || !patientQuery.data) {
+    return (
+      <div className="mx-auto flex min-h-dvh max-w-lg items-center px-6">
+        <ErrorState
+          error={patientQuery.error ?? new Error('This profile could not be loaded.')}
+          onRetry={() => void patientQuery.refetch()}
+          className="w-full"
+        />
+      </div>
+    )
+  }
+
   return (
     <PatientProvider
       patientId={patientId as string}
-      patient={patientQuery.data ?? null}
+      patient={patientQuery.data}
       role={roleQuery.data}
     >
       <AppShell>
