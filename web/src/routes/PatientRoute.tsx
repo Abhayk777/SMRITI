@@ -49,8 +49,12 @@ export function PatientRoute() {
   })
 
   // Mounted here rather than per-screen: one channel for the whole patient
-  // section, torn down when the caregiver leaves it.
-  usePatientRealtime(patientId ?? '')
+  // section, but only after membership is confirmed. It is torn down when the
+  // caregiver changes patients or leaves the patient route.
+  usePatientRealtime(
+    patientId,
+    valid && roleQuery.isSuccess && !roleQuery.isFetching && Boolean(roleQuery.data),
+  )
 
   if (!valid) return <Navigate to="/" replace />
   if (roleQuery.isPending) return <FullPageLoading label="Checking your access" />

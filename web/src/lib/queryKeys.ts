@@ -22,7 +22,9 @@ export const qk = {
   memos: (pid: string) => ['memos', pid] as const,
   members: (pid: string) => ['members', pid] as const,
   deviceStatus: (pid: string) => ['device-status', pid] as const,
+  dailyReports: (pid: string) => ['daily_report', pid] as const,
   dailyReport: (pid: string, fromDate: string) => ['daily_report', pid, fromDate] as const,
+  dailyDomains: (pid: string) => ['daily_domain', pid] as const,
   dailyDomain: (pid: string, fromDate: string) => ['daily_domain', pid, fromDate] as const,
   signedUrl: (pid: string, path: string) => ['signed-url', pid, path] as const,
 } as const

@@ -1,8 +1,15 @@
 import { useEffect } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
+import type { Patient } from '@smriti/shared'
 
 import * as db from '@/lib/db.ts'
 import { qk } from '@/lib/queryKeys.ts'
+import {
+  canSubscribeToPatient,
+  flagInvalidationKeys,
+  memoInvalidationKeys,
+  patientUpdateInvalidationKeys,
+} from './patientRealtimeInvalidation.ts'
 
 /**
  * One realtime channel per patient, mounted once by the patient layout
@@ -20,30 +27,37 @@ import { qk } from '@/lib/queryKeys.ts'
  * channel, so switching patients or signing out does not leave a subscription
  * for a patient no longer on screen.
  */
-export function usePatientRealtime(patientId: string) {
+export function usePatientRealtime(patientId: string | undefined, accessConfirmed: boolean) {
   const queryClient = useQueryClient()
 
   useEffect(() => {
-    const invalidate = (key: readonly unknown[]) => () => {
-      void queryClient.invalidateQueries({ queryKey: key })
+    if (!canSubscribeToPatient(patientId, accessConfirmed)) return
+
+    const invalidateKeys = (keys: ReadonlyArray<readonly unknown[]>) => {
+      for (const key of keys) void queryClient.invalidateQueries({ queryKey: key })
     }
 
     const unsubscribe = db.subscribeToPatient(patientId, {
-      onPatient: () => {
-        void queryClient.invalidateQueries({ queryKey: qk.patient(patientId) })
-        void queryClient.invalidateQueries({ queryKey: qk.deviceStatus(patientId) })
+      onPatient: (nextPatient) => {
+        const cachedPatient = queryClient.getQueryData<Patient>(qk.patient(patientId))
+        invalidateKeys(
+          patientUpdateInvalidationKeys(
+            patientId,
+            cachedPatient?.content_version,
+            nextPatient.content_version,
+          ),
+        )
       },
-      onFlag: invalidate(qk.flags(patientId)),
-      onMemo: invalidate(qk.memos(patientId)),
-      onContent: () => {
-        void queryClient.invalidateQueries({ queryKey: qk.people(patientId) })
-        void queryClient.invalidateQueries({ queryKey: qk.medications(patientId) })
-        void queryClient.invalidateQueries({ queryKey: qk.routineItems(patientId) })
+      onFlag: () => {
+        invalidateKeys(flagInvalidationKeys(patientId))
+      },
+      onMemo: () => {
+        invalidateKeys(memoInvalidationKeys(patientId))
       },
     })
 
     return unsubscribe
-  }, [patientId, queryClient])
+  }, [accessConfirmed, patientId, queryClient])
 }
 
 /**

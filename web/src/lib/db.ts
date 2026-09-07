@@ -536,10 +536,9 @@ export async function removeMedia(path: string): Promise<DbResult<unknown>> {
    ──────────────────────────────────────────────────────────────────────── */
 
 export type PatientChannelHandlers = {
-  onPatient?: () => void
+  onPatient?: (patient: Partial<Patient>) => void
   onFlag?: () => void
   onMemo?: () => void
-  onContent?: () => void
 }
 
 /** Returns an unsubscribe function. Callers must call it on unmount (§15 rule 9). */
@@ -554,7 +553,7 @@ export function subscribeToPatient(
     .on(
       'postgres_changes',
       { event: '*', schema: 'public', table: 'patients', filter: `id=eq.${pid}` },
-      () => handlers.onPatient?.(),
+      (payload) => handlers.onPatient?.(payload.new as Partial<Patient>),
     )
     .on(
       'postgres_changes',
@@ -565,21 +564,6 @@ export function subscribeToPatient(
       'postgres_changes',
       { event: '*', schema: 'public', table: 'memos', filter: `patient_id=eq.${pid}` },
       () => handlers.onMemo?.(),
-    )
-    .on(
-      'postgres_changes',
-      { event: '*', schema: 'public', table: 'people', filter: `patient_id=eq.${pid}` },
-      () => handlers.onContent?.(),
-    )
-    .on(
-      'postgres_changes',
-      { event: '*', schema: 'public', table: 'medications', filter: `patient_id=eq.${pid}` },
-      () => handlers.onContent?.(),
-    )
-    .on(
-      'postgres_changes',
-      { event: '*', schema: 'public', table: 'routine_items', filter: `patient_id=eq.${pid}` },
-      () => handlers.onContent?.(),
     )
     .subscribe()
 
