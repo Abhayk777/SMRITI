@@ -47,10 +47,11 @@ if [ -d web/src ] && grep -rn "SERVICE_ROLE\|service_role" web/src/ 2>/dev/null;
   err "service-role key referenced in browser code"
 fi
 
-echo "→ supabase client isolated to lib/db.ts"
+echo "→ supabase client isolated to lib/db.ts and lib/supabase.ts initializer"
 if [ -d web/src ]; then
-  stray=$(grep -rl "@supabase/supabase-js" web/src/ 2>/dev/null | grep -v "lib/db.ts" || true)
-  [ -n "$stray" ] && { echo "$stray"; err "supabase imported outside web/src/lib/db.ts"; }
+  stray=$(grep -rl "@supabase/supabase-js" web/src/ 2>/dev/null \
+    | grep -vE "^web/src/lib/(db|supabase)\.ts$" || true)
+  [ -n "$stray" ] && { echo "$stray"; err "supabase imported outside web/src/lib/db.ts or web/src/lib/supabase.ts"; }
 fi
 
 echo "→ no committed secrets"
