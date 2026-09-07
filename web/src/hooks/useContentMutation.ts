@@ -3,6 +3,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import * as db from '@/lib/db.ts'
 import type { ContentTable } from '@/lib/db.ts'
 import { qk } from '@/lib/queryKeys.ts'
+import { normaliseDaysOfWeek } from '@/lib/utils.ts'
 
 /**
  * The choke point for every write to a content table (frontend.md §5, §15
@@ -37,6 +38,11 @@ export function useContentMutation<T extends object>(
   const save = useMutation({
     mutationFn: async (payload: Partial<T> & { id?: string }) => {
       const { id, ...rest } = payload as Partial<T> & { id?: string }
+      if (table === 'medications' && 'days_of_week' in rest) {
+        ;(rest as Record<string, unknown>).days_of_week = normaliseDaysOfWeek(
+          String((rest as Record<string, unknown>).days_of_week ?? ''),
+        )
+      }
       // `escalation_config` is one row per patient keyed by `patient_id`, so an
       // update targets the patient; everything else targets its own `id`.
       if (table === 'escalation_config') {

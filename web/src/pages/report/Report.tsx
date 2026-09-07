@@ -1,29 +1,24 @@
 import { useState } from 'react'
-import { Download, FileText, Share2 } from 'lucide-react'
+import { FileText } from 'lucide-react'
 
 import { PageHeader } from '@/components/layout/PageHeader.tsx'
 import { Button } from '@/components/ui/button.tsx'
 import { Card, CardTitle } from '@/components/ui/card.tsx'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/controls.tsx'
-import { ErrorState, Notice } from '@/components/ui/feedback.tsx'
-import { Skeleton } from '@/components/ui/skeleton.tsx'
+import { Notice } from '@/components/ui/feedback.tsx'
+import { REPORT_RANGES } from '@/features/reports/useGenerateReport.ts'
 import {
-  NotImplementedError,
-  REPORT_RANGES,
-  useGenerateReport,
-} from '@/features/reports/useGenerateReport.ts'
-import { summariseAdherence, summarisePlay, useDailyReport } from '@/features/reports/useDailyReport.ts'
+  summariseAdherence,
+  summarisePlay,
+  useDailyReportMonths,
+} from '@/features/reports/useDailyReport.ts'
 import { usePatientAccess } from '@/patients/usePatientAccess.ts'
 
 /**
  * Report (frontend.md §8, §10).
  *
- * `generate-report` is not built yet. The trigger, the generating state and the
- * result panel are all real; only the call is stubbed, and a
- * `NotImplementedError` is rendered as a plain "not ready yet" panel rather
- * than a raw function error. Showing a caregiver a fetch failure for something
- * that was never deployed tells them Smriti is broken, which is both untrue and
- * exactly the wrong thing to make someone worry about.
+ * `generate-report` is not built yet, so its control is visibly disabled and
+ * no request is made to a nonexistent function.
  *
  * In the meantime the page is not empty: the figures underneath come from
  * `daily_report`, which is live, so there is something to read to a doctor
@@ -33,14 +28,11 @@ export default function Report() {
   const { patientId, patient } = usePatientAccess()
   const [months, setMonths] = useState<number>(3)
 
-  const generate = useGenerateReport(patientId)
-  const report = useDailyReport(patientId, months * 30, patient?.timezone)
+  const report = useDailyReportMonths(patientId, months, patient?.timezone)
 
   const rows = report.data ?? []
   const play = summarisePlay(rows)
   const adherence = summariseAdherence(rows)
-
-  const notReady = generate.error instanceof NotImplementedError
 
   return (
     <>
@@ -75,56 +67,14 @@ export default function Report() {
         </div>
 
         <div className="mt-6">
-          {generate.isPending ? (
-            <div className="rounded-card bg-sand/50 p-5">
-              <p className="font-semibold">Putting the report together…</p>
-              <p className="mt-1 text-[13.5px] text-body">
-                This usually takes under a minute.
-              </p>
-              <div className="mt-4 space-y-2">
-                <Skeleton className="h-3 w-full" />
-                <Skeleton className="h-3 w-4/5" />
-                <Skeleton className="h-3 w-2/3" />
-              </div>
-            </div>
-          ) : generate.data ? (
-            <div className="rounded-card bg-sage-soft p-5">
-              <p className="font-heading text-lg font-bold">Your report is ready</p>
-              <p className="mt-1 text-[14px] text-body">
-                The link works for a short while, so download it now rather than bookmarking
-                it.
-              </p>
-              <div className="mt-4 flex flex-wrap gap-2">
-                <Button asChild variant="solid">
-                  <a href={generate.data.signed_url} target="_blank" rel="noreferrer">
-                    <Download className="size-4" />
-                    Download the PDF
-                  </a>
-                </Button>
-                <Button
-                  variant="outline"
-                  onClick={() => void navigator.clipboard.writeText(generate.data.signed_url)}
-                >
-                  <Share2 className="size-4" />
-                  Copy the link
-                </Button>
-              </div>
-            </div>
-          ) : notReady ? (
-            <Notice tone="warn">
-              <strong>Report generation is not switched on yet.</strong> The figures below are
-              live and correct — the one-page PDF that wraps them is still being built. When
-              it ships, this button will start working; nothing about your setup needs to
-              change.
-            </Notice>
-          ) : generate.error ? (
-            <ErrorState error={generate.error} onRetry={() => generate.mutate(months)} />
-          ) : (
-            <Button variant="accent" size="lg" onClick={() => generate.mutate(months)}>
-              <FileText className="size-4" />
-              Generate the report
-            </Button>
-          )}
+          <Button variant="accent" size="lg" disabled title="PDF reports are not available yet">
+            <FileText className="size-4" />
+            PDF report unavailable
+          </Button>
+          <Notice tone="warn" className="mt-4">
+            <strong>PDF report generation is not switched on yet.</strong> The figures below
+            are live and use the selected calendar period; no report request will be sent.
+          </Notice>
         </div>
       </Card>
 

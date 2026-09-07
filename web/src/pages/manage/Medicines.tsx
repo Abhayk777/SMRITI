@@ -21,7 +21,6 @@ import {
   toDraft,
   type MedicineDraft,
 } from '@/features/medicines/MedicineForm.tsx'
-import { OcrReview } from '@/features/medicines/OcrReview.tsx'
 import { useMedicines, useMedicineMutation } from '@/features/medicines/useMedicines.ts'
 import { describeDays, formatMinutes, partOfDay } from '@/lib/utils.ts'
 import { usePatientAccess } from '@/patients/usePatientAccess.ts'
@@ -30,9 +29,8 @@ import type { Medication } from '@smriti/shared'
 /**
  * Manage → Medicines (frontend.md §8).
  *
- * Two entry points, one destination: type a medicine in by hand, or photograph
- * the prescription and check every extracted line (§9). Both end in the same
- * `medications` row through the same content-write choke point.
+ * Medicines are entered by hand through the content-write choke point. The OCR
+ * affordance remains visible but disabled until its Edge Function exists.
  *
  * Removing a medicine sets `active: false` rather than deleting the row. The
  * adherence history in `daily_adherence` is built from `reminder_events` that
@@ -45,25 +43,9 @@ export default function Medicines() {
   const { save, remove } = useMedicineMutation<MedicineDraft>(patientId)
 
   const [draft, setDraft] = useState<MedicineDraft | null>(null)
-  const [ocrOpen, setOcrOpen] = useState(false)
   const [confirmRemove, setConfirmRemove] = useState<Medication | null>(null)
-  const [savingOcr, setSavingOcr] = useState(false)
 
   const rows = medicines.data ?? []
-
-  // Saved one at a time rather than in a batch: `useContentMutation` is the only
-  // sanctioned write path, and one failing row should not take the others with it.
-  const saveOcrRows = async (drafts: MedicineDraft[]) => {
-    setSavingOcr(true)
-    try {
-      for (const medicine of drafts) {
-        await save.mutateAsync(medicine)
-      }
-      setOcrOpen(false)
-    } finally {
-      setSavingOcr(false)
-    }
-  }
 
   const grouped = rows.reduce<Record<string, Medication[]>>((acc, row) => {
     const key = partOfDay(row.chosen_time_min)
@@ -79,12 +61,11 @@ export default function Medicines() {
         description="A gentle chime at her hour, in her language. If she does not respond, Smriti waits, chimes again, and only then calls you — one call covering everything due, never one per pill."
         actions={
           canEdit &&
-          !draft &&
-          !ocrOpen && (
+          !draft && (
             <>
-              <Button variant="outline" onClick={() => setOcrOpen(true)}>
+              <Button variant="outline" disabled title="Prescription scanning is not available yet">
                 <Camera className="size-4" />
-                Read a prescription
+                Scanning unavailable
               </Button>
               <Button variant="accent" onClick={() => setDraft(emptyMedicine())}>
                 <Plus className="size-4" />
@@ -101,18 +82,14 @@ export default function Medicines() {
         </Notice>
       )}
 
-      {medicines.error && <ErrorState error={medicines.error} className="mb-6" />}
-
-      {ocrOpen && canEdit && (
-        <div className="mb-6">
-          <OcrReview
-            patientId={patientId}
-            saving={savingOcr}
-            onSave={(drafts) => void saveOcrRows(drafts)}
-            onClose={() => setOcrOpen(false)}
-          />
-        </div>
+      {canEdit && !draft && (
+        <Notice className="mb-6">
+          Prescription scanning is not available yet. Add medicines by hand so every line is
+          checked before it reaches the tablet.
+        </Notice>
       )}
+
+      {medicines.error && <ErrorState error={medicines.error} className="mb-6" />}
 
       {draft && (
         <Card padding="lg" className="mb-6">
@@ -140,11 +117,11 @@ export default function Medicines() {
         </div>
       )}
 
-      {!medicines.isPending && rows.length === 0 && !draft && !ocrOpen && (
+      {!medicines.isPending && rows.length === 0 && !draft && (
         <EmptyState
           icon={<Pill className="size-5" />}
           title="No medicines yet"
-          description="Add the ones that matter most first. You can photograph the prescription and check the lines, or type them in one at a time."
+          description="Add the ones that matter most first, one at a time."
           action={
             canEdit && (
               <div className="flex flex-wrap justify-center gap-2">
@@ -152,9 +129,9 @@ export default function Medicines() {
                   <Plus className="size-4" />
                   Add by hand
                 </Button>
-                <Button variant="outline" onClick={() => setOcrOpen(true)}>
+                <Button variant="outline" disabled title="Prescription scanning is not available yet">
                   <Camera className="size-4" />
-                  Read a prescription
+                  Scanning unavailable
                 </Button>
               </div>
             )

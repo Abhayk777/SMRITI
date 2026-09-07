@@ -55,26 +55,46 @@ export function partOfDay(min: number): 'Morning' | 'Afternoon' | 'Evening' | 'N
 }
 
 /* ────────────────────────────────────────────────────────────────────────
-   days_of_week — a seven-character string of '0'/'1', Monday first.
+   days_of_week — comma-separated ISO weekdays (Monday=1 … Sunday=7).
    ──────────────────────────────────────────────────────────────────────── */
 
 export const DAY_LABELS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'] as const
-export const EVERY_DAY = '1111111'
+export const EVERY_DAY = '1,2,3,4,5,6,7'
 
-export const isDayOn = (mask: string, index: number) => mask[index] === '1'
-
-export function toggleDay(mask: string, index: number): string {
-  const chars = mask.padEnd(7, '0').slice(0, 7).split('')
-  chars[index] = chars[index] === '1' ? '0' : '1'
-  return chars.join('')
+/** Reads canonical CSV and the legacy seven-character frontend bitmask. */
+export function parseDaysOfWeek(value: string | null | undefined): number[] {
+  const raw = value?.trim() ?? ''
+  const days = /^[01]{7}$/.test(raw)
+    ? [...raw].flatMap((selected, index) => (selected === '1' ? [index + 1] : []))
+    : raw.split(',').flatMap((part) => {
+        const day = Number(part.trim())
+        return Number.isInteger(day) && day >= 1 && day <= 7 ? [day] : []
+      })
+  return [...new Set(days)].sort((a, b) => a - b)
 }
 
-export function describeDays(mask: string): string {
-  if (mask === EVERY_DAY) return 'Every day'
-  const on = DAY_LABELS.filter((_, i) => isDayOn(mask, i))
+/** Always produces the backend contract, even when given a legacy bitmask. */
+export const normaliseDaysOfWeek = (value: string | null | undefined) =>
+  parseDaysOfWeek(value).join(',')
+
+export const isDayOn = (value: string, index: number) =>
+  parseDaysOfWeek(value).includes(index + 1)
+
+export function toggleDay(value: string, index: number): string {
+  const selected = new Set(parseDaysOfWeek(value))
+  const day = index + 1
+  if (selected.has(day)) selected.delete(day)
+  else selected.add(day)
+  return [...selected].sort((a, b) => a - b).join(',')
+}
+
+export function describeDays(value: string): string {
+  const canonical = normaliseDaysOfWeek(value)
+  if (canonical === EVERY_DAY) return 'Every day'
+  const on = DAY_LABELS.filter((_, i) => isDayOn(canonical, i))
   if (on.length === 0) return 'No days selected'
-  if (on.length === 5 && !isDayOn(mask, 5) && !isDayOn(mask, 6)) return 'Weekdays'
-  if (on.length === 2 && isDayOn(mask, 5) && isDayOn(mask, 6)) return 'Weekends'
+  if (canonical === '1,2,3,4,5') return 'Weekdays'
+  if (canonical === '6,7') return 'Weekends'
   return on.join(', ')
 }
 
@@ -82,14 +102,36 @@ export function describeDays(mask: string): string {
    Dates and elapsed time.
    ──────────────────────────────────────────────────────────────────────── */
 
-const DAY_MS = 86_400_000
+const isoParts = (iso: string) => iso.split('-').map(Number) as [number, number, number]
+
+/** Adds calendar days without assuming that a local day is always 24 hours. */
+export function addIsoDays(iso: string, amount: number): string {
+  const [year, month, day] = isoParts(iso)
+  const date = new Date(Date.UTC(year, month - 1, day + amount))
+  return date.toISOString().slice(0, 10)
+}
+
+function isoDateInZone(timezone: string | null | undefined, instant: Date): string {
+  if (!timezone) {
+    return `${instant.getFullYear()}-${String(instant.getMonth() + 1).padStart(2, '0')}-${String(
+      instant.getDate(),
+    ).padStart(2, '0')}`
+  }
+  try {
+    return new Intl.DateTimeFormat('en-CA', {
+      timeZone: timezone,
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+    }).format(instant)
+  } catch {
+    return isoDateInZone(null, instant)
+  }
+}
 
 /** `YYYY-MM-DD` for a day `n` days before today, in the viewer's own timezone. */
 export function isoDateDaysAgo(days: number): string {
-  const d = new Date(Date.now() - days * DAY_MS)
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(
-    d.getDate(),
-  ).padStart(2, '0')}`
+  return addIsoDays(isoDateInZone(null, new Date()), -days)
 }
 
 /**
@@ -107,19 +149,12 @@ export function isoDateDaysAgo(days: number): string {
  * Falls back to the viewer's timezone only when the patient row has not loaded
  * yet or names a zone this browser does not know.
  */
-export function isoDateDaysAgoInZone(timezone: string | null | undefined, days = 0): string {
-  if (!timezone) return isoDateDaysAgo(days)
-  try {
-    // `en-CA` formats as YYYY-MM-DD, which is exactly the shape Postgres returns.
-    return new Intl.DateTimeFormat('en-CA', {
-      timeZone: timezone,
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-    }).format(new Date(Date.now() - days * DAY_MS))
-  } catch {
-    return isoDateDaysAgo(days)
-  }
+export function isoDateDaysAgoInZone(
+  timezone: string | null | undefined,
+  days = 0,
+  instant = new Date(),
+): string {
+  return addIsoDays(isoDateInZone(timezone, instant), -days)
 }
 
 export const todayIso = () => isoDateDaysAgo(0)
@@ -127,6 +162,76 @@ export const todayIso = () => isoDateDaysAgo(0)
 /** Today, where she is. */
 export const todayInZone = (timezone: string | null | undefined) =>
   isoDateDaysAgoInZone(timezone, 0)
+
+export type CalendarDateRange = {
+  fromDate: string
+  toDateExclusive: string
+}
+
+/** Exactly `days` patient-local calendar dates, including today. */
+export function calendarDayRangeInZone(
+  timezone: string | null | undefined,
+  days: number,
+  instant = new Date(),
+): CalendarDateRange {
+  const count = Math.max(1, Math.floor(days))
+  const today = isoDateDaysAgoInZone(timezone, 0, instant)
+  return {
+    fromDate: addIsoDays(today, -(count - 1)),
+    toDateExclusive: addIsoDays(today, 1),
+  }
+}
+
+function shiftIsoMonths(iso: string, months: number): string {
+  const [year, month, day] = isoParts(iso)
+  const target = new Date(Date.UTC(year, month - 1 + months, 1))
+  const lastDay = new Date(
+    Date.UTC(target.getUTCFullYear(), target.getUTCMonth() + 1, 0),
+  ).getUTCDate()
+  return `${target.getUTCFullYear()}-${String(target.getUTCMonth() + 1).padStart(2, '0')}-${String(
+    Math.min(day, lastDay),
+  ).padStart(2, '0')}`
+}
+
+/** The trailing calendar-month period through today, with inclusive day semantics. */
+export function calendarMonthRangeInZone(
+  timezone: string | null | undefined,
+  months: number,
+  instant = new Date(),
+): CalendarDateRange {
+  const today = isoDateDaysAgoInZone(timezone, 0, instant)
+  return {
+    fromDate: addIsoDays(shiftIsoMonths(today, -Math.max(1, Math.floor(months))), 1),
+    toDateExclusive: addIsoDays(today, 1),
+  }
+}
+
+/** Patient-local minutes since midnight at an instant. */
+export function minutesOfDayInZone(
+  timezone: string | null | undefined,
+  instant = new Date(),
+): number {
+  if (!timezone) return instant.getHours() * 60 + instant.getMinutes()
+  try {
+    const parts = new Intl.DateTimeFormat('en-GB', {
+      timeZone: timezone,
+      hour: '2-digit',
+      minute: '2-digit',
+      hourCycle: 'h23',
+    }).formatToParts(instant)
+    const hour = Number(parts.find((part) => part.type === 'hour')?.value ?? 0)
+    const minute = Number(parts.find((part) => part.type === 'minute')?.value ?? 0)
+    return wrapMinutes(hour * 60 + minute)
+  } catch {
+    return instant.getHours() * 60 + instant.getMinutes()
+  }
+}
+
+/** Monday=0 … Sunday=6, independent of the browser timezone. */
+export function isoWeekdayIndex(iso: string): number {
+  const [year, month, day] = isoParts(iso)
+  return (new Date(Date.UTC(year, month - 1, day)).getUTCDay() + 6) % 7
+}
 
 /**
  * "4 minutes ago", "2 days ago". Used for `device_last_seen_at`, where being

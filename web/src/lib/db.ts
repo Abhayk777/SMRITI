@@ -234,28 +234,40 @@ export const escalationConfigFor = (pid: string): PromiseLike<DbResult<Escalatio
 export const dailyReportRange = (
   pid: string,
   fromDate: string,
+  toDateExclusive: string,
 ): PromiseLike<DbResult<DailyReportRow[]>> =>
   isMockMode
-    ? ok((mockDailyReport[pid] ?? []).filter((row) => row.day >= fromDate))
+    ? ok(
+        (mockDailyReport[pid] ?? []).filter(
+          (row) => row.day >= fromDate && row.day < toDateExclusive,
+        ),
+      )
     : supabase
         .from('daily_report')
         .select('*')
         .eq('patient_id', pid)
         .gte('day', fromDate)
+        .lt('day', toDateExclusive)
         .order('day')
 
 /** `daily_domain` — per-cognitive-domain accuracy, for the Trends charts. */
 export const dailyDomainRange = (
   pid: string,
   fromDate: string,
+  toDateExclusive: string,
 ): PromiseLike<DbResult<DailyDomainRow[]>> =>
   isMockMode
-    ? ok((mockDailyDomain[pid] ?? []).filter((row) => row.day >= fromDate))
+    ? ok(
+        (mockDailyDomain[pid] ?? []).filter(
+          (row) => row.day >= fromDate && row.day < toDateExclusive,
+        ),
+      )
     : supabase
         .from('daily_domain')
         .select('*')
         .eq('patient_id', pid)
         .gte('day', fromDate)
+        .lt('day', toDateExclusive)
         .order('day')
 
 export const activeFlags = (pid: string): PromiseLike<DbResult<Flag[]>> =>
@@ -412,7 +424,7 @@ export const acknowledgeFlag = (flagId: string): PromiseLike<DbResult<unknown>> 
     ? ok({ id: flagId })
     : (supabase
         .from('flags')
-        .update({ status: 'acknowledged', acknowledged_at: new Date().toISOString() })
+        .update({ status: 'acknowledged' })
         .eq('id', flagId) as PromiseLike<DbResult<unknown>>)
 
 /** `read_at` is caregiver-writable per the memos RLS policy. Set it on play. */
@@ -446,32 +458,6 @@ export const createPairingToken = async (
   }
   const { data, error } = await supabase.functions.invoke('create-pairing-token', {
     body: { patient_id: pid },
-  })
-  return { data: data ?? null, error }
-}
-
-/**
- * `ocr-prescription` is **not built yet** (frontend.md §0, §9). The contract is
- * fixed, so the review UI is built and tested against this stub; when the
- * function ships, delete the mock branch and keep the invoke.
- */
-export const invokeOcrPrescription = async (
-  pid: string,
-  imageBase64: string,
-): Promise<DbResult<{ medications: unknown[] }>> => {
-  const { data, error } = await supabase.functions.invoke('ocr-prescription', {
-    body: { image_base64: imageBase64, patient_id: pid },
-  })
-  return { data: data ?? null, error }
-}
-
-/** `generate-report` is **not built yet** (frontend.md §0, §10). */
-export const invokeGenerateReport = async (
-  pid: string,
-  months: number,
-): Promise<DbResult<{ signed_url: string; report_id: string }>> => {
-  const { data, error } = await supabase.functions.invoke('generate-report', {
-    body: { patient_id: pid, months },
   })
   return { data: data ?? null, error }
 }

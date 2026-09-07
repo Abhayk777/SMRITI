@@ -67,6 +67,12 @@ export function FlagCard({ flag, patientId }: { flag: Flag; patientId: string })
         )}
       </div>
 
+      {acknowledge.error && (
+        <p role="alert" className="mt-3 text-[13px] font-medium text-alert">
+          This flag could not be cleared. Nothing changed; please try again.
+        </p>
+      )}
+
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}

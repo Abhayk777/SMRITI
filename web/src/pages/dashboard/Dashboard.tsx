@@ -26,7 +26,9 @@ import {
   deviceHealth,
   formatDayLong,
   formatMinutes,
+  isoWeekdayIndex,
   isDayOn,
+  minutesOfDayInZone,
   timeAgo,
   todayInZone,
 } from '@/lib/utils.ts'
@@ -85,13 +87,14 @@ export default function Dashboard() {
   // Monday-first index, to match `days_of_week` — and derived from her date,
   // not the viewer's, for the same reason `today` is. A caregiver reading this
   // on Sunday evening in California is looking at her Monday.
-  const weekdayIndex = (new Date(`${today}T12:00:00`).getDay() + 6) % 7
+  const weekdayIndex = isoWeekdayIndex(today)
   const todaysMedicines = (medicines.data ?? []).filter((med) =>
     isDayOn(med.days_of_week, weekdayIndex),
   )
 
   const scheduled = todayRow?.scheduled ?? todaysMedicines.length
   const confirmed = todayRow?.confirmed ?? 0
+  const patientNowMinutes = minutesOfDayInZone(patient?.timezone)
 
   return (
     <>
@@ -262,8 +265,7 @@ export default function Dashboard() {
               />
             )}
             {(routine.data ?? []).map((item) => {
-              const nowMin = new Date().getHours() * 60 + new Date().getMinutes()
-              const past = item.time_min <= nowMin
+              const past = item.time_min <= patientNowMinutes
               return (
                 <div
                   key={item.id}

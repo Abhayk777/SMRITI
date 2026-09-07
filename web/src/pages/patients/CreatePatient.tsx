@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { ArrowLeft, ArrowRight, Check, Plus, Trash2 } from 'lucide-react'
-import { useForm } from 'react-hook-form'
+import { useForm, useWatch } from 'react-hook-form'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { z } from 'zod'
 
@@ -32,6 +32,11 @@ import {
 import { useRoutine } from '@/features/routine/useRoutine.ts'
 import { useContentMutation } from '@/hooks/useContentMutation.ts'
 import * as db from '@/lib/db.ts'
+import {
+  languageByCode,
+  SUPPORTED_LANGUAGE_CODES,
+  SUPPORTED_LANGUAGES,
+} from '@/lib/languages.ts'
 import { qk } from '@/lib/queryKeys.ts'
 import { cn, describeDays, formatMinutes } from '@/lib/utils.ts'
 
@@ -66,7 +71,7 @@ const basicsSchema = z.object({
     .int()
     .min(0, 'Between 0 and 25')
     .max(25, 'Between 0 and 25'),
-  lang_code: z.string().min(2),
+  lang_code: z.enum(SUPPORTED_LANGUAGE_CODES),
   timezone: z.string().min(1),
   primary_name: z.string().trim().min(1, 'Who should Smriti call first?'),
   primary_phone: z
@@ -76,19 +81,6 @@ const basicsSchema = z.object({
 })
 
 type BasicsValues = z.input<typeof basicsSchema>
-
-const LANGUAGES = [
-  { code: 'hi', label: 'Hindi' },
-  { code: 'mr', label: 'Marathi' },
-  { code: 'bn', label: 'Bengali' },
-  { code: 'ta', label: 'Tamil' },
-  { code: 'te', label: 'Telugu' },
-  { code: 'kn', label: 'Kannada' },
-  { code: 'ml', label: 'Malayalam' },
-  { code: 'gu', label: 'Gujarati' },
-  { code: 'pa', label: 'Punjabi' },
-  { code: 'en', label: 'English' },
-]
 
 const STEPS = [
   { key: 'basics', label: 'About her' },
@@ -257,6 +249,7 @@ function BasicsStep({ onCreated }: { onCreated: (id: string, name: string) => vo
         }),
       ),
   })
+  const selectedLanguage = useWatch({ control: form.control, name: 'lang_code' })
 
   return (
     <>
@@ -308,12 +301,15 @@ function BasicsStep({ onCreated }: { onCreated: (id: string, name: string) => vo
 
           <Field label="Her language" htmlFor="lang_code" required>
             <Select id="lang_code" {...form.register('lang_code')}>
-              {LANGUAGES.map((lang) => (
+              {SUPPORTED_LANGUAGES.map((lang) => (
                 <option key={lang.code} value={lang.code}>
                   {lang.label}
                 </option>
               ))}
             </Select>
+            <p className="mt-1.5 text-[12.5px] leading-relaxed text-muted">
+              {languageByCode(selectedLanguage)?.delivery}
+            </p>
           </Field>
         </div>
 

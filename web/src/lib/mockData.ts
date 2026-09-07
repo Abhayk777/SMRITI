@@ -22,6 +22,7 @@ import type {
 } from '@smriti/shared'
 
 import type { DailyDomainRow, DailyReportRow } from './database.types.ts'
+import { isoDateDaysAgoInZone } from './utils.ts'
 
 const DAY = 86_400_000
 
@@ -45,12 +46,7 @@ const isoDaysAgo = (days: number) => new Date(Date.now() - days * DAY).toISOStri
  * evening.
  */
 const dateDaysAgo = (days: number) =>
-  new Intl.DateTimeFormat('en-CA', {
-    timeZone: FIXTURE_TZ,
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-  }).format(new Date(Date.now() - days * DAY))
+  isoDateDaysAgoInZone(FIXTURE_TZ, days)
 
 export const mockPatients: Record<string, Patient> = {
   [MOCK_PATIENT_IDS.amma]: {
@@ -58,7 +54,7 @@ export const mockPatients: Record<string, Patient> = {
     display_name: 'Sunanda Rao',
     age: 78,
     education_years: 12,
-    lang_code: 'mr',
+    lang_code: 'hi',
     script: 'Deva',
     timezone: 'Asia/Kolkata',
     content_version: 14,
@@ -79,7 +75,7 @@ export const mockPatients: Record<string, Patient> = {
     display_name: 'Hari Rao',
     age: 82,
     education_years: 16,
-    lang_code: 'mr',
+    lang_code: 'hi',
     script: 'Deva',
     timezone: 'Asia/Kolkata',
     content_version: 6,
@@ -180,7 +176,7 @@ export const mockMedications: Record<string, Medication[]> = {
       window_start_min: 480,
       window_end_min: 660,
       chosen_time_min: 540,
-      days_of_week: '1111111',
+      days_of_week: '1,2,3,4,5,6,7',
       active: true,
       created_at: isoDaysAgo(96),
     },
@@ -194,7 +190,7 @@ export const mockMedications: Record<string, Medication[]> = {
       window_start_min: 780,
       window_end_min: 900,
       chosen_time_min: 810,
-      days_of_week: '1111111',
+      days_of_week: '1,2,3,4,5,6,7',
       active: true,
       created_at: isoDaysAgo(96),
     },
@@ -208,7 +204,7 @@ export const mockMedications: Record<string, Medication[]> = {
       window_start_min: 1200,
       window_end_min: 1320,
       chosen_time_min: 1260,
-      days_of_week: '1010100',
+      days_of_week: '1,3,5',
       active: true,
       created_at: isoDaysAgo(40),
     },

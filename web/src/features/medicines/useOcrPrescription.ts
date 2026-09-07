@@ -1,15 +1,12 @@
 import { useMutation } from '@tanstack/react-query'
 
-import * as db from '@/lib/db.ts'
-import { isMockMode } from '@/lib/supabase.ts'
 
 /**
  * Prescription OCR (frontend.md §9).
  *
- * The `ocr-prescription` Edge Function **is not built yet**. What is fixed is
- * its contract, so the whole client flow — capture, extract, per-row review,
- * save — is built and usable against a stub. When the function ships, the only
- * change is deleting the mock branch in `mutationFn`.
+ * The `ocr-prescription` Edge Function **is not built yet**. This hook fails
+ * locally and performs no network request; its disabled UI remains as an
+ * honest placeholder for the already-defined candidate contract.
  *
  * ── A note on the confidence type ─────────────────────────────────────────
  * frontend.md §9 types `confidence` as `'high' | 'low' | 'unrecognized'`;
@@ -60,56 +57,11 @@ export const CONFIDENCE_COPY: Record<
   },
 }
 
-/** A fixed stub, deliberately including one bad row so the review UI is exercised. */
-function mockOcrResponse(): { medications: OcrCandidate[] } {
-  return {
-    medications: [
-      {
-        name: 'Amlodipine',
-        dose: '5 mg',
-        frequency: 'Once daily, morning',
-        confidence: 0.94,
-        raw_text: 'TAB. AMLODIPINE 5MG  1-0-0',
-      },
-      {
-        name: 'Metformin',
-        dose: '500 mg',
-        frequency: 'Twice daily, after food',
-        confidence: 0.88,
-        raw_text: 'TAB. METFORMIN 500MG  1-0-1 A/F',
-      },
-      {
-        name: 'Atorvastatin',
-        dose: '10 mg',
-        frequency: 'Once daily, night',
-        confidence: 0.61,
-        raw_text: 'TAB ATORVA 1O MG  O-O-1',
-      },
-      {
-        name: '',
-        dose: '',
-        frequency: '',
-        confidence: 0.18,
-        raw_text: 'T. C_lc__m + D3   1-0-0  x15d',
-      },
-    ],
-  }
-}
-
 export function useOcrPrescription(patientId: string) {
-  return useMutation({
-    mutationFn: async (imageBase64: string): Promise<{ medications: OcrCandidate[] }> => {
-      if (isMockMode) {
-        await new Promise((resolve) => setTimeout(resolve, 1200))
-        return mockOcrResponse()
-      }
-
-      const { data, error } = await db.invokeOcrPrescription(patientId, imageBase64)
-      // Until the function is deployed this is what comes back, and it is the
-      // path the "not available yet" state in the UI is built around.
-      if (error) throw error
-      if (!data) throw new Error('ocr-prescription returned nothing')
-      return data as { medications: OcrCandidate[] }
+  return useMutation<{ medications: OcrCandidate[] }, Error, string>({
+    mutationFn: async (): Promise<{ medications: OcrCandidate[] }> => {
+      void patientId
+      throw new Error('Prescription scanning is not available yet.')
     },
   })
 }

@@ -107,18 +107,17 @@ export default function Alerts() {
           </p>
         ) : (
           <ol className="mt-4 space-y-3">
-            <li className="flex items-start gap-3 text-[15px] leading-relaxed">
-              <span className="numeral w-16 flex-none text-muted">On time</span>
-              <span>The tablet chimes, in her language.</span>
-            </li>
             {steps.map((step) => (
               <li key={step.step} className="flex items-start gap-3 text-[15px] leading-relaxed">
                 <span className="numeral w-16 flex-none text-muted">
-                  +{step.minutes} min
+                  {step.minutes === 0 ? 'On time' : `+${step.minutes} min`}
                 </span>
                 <span>
-                  If there is still no response, Smriti sends{' '}
-                  {CHANNEL_COPY[step.channel] ?? step.channel}.
+                  {step.minutes === 0
+                    ? 'The tablet chimes, in her language.'
+                    : `If there is still no response, Smriti sends ${
+                        CHANNEL_COPY[step.channel] ?? step.channel
+                      }.`}
                 </span>
               </li>
             ))}

@@ -4,7 +4,8 @@ import type { DailyDomainRow, DailyReportRow } from '@/lib/database.types.ts'
 import * as db from '@/lib/db.ts'
 import { HISTORICAL_STALE_TIME } from '@/lib/queryClient.ts'
 import { qk } from '@/lib/queryKeys.ts'
-import { isoDateDaysAgoInZone } from '@/lib/utils.ts'
+import { fillDailyReportRange } from '@/lib/reporting.ts'
+import { calendarDayRangeInZone, calendarMonthRangeInZone } from '@/lib/utils.ts'
 import { assertPatientMatchAll } from '@/patients/usePatientAccess.ts'
 
 /**
@@ -17,25 +18,49 @@ import { assertPatientMatchAll } from '@/patients/usePatientAccess.ts'
  */
 export function useDailyReport(patientId: string, days: number, timezone?: string | null) {
   // Ranges are anchored to the patient's timezone, because that is what the
-  // view's `day` column is computed in. See `isoDateDaysAgoInZone`.
-  const fromDate = isoDateDaysAgoInZone(timezone, days)
+  // view's `day` column is computed in. The exclusive upper bound prevents a
+  // range from drifting when the caregiver and patient are on different dates.
+  const range = calendarDayRangeInZone(timezone, days)
   return useQuery({
-    queryKey: qk.dailyReport(patientId, fromDate),
+    queryKey: qk.dailyReport(patientId, range.fromDate, range.toDateExclusive),
     queryFn: async () => {
-      const rows = await db.unwrap(db.dailyReportRange(patientId, fromDate))
+      const rows = await db.unwrap(
+        db.dailyReportRange(patientId, range.fromDate, range.toDateExclusive),
+      )
       assertPatientMatchAll(patientId, rows, 'useDailyReport')
-      return rows
+      return fillDailyReportRange(rows, patientId, range)
+    },
+    staleTime: HISTORICAL_STALE_TIME,
+  })
+}
+
+export function useDailyReportMonths(
+  patientId: string,
+  months: number,
+  timezone?: string | null,
+) {
+  const range = calendarMonthRangeInZone(timezone, months)
+  return useQuery({
+    queryKey: qk.dailyReport(patientId, range.fromDate, range.toDateExclusive),
+    queryFn: async () => {
+      const rows = await db.unwrap(
+        db.dailyReportRange(patientId, range.fromDate, range.toDateExclusive),
+      )
+      assertPatientMatchAll(patientId, rows, 'useDailyReportMonths')
+      return fillDailyReportRange(rows, patientId, range)
     },
     staleTime: HISTORICAL_STALE_TIME,
   })
 }
 
 export function useDailyDomain(patientId: string, days: number, timezone?: string | null) {
-  const fromDate = isoDateDaysAgoInZone(timezone, days)
+  const range = calendarDayRangeInZone(timezone, days)
   return useQuery({
-    queryKey: qk.dailyDomain(patientId, fromDate),
+    queryKey: qk.dailyDomain(patientId, range.fromDate, range.toDateExclusive),
     queryFn: async () => {
-      const rows = await db.unwrap(db.dailyDomainRange(patientId, fromDate))
+      const rows = await db.unwrap(
+        db.dailyDomainRange(patientId, range.fromDate, range.toDateExclusive),
+      )
       assertPatientMatchAll(patientId, rows, 'useDailyDomain')
       return rows
     },

@@ -22,7 +22,8 @@ import {
   useDailyReport,
 } from '@/features/reports/useDailyReport.ts'
 import type { DailyReportRow } from '@/lib/database.types.ts'
-import { cn, formatDayShort } from '@/lib/utils.ts'
+import { groupDailyReportWeeks } from '@/lib/reporting.ts'
+import { cn, formatDayShort, isoWeekdayIndex } from '@/lib/utils.ts'
 import { usePatientAccess } from '@/patients/usePatientAccess.ts'
 
 /**
@@ -55,7 +56,7 @@ function PlayCalendar({ rows }: { rows: DailyReportRow[] }) {
   }
 
   // Monday-first columns, so weeks read as weeks.
-  const firstWeekday = rows.length ? (new Date(rows[0].day).getDay() + 6) % 7 : 0
+  const firstWeekday = rows.length ? isoWeekdayIndex(rows[0].day) : 0
 
   return (
     <div>
@@ -152,9 +153,7 @@ export default function Engagement() {
     missed: number
     minutes: number
   }> = []
-  for (let i = 0; i < rows.length; i += 7) {
-    const chunk = rows.slice(i, i + 7)
-    if (chunk.length === 0) continue
+  for (const chunk of groupDailyReportWeeks(rows)) {
     weeks.push({
       week: chunk[0].day,
       onTablet: chunk.reduce((sum, row) => sum + (row.via_tablet ?? 0), 0),

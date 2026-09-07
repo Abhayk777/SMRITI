@@ -28,9 +28,10 @@ import type { Memo } from '@smriti/shared'
  * care about most.
  */
 
-function MemoRow({ memo, patientId }: { memo: Memo; patientId: string }) {
+function MemoRow({ memo, patientId, canEdit }: { memo: Memo; patientId: string; canEdit: boolean }) {
   const [wanted, setWanted] = useState(false)
   const [playing, setPlaying] = useState(false)
+  const [playbackError, setPlaybackError] = useState(false)
   const audioRef = useRef<HTMLAudioElement>(null)
 
   const markRead = useMarkMemoRead(patientId)
@@ -39,12 +40,14 @@ function MemoRow({ memo, patientId }: { memo: Memo; patientId: string }) {
   const toggle = () => {
     if (!wanted) {
       setWanted(true)
-      if (!memo.read_at) markRead.mutate(memo.id)
       return
     }
     const audio = audioRef.current
     if (!audio) return
-    if (audio.paused) void audio.play()
+    if (audio.paused) {
+      setPlaybackError(false)
+      void audio.play().catch(() => setPlaybackError(true))
+    }
     else audio.pause()
   }
 
@@ -101,13 +104,38 @@ function MemoRow({ memo, patientId }: { memo: Memo; patientId: string }) {
               That recording could not be loaded. It may have been removed.
             </p>
           )}
+          {playbackError && (
+            <p role="alert" className="mt-2 text-[13px] font-medium text-alert">
+              The recording loaded, but playback could not begin. It is still marked unread.
+            </p>
+          )}
+          {markRead.error && (
+            <p role="alert" className="mt-2 text-[13px] font-medium text-alert">
+              The recording is playing, but Smriti could not mark it as read. Try again later.
+            </p>
+          )}
+          {!canEdit && unread && wanted && (
+            <p className="mt-2 text-[12.5px] text-muted">
+              View-only access: listening will not change its unread status.
+            </p>
+          )}
           {signed.data && (
             <audio
               ref={audioRef}
               src={signed.data}
               controls
               autoPlay
-              onPlay={() => setPlaying(true)}
+              onPlay={() => {
+                setPlaying(true)
+                setPlaybackError(false)
+                if (canEdit && unread && !markRead.isPending && !markRead.isSuccess) {
+                  markRead.mutate(memo.id)
+                }
+              }}
+              onError={() => {
+                setPlaying(false)
+                setPlaybackError(true)
+              }}
               onPause={() => setPlaying(false)}
               onEnded={() => setPlaying(false)}
               className="mt-3 w-full max-w-md"
@@ -120,7 +148,7 @@ function MemoRow({ memo, patientId }: { memo: Memo; patientId: string }) {
 }
 
 export default function Messages() {
-  const { patientId, patient } = usePatientAccess()
+  const { patientId, patient, canEdit } = usePatientAccess()
   const memos = useMemos(patientId)
 
   const rows = memos.data ?? []
@@ -153,7 +181,7 @@ export default function Messages() {
         )}
 
         {rows.map((memo) => (
-          <MemoRow key={memo.id} memo={memo} patientId={patientId} />
+          <MemoRow key={memo.id} memo={memo} patientId={patientId} canEdit={canEdit} />
         ))}
       </div>
     </>

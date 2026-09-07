@@ -4,7 +4,16 @@ import { PhotoPicker } from '@/components/media/PhotoPicker.tsx'
 import { VoiceRecorder } from '@/components/media/VoiceRecorder.tsx'
 import { Button } from '@/components/ui/button.tsx'
 import { Field, Input, Label } from '@/components/ui/field.tsx'
-import { cn, DAY_LABELS, describeDays, EVERY_DAY, isDayOn, toggleDay } from '@/lib/utils.ts'
+import {
+  cn,
+  DAY_LABELS,
+  describeDays,
+  EVERY_DAY,
+  isDayOn,
+  normaliseDaysOfWeek,
+  parseDaysOfWeek,
+  toggleDay,
+} from '@/lib/utils.ts'
 import { MedicineWindow } from './MedicineWindow.tsx'
 import type { Medication } from '@smriti/shared'
 
@@ -38,7 +47,7 @@ export const toDraft = (row: Medication): MedicineDraft => ({
   window_start_min: row.window_start_min,
   window_end_min: row.window_end_min,
   chosen_time_min: row.chosen_time_min,
-  days_of_week: row.days_of_week,
+  days_of_week: normaliseDaysOfWeek(row.days_of_week),
   pill_photo_path: row.pill_photo_path,
   voice_path: row.voice_path,
 })
@@ -74,10 +83,13 @@ export function MedicineForm({
 
   const nameError = touched && !value.name.trim() ? 'What is it called?' : undefined
   const doseError = touched && !value.dose.trim() ? 'How much, and how?' : undefined
-  const daysError =
-    touched && !value.days_of_week.includes('1') ? 'Pick at least one day' : undefined
+  const daysError = touched && parseDaysOfWeek(value.days_of_week).length === 0
+    ? 'Pick at least one day'
+    : undefined
 
-  const valid = Boolean(value.name.trim() && value.dose.trim() && value.days_of_week.includes('1'))
+  const valid = Boolean(
+    value.name.trim() && value.dose.trim() && parseDaysOfWeek(value.days_of_week).length,
+  )
 
   return (
     <form

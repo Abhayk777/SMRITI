@@ -122,9 +122,10 @@ export default function Device() {
 
       {device.health === 'offline' && (
         <Notice tone="warn" className="mt-5">
-          While the tablet is offline, nothing on the Today, Trends or Engagement pages is
-          updating. The medicines are not being reminded either — Smriti cannot chime on a
-          device it cannot reach. Usually it is the charger or the wifi.
+          Local scheduled reminders and chimes continue on the tablet while it is offline.
+          Sync, remote visibility, and escalation updates stop until it reconnects, so the
+          Today, Trends and Engagement pages may be out of date. Usually it is the charger or
+          the wifi.
         </Notice>
       )}
 

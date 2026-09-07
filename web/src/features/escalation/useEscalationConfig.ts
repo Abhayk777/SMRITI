@@ -57,5 +57,7 @@ export const CHANNEL_COPY: Record<string, string> = {
   in_app: 'a second chime on the tablet',
   call: 'a phone call to your contacts',
   sms: 'a text message to your contacts',
+  sms_primary: 'a text message to the primary contact',
+  sms_secondary: 'a text message to the secondary contact',
   watchdog: 'an automatic safety check',
 }
