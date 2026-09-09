@@ -48,7 +48,7 @@ export default function People() {
   const [confirmRemove, setConfirmRemove] = useState<Person | null>(null)
 
   const rows = people.data ?? []
-  const firstName = patient?.display_name.split(' ')[0] ?? 'her'
+  const firstName = patient?.display_name.split(' ')[0] ?? 'the patient'
 
   return (
     <>
@@ -183,7 +183,7 @@ export default function People() {
             <DialogTitle>Remove {confirmRemove?.name}?</DialogTitle>
             <DialogDescription>
               Their photograph and voice will stop appearing on the tablet, and{' '}
-              {firstName} will not be asked about them again. Sessions she has already played
+              {firstName} will not be asked about them again. Sessions they have already played
               are unaffected.
             </DialogDescription>
           </DialogHeader>

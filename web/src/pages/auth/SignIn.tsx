@@ -122,7 +122,7 @@ export default function SignIn() {
 
         <div className="max-w-[26ch]">
           <h2 className="text-[clamp(28px,2.8vw,40px)] leading-[1.1] text-ivory">
-            Be close to her day, from wherever you are.
+            Be close to their day, from wherever you are.
           </h2>
           <p className="mt-4 text-[15.5px] leading-relaxed text-ivory/80">
             Sign in with the mobile number your family uses. We will send a six-digit code.

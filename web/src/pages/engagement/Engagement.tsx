@@ -29,7 +29,7 @@ import { usePatientAccess } from '@/patients/usePatientAccess.ts'
 /**
  * Engagement (frontend.md §8).
  *
- * Two questions, kept apart: is she using it, and are the medicines getting
+ * Two questions, kept apart: are they using it, and are the medicines getting
  * taken. They correlate but they are not the same thing, and a caregiver acting
  * on one when the other is the problem wastes the phone call.
  */
@@ -168,7 +168,7 @@ export default function Engagement() {
       <PageHeader
         eyebrow="Engagement"
         title="Is Smriti actually being used?"
-        description="Whether she is opening the tablet, and whether the medicines are getting taken. Two different questions — a bad week at one does not mean a bad week at the other."
+        description="Whether they are opening the tablet, and whether the medicines are getting taken. Two different questions — a bad week at one does not mean a bad week at the other."
         actions={
           <Tabs value={String(days)} onValueChange={(value) => setDays(Number(value))}>
             <TabsList>
@@ -208,8 +208,8 @@ export default function Engagement() {
               value={String(play.abandoned)}
               detail={
                 play.abandoned === 0
-                  ? 'She finished everything she started.'
-                  : 'Sessions she started and did not finish.'
+                  ? 'They finished everything they started.'
+                  : 'Sessions they started and did not finish.'
               }
             />
             <Stat

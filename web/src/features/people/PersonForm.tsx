@@ -43,11 +43,11 @@ export const toPersonDraft = (row: Person): PersonDraft => ({
  * Adding someone to a patient's circle.
  *
  * `photo_path` is required by the schema and by the games — a person without a
- * face is not something the tablet can show her. The form says so rather than
+ * face is not something the tablet can show them. The form says so rather than
  * letting the insert fail.
  *
  * The "no longer with us" switch is not an edge case. Getting it wrong means
- * the tablet asks an eighty-year-old woman where her late husband is today, and
+ * the tablet asks an older person where their late husband is today, and
  * that is the single worst thing this product could do. It is prominent, it is
  * explained, and it is on the same screen as the name.
  */
@@ -73,7 +73,7 @@ export function PersonForm({
   const [touched, setTouched] = useState(false)
 
   const nameError = touched && !value.name.trim() ? 'A first name is enough' : undefined
-  const relError = touched && !value.relationship.trim() ? 'How is she related to them?' : undefined
+  const relError = touched && !value.relationship.trim() ? 'What is their relationship to the patient?' : undefined
   const photoError =
     touched && !value.photo_path ? 'A photo is needed — the tablet shows the face' : undefined
 
@@ -119,7 +119,7 @@ export function PersonForm({
           label="Relationship"
           htmlFor="person-rel"
           required
-          hint="As she would say it."
+          hint="As they would say it."
           error={relError}
         >
           <Input
@@ -171,7 +171,7 @@ export function PersonForm({
           </Label>
           <p className="mt-1 text-[13px] leading-relaxed text-body">
             Please set this if it applies. Smriti will still show their photograph and talk
-            about them warmly, but it will never ask her where they are or when they are
+            about them warmly, but it will never ask them where they are or when they are
             coming.
           </p>
         </div>

@@ -65,7 +65,7 @@ export function MedicineWindow({
           </span>
         </div>
         <p className="mt-1 text-[13px] leading-snug text-muted">
-          The span the dose can be taken in. If she misses the chime, Smriti can still
+          The span the dose can be taken in. If they miss the chime, Smriti can still
           count it inside this window.
         </p>
         <Slider
@@ -87,7 +87,7 @@ export function MedicineWindow({
           <span className="numeral text-[15px]">{formatMinutes(chosenTime)}</span>
         </div>
         <p className="mt-1 text-[13px] leading-snug text-muted">
-          Pick the moment in her day this fits — after tea, before the walk. It can only
+          Pick the moment in their day this fits — after tea, before the walk. It can only
           sit inside the window above.
         </p>
         <Slider

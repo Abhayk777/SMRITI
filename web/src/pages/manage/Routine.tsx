@@ -33,20 +33,20 @@ export default function Routine() {
   const [draft, setDraft] = useState<RoutineDraft | null>(null)
 
   const rows = [...(routine.data ?? [])].sort((a, b) => a.time_min - b.time_min)
-  const firstName = patient?.display_name.split(' ')[0] ?? 'her'
+  const firstName = patient?.display_name.split(' ')[0] ?? 'the patient'
 
   return (
     <>
       <PageHeader
         eyebrow="Manage"
-        title="Her routine"
-        description={`The small anchors of ${firstName}'s day. The tablet shows these back to her as a picture of what is coming — most families say it is the part she likes best.`}
+        title="Their routine"
+        description={`The small anchors of ${firstName}'s day. The tablet shows these back to them as a picture of what is coming — most families say it is the part they like best.`}
         actions={
           canEdit &&
           !draft && (
             <Button variant="accent" onClick={() => setDraft(emptyRoutine())}>
               <Plus className="size-4" />
-              Add to her day
+              Add to their day
             </Button>
           )
         }
@@ -63,13 +63,13 @@ export default function Routine() {
       {draft && (
         <Card padding="lg" className="mb-6">
           <h2 className="mb-5 text-[19px]">
-            {draft.id ? 'Edit this' : 'Add something to her day'}
+            {draft.id ? 'Edit this' : 'Add something to their day'}
           </h2>
           <RoutineForm
             value={draft}
             onChange={setDraft}
             saving={save.isPending}
-            submitLabel={draft.id ? 'Save changes' : 'Add to her day'}
+            submitLabel={draft.id ? 'Save changes' : 'Add to their day'}
             onCancel={() => setDraft(null)}
             onSubmit={() => save.mutate(draft, { onSuccess: () => setDraft(null) })}
           />
@@ -88,7 +88,7 @@ export default function Routine() {
       {!routine.isPending && rows.length === 0 && !draft && (
         <EmptyState
           icon={<CalendarHeart className="size-5" />}
-          title="Her day is empty"
+          title="Their day is empty"
           description="Three or four anchors is plenty — morning tea, lunch, a walk, bedtime. Enough that the day has a shape."
           action={
             canEdit && (

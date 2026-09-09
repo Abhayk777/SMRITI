@@ -65,7 +65,7 @@ import { cn, describeDays, formatMinutes } from '@/lib/utils.ts'
  */
 
 const basicsSchema = z.object({
-  display_name: z.string().trim().min(1, 'What do you call her?'),
+  display_name: z.string().trim().min(1, 'What do you call them?'),
   age: z.coerce.number().int().min(30, 'Between 30 and 120').max(120, 'Between 30 and 120'),
   education_years: z.coerce
     .number()
@@ -84,7 +84,7 @@ const basicsSchema = z.object({
 type BasicsValues = z.input<typeof basicsSchema>
 
 const STEPS = [
-  { key: 'basics', label: 'About her' },
+  { key: 'basics', label: 'About them' },
   { key: 'people', label: 'People' },
   { key: 'voices', label: 'Voices' },
   { key: 'medicines', label: 'Medicines' },
@@ -131,7 +131,7 @@ export default function CreatePatient() {
     <div className="min-h-dvh bg-ivory">
       {finishing && (
         <SetupCompleteLoader
-          caption={patientName ? `Getting ${patientName}’s tablet ready` : 'Getting her tablet ready'}
+          caption={patientName ? `Getting ${patientName}’s tablet ready` : 'Getting their tablet ready'}
           onDone={() => navigate(`/p/${patientId}/dashboard`, { replace: true })}
         />
       )}
@@ -280,7 +280,7 @@ function BasicsStep({ onCreated }: { onCreated: (id: string, name: string) => vo
     <>
       <h1 className="text-[clamp(26px,3.4vw,34px)]">Who are we looking after?</h1>
       <p className="mt-2 max-w-[54ch] text-[15.5px] leading-relaxed text-body">
-        Smriti uses her age and schooling to pitch the games right — not to judge anything.
+        Smriti uses their age and schooling to pitch the games right — not to judge anything.
         Everything here can be changed later.
       </p>
 
@@ -295,10 +295,10 @@ function BasicsStep({ onCreated }: { onCreated: (id: string, name: string) => vo
         })}
       >
         <Field
-          label="Her name"
+          label="Their name"
           htmlFor="display_name"
           required
-          hint="What the tablet will call her."
+          hint="What the tablet will call them."
           error={form.formState.errors.display_name?.message}
         >
           <Input id="display_name" placeholder="Sunanda" {...form.register('display_name')} />
@@ -324,7 +324,7 @@ function BasicsStep({ onCreated }: { onCreated: (id: string, name: string) => vo
             />
           </Field>
 
-          <Field label="Her language" htmlFor="lang_code" required>
+          <Field label="Their language" htmlFor="lang_code" required>
             <Select id="lang_code" {...form.register('lang_code')}>
               {SUPPORTED_LANGUAGES.map((lang) => (
                 <option key={lang.code} value={lang.code}>
@@ -339,9 +339,9 @@ function BasicsStep({ onCreated }: { onCreated: (id: string, name: string) => vo
         </div>
 
         <Field
-          label="Her timezone"
+          label="Their timezone"
           htmlFor="timezone"
-          hint="Reminder times are hers, not yours. This is why."
+          hint="Reminder times are theirs, not yours. This is why."
           error={form.formState.errors.timezone?.message}
         >
           <Input id="timezone" {...form.register('timezone')} />
@@ -353,7 +353,7 @@ function BasicsStep({ onCreated }: { onCreated: (id: string, name: string) => vo
           </p>
           <p className="mt-1 max-w-[52ch] text-[13.5px] leading-relaxed text-body">
             Usually you. This is a real phone call, placed only after the tablet has already
-            chimed twice and she has not responded.
+            chimed twice and they have not responded.
           </p>
           <div className="mt-4 grid gap-4 sm:grid-cols-2">
             <Field
@@ -389,7 +389,7 @@ function BasicsStep({ onCreated }: { onCreated: (id: string, name: string) => vo
           className="mt-5"
           disabled={create.isPending}
         >
-          {create.isPending ? 'Creating…' : 'Create her profile'}
+          {create.isPending ? 'Creating…' : 'Create their profile'}
           <ArrowRight className="size-4" />
         </Button>
       </form>
@@ -408,9 +408,9 @@ function PeopleStep({ patientId, onNext }: { patientId: string; onNext: () => vo
 
   return (
     <>
-      <h1 className="text-[clamp(26px,3.4vw,34px)]">The people in her days</h1>
+      <h1 className="text-[clamp(26px,3.4vw,34px)]">The people in their days</h1>
       <p className="mt-2 max-w-[54ch] text-[15.5px] leading-relaxed text-body">
-        Faces she should keep seeing. Start with four or five — children, a spouse, a
+        Faces they should keep seeing. Start with four or five — children, a spouse, a
         neighbour, whoever visits. You can add more whenever you like.
       </p>
 
@@ -552,9 +552,9 @@ function MedicinesStep({ patientId, onNext }: { patientId: string; onNext: () =>
 
   return (
     <>
-      <h1 className="text-[clamp(26px,3.4vw,34px)]">Her medicines</h1>
+      <h1 className="text-[clamp(26px,3.4vw,34px)]">Their medicines</h1>
       <p className="mt-2 max-w-[54ch] text-[15.5px] leading-relaxed text-body">
-        A gentle chime at her hour, in her language. If she does not respond, Smriti waits,
+        A gentle chime at their hour, in their language. If they do not respond, Smriti waits,
         chimes again, and only then calls you.
       </p>
 
@@ -611,7 +611,7 @@ function MedicinesStep({ patientId, onNext }: { patientId: string; onNext: () =>
       )}
 
       <Button variant="accent" size="lg" className="mt-8 w-full sm:w-auto" onClick={onNext}>
-        Next — her routine
+        Next — their routine
         <ArrowRight className="size-4" />
       </Button>
     </>
@@ -629,10 +629,10 @@ function RoutineStep({ patientId, onNext }: { patientId: string; onNext: () => v
 
   return (
     <>
-      <h1 className="text-[clamp(26px,3.4vw,34px)]">The shape of her day</h1>
+      <h1 className="text-[clamp(26px,3.4vw,34px)]">The shape of their day</h1>
       <p className="mt-2 max-w-[54ch] text-[15.5px] leading-relaxed text-body">
-        Tea at seven, a walk at half five. The tablet shows these back to her as a simple
-        picture of the day — it is the part most people say she likes.
+        Tea at seven, a walk at half five. The tablet shows these back to them as a simple
+        picture of the day — it is the part most people say they like.
       </p>
 
       <div className="mt-7 space-y-3">
@@ -655,7 +655,7 @@ function RoutineStep({ patientId, onNext }: { patientId: string; onNext: () => v
 
         {rows.length === 0 && !draft && (
           <EmptyState
-            title="Nothing in her day yet"
+            title="Nothing in their day yet"
             description="Three or four anchors is plenty. Morning tea, lunch, a walk, bedtime."
           />
         )}
@@ -667,7 +667,7 @@ function RoutineStep({ patientId, onNext }: { patientId: string; onNext: () => v
             value={draft}
             onChange={setDraft}
             saving={save.isPending}
-            submitLabel="Add to her day"
+            submitLabel="Add to their day"
             onCancel={() => setDraft(null)}
             onSubmit={() => save.mutate(draft, { onSuccess: () => setDraft(null) })}
           />
@@ -730,7 +730,7 @@ function AlertsStep({ patientId, onNext }: { patientId: string; onNext: () => vo
 
   return (
     <>
-      <h1 className="text-[clamp(26px,3.4vw,34px)]">If she does not respond</h1>
+      <h1 className="text-[clamp(26px,3.4vw,34px)]">If they do not respond</h1>
       <p className="mt-2 max-w-[54ch] text-[15.5px] leading-relaxed text-body">
         The tablet chimes, waits, and chimes again. Only after that does Smriti place a
         phone call — one call covering everything due, never one per pill.
@@ -825,12 +825,12 @@ function PairingStep({
     <>
       <h1 className="text-[clamp(26px,3.4vw,34px)]">One last thing</h1>
       <p className="mt-2 max-w-[54ch] text-[15.5px] leading-relaxed text-body">
-        Connect her tablet and Smriti will pull everything you have just set up — the
-        faces, the voices, the medicines, her routine.
+        Connect their tablet and Smriti will pull everything you have just set up — the
+        faces, the voices, the medicines, their routine.
       </p>
 
       <div className="mt-7">
-        <PairingPanel patientId={patientId} patientName={patientName || 'her'} />
+        <PairingPanel patientId={patientId} patientName={patientName || 'the patient'} />
       </div>
 
       <Notice className="mt-5">

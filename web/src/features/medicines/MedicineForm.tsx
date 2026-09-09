@@ -117,7 +117,7 @@ export function MedicineForm({
           label="Dose"
           htmlFor="med-dose"
           required
-          hint="In the words you would use with her."
+          hint="In the words you would use with them."
           error={doseError}
         >
           <Input
@@ -196,7 +196,7 @@ export function MedicineForm({
             patientId={patientId}
             value={value.voice_path}
             onChange={(path) => onChange({ ...value, voice_path: path })}
-            prompt="Say the medicine's name and what it is for, in her language. The tablet plays this with the reminder."
+            prompt="Say the medicine's name and what it is for, in their language. The tablet plays this with the reminder."
           />
         </div>
       </details>

@@ -79,7 +79,7 @@ export default function Alerts() {
   }, [config.data, reset])
 
   const steps = parseSteps(config.data?.steps ?? null)
-  const firstName = patient?.display_name.split(' ')[0] ?? 'her'
+  const firstName = patient?.display_name.split(' ')[0] ?? 'the patient'
 
   return (
     <>
@@ -114,7 +114,7 @@ export default function Alerts() {
                 </span>
                 <span>
                   {step.minutes === 0
-                    ? 'The tablet chimes, in her language.'
+                    ? 'The tablet chimes, in their language.'
                     : `If there is still no response, Smriti sends ${
                         CHANNEL_COPY[step.channel] ?? step.channel
                       }.`}
@@ -127,7 +127,7 @@ export default function Alerts() {
         <Notice className="mt-5">
           These timings are set by Smriti and cannot be changed here. They are what the
           missed-dose safety net is built on — stretching them out would quietly switch it
-          off. If they genuinely do not suit her, get in touch and we will look at it with
+          off. If they genuinely do not suit them, get in touch and we will look at it with
           you.
         </Notice>
       </Card>

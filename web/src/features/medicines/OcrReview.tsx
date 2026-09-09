@@ -66,7 +66,7 @@ function windowFor(frequency: string): Pick<
  * This matters more than it looks. A `medications` row is **one dose at one
  * time** — "1-0-1", "twice daily" and "BD" all mean two rows, and this review
  * screen can only propose one. Left unsaid, a caregiver ticks a line believing
- * they have set up a twice-daily tablet and Smriti silently reminds her once.
+ * they have set up a twice-daily tablet and Smriti silently reminds them once.
  * That is a missed dose every single day, caused by the interface.
  *
  * So the row says so, in place, and tells them what to do about it. Splitting
@@ -321,7 +321,7 @@ export function OcrReview({
                       <span>
                         This line looks like <strong>{row.dosesPerDay} doses a day</strong>, and
                         Smriti can only propose one time per line. Save this one, then add the
-                        other {row.dosesPerDay - 1} by hand — otherwise she will only be
+                        other {row.dosesPerDay - 1} by hand — otherwise they will only be
                         reminded once.
                       </span>
                     </p>

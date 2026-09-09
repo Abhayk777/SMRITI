@@ -41,23 +41,23 @@ export function useAcknowledgeFlag(patientId: string) {
 export const FLAG_COPY: Record<FlagType, { title: string; body: string }> = {
   decline: {
     title: 'Scores have moved down over several weeks',
-    body: 'The games have been getting harder for her than they were. This is worth mentioning at her next appointment — it is not a diagnosis, and lots of ordinary things cause it.',
+    body: 'The games have been getting harder for them than they were. This is worth mentioning at their next appointment — it is not a diagnosis, and lots of ordinary things cause it.',
   },
   engagement_drop: {
-    title: 'She is playing less than she was',
-    body: 'Fewer sessions, or shorter ones, compared with her own usual pattern. Sometimes that is a bad week; sometimes it is worth a phone call.',
+    title: 'They are playing less than they were',
+    body: 'Fewer sessions, or shorter ones, compared with their own usual pattern. Sometimes that is a bad week; sometimes it is worth a phone call.',
   },
   adherence_drop: {
     title: 'More doses are being missed',
-    body: 'Medicines are being confirmed less often than they were. Check whether the reminder time still suits her day.',
+    body: 'Medicines are being confirmed less often than they were. Check whether the reminder time still suits their day.',
   },
   device_offline: {
     title: 'The tablet has stopped reporting in',
     body: 'Nothing has synced for a while. Usually it is the charger or the wifi. Until it reconnects, this screen cannot tell you anything new.',
   },
   pattern_mismatch: {
-    title: 'Her days are running differently',
-    body: 'The timing of her routine has shifted away from its usual shape.',
+    title: 'Their days are running differently',
+    body: 'The timing of their routine has shifted away from its usual shape.',
   },
 }
 

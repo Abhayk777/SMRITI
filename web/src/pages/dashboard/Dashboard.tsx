@@ -70,7 +70,7 @@ function StatTile({
 
 export default function Dashboard() {
   const { patientId, patient } = usePatientAccess()
-  // Today where *she* is, not where the caregiver is.
+  // Today where the patient is, not where the caregiver is.
   const today = todayInZone(patient?.timezone)
 
   const report = useDailyReport(patientId, 1, patient?.timezone)
@@ -84,9 +84,9 @@ export default function Dashboard() {
   const activeFlags = sortByUrgency(flags.data ?? [])
   const unreadMemos = (memos.data ?? []).filter((memo) => !memo.read_at)
 
-  // Monday-first index, to match `days_of_week` — and derived from her date,
+  // Monday-first index, to match `days_of_week` — and derived from the patient's date,
   // not the viewer's, for the same reason `today` is. A caregiver reading this
-  // on Sunday evening in California is looking at her Monday.
+  // on Sunday evening in California is looking at the patient's Monday.
   const weekdayIndex = isoWeekdayIndex(today)
   const todaysMedicines = (medicines.data ?? []).filter((med) =>
     isDayOn(med.days_of_week, weekdayIndex),
@@ -154,7 +154,7 @@ export default function Dashboard() {
               detail={
                 todayRow?.played
                   ? `${todayRow.sessions ?? 1} session${(todayRow.sessions ?? 1) === 1 ? '' : 's'} on the tablet.`
-                  : 'She has not opened the tablet today.'
+                  : 'They have not opened the tablet today.'
               }
               tone={todayRow?.played ? 'sage' : 'plain'}
             />
@@ -196,7 +196,7 @@ export default function Dashboard() {
               <EmptyState
                 icon={<Pill className="size-5" />}
                 title="No medicines set up"
-                description="Add her medicines and Smriti will chime at the right hour, in her language."
+                description="Add their medicines and Smriti will chime at the right hour, in their language."
                 action={
                   <Button asChild size="sm">
                     <Link to={`/p/${patientId}/manage/medicines`}>Add a medicine</Link>
@@ -235,12 +235,12 @@ export default function Dashboard() {
           </div>
         </Card>
 
-        {/* The rest of her day */}
+        {/* The rest of their day */}
         <Card padding="md">
           <div className="flex items-center justify-between gap-3">
             <CardTitle className="flex items-center gap-2">
               <Clock className="size-4.5 text-sage" />
-              Her routine
+              Their routine
             </CardTitle>
             <Button asChild variant="ghost" size="sm">
               <Link to={`/p/${patientId}/manage/routine`}>
@@ -256,7 +256,7 @@ export default function Dashboard() {
               <EmptyState
                 icon={<Clock className="size-5" />}
                 title="No routine yet"
-                description="Tea at seven, a walk at half five — the small anchors of her day. The tablet shows these back to her."
+                description="Tea at seven, a walk at half five — the small anchors of their day. The tablet shows these back to them."
                 action={
                   <Button asChild size="sm">
                     <Link to={`/p/${patientId}/manage/routine`}>Add a routine item</Link>
@@ -287,7 +287,7 @@ export default function Dashboard() {
             })}
             {(routine.data ?? []).length > 0 && (
               <p className="pt-1 text-[12.5px] leading-snug text-muted">
-                Ticks show what the hour has passed, not what she confirmed.
+                Ticks show what the hour has passed, not what they confirmed.
               </p>
             )}
           </div>
@@ -303,7 +303,7 @@ export default function Dashboard() {
             </span>
             <div className="min-w-0 flex-1">
               <p className="text-[12px] font-semibold uppercase tracking-[0.12em] text-bark">
-                New from {patient?.display_name.split(' ')[0] ?? 'her'}
+                New from {patient?.display_name.split(' ')[0] ?? 'the patient'}
               </p>
               <p className="mt-1.5 font-heading text-lg leading-snug">
                 {unreadMemos[0].transcript

@@ -75,7 +75,7 @@ export function Hero() {
           {...copy(0)}
           className="mt-8 max-w-[19ch] text-center text-[clamp(32px,5.4vw,62px)] leading-[1.06] text-ivory"
         >
-          Be close to her day, from wherever you are.
+          Be close to their day, from wherever you are.
         </motion.h1>
 
         <motion.p

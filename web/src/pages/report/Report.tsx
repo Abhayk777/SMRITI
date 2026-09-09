@@ -50,7 +50,7 @@ export default function Report() {
               Generate a report
             </CardTitle>
             <p className="mt-1.5 max-w-[52ch] text-[14.5px] leading-relaxed text-body">
-              Covering {patient?.display_name ?? 'her'}. Shareable with siblings and with her
+              Covering {patient?.display_name ?? 'the patient'}. Shareable with siblings and with their
               doctor — it contains no game scores out of context, only patterns and dates.
             </p>
           </div>

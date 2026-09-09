@@ -161,7 +161,7 @@ export default function Trends() {
       <PageHeader
         eyebrow="Trends"
         title="How things are moving"
-        description="Smriti compares her against her own past, never against anyone else. Everything below is a change in a pattern — it is not a diagnosis, and there are many ordinary reasons for one."
+        description="Smriti compares them against their own past, never against anyone else. Everything below is a change in a pattern — it is not a diagnosis, and there are many ordinary reasons for one."
         actions={
           <Tabs value={String(days)} onValueChange={(value) => setDays(Number(value))}>
             <TabsList>
@@ -190,12 +190,12 @@ export default function Trends() {
       ) : !hasPlay ? (
         <EmptyState
           title="Nothing to chart yet"
-          description="Trends need a couple of weeks of sessions before they mean anything. Once she has been playing for a while, this page fills in on its own."
+          description="Trends need a couple of weeks of sessions before they mean anything. Once they have been playing for a while, this page fills in on its own."
         />
       ) : (
         <>
           <ChartFrame
-            title="How often she gets it right"
+            title="How often they get it right"
             reading="Each point is a day; the darker line is a seven-day average, which is the one worth reading. Single days bounce around for reasons that have nothing to do with anything."
             legend={
               <>
@@ -295,7 +295,7 @@ export default function Trends() {
               <EmptyState
                 className="mt-4"
                 title="No per-area data yet"
-                description="These fill in once she has played a few sessions across the different games."
+                description="These fill in once they have played a few sessions across the different games."
               />
             ) : (
               <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -321,16 +321,16 @@ export default function Trends() {
         </Notice>
         <div className="mt-4 grid gap-3 lg:grid-cols-3">
           <ComingSoon
-            title="Who she recognises, over time"
-            description="A line per person in her circle, showing how readily she places each face. The most human signal Smriti has, and the one families ask for first."
+            title="Who they recognise, over time"
+            description="A line per person in their circle, showing how readily they place each face. The most human signal Smriti has, and the one families ask for first."
           />
           <ComingSoon
-            title="How much she keeps between sessions"
+            title="How much they keep between sessions"
             description="Whether something learned on Monday is still there on Thursday. A better early signal than a single day's score."
           />
           <ComingSoon
             title="Time of day"
-            description="Whether her afternoons and evenings run differently from her mornings — the pattern behind what families call sundowning."
+            description="Whether their afternoons and evenings run differently from their mornings — the pattern behind what families call sundowning."
           />
         </div>
       </section>

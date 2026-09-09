@@ -272,7 +272,7 @@ function GuardianLion({ mode, x, scale = 1 }: { mode: ArtworkMode; x: number; sc
 function Dancer({ mode, x, scale = 1 }: { mode: ArtworkMode; x: number; scale?: number }) {
   return (
     <g transform={`translate(${x} ${GROUND - 250 * scale}) scale(${scale})`}>
-      {/* shawl, sweeping out behind her */}
+      {/* shawl, sweeping out behind the figure */}
       <Shape
         mode={mode}
         fill={C.green}

@@ -59,7 +59,7 @@ export default function Medicines() {
       <PageHeader
         eyebrow="Manage"
         title="Medicines"
-        description="A gentle chime at her hour, in her language. If she does not respond, Smriti waits, chimes again, and only then calls you — one call covering everything due, never one per pill."
+        description="A gentle chime at their hour, in their language. If they do not respond, Smriti waits, chimes again, and only then calls you — one call covering everything due, never one per pill."
         actions={
           canEdit &&
           !draft && (

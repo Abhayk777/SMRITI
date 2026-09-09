@@ -10,7 +10,7 @@
  * point `Database` straight at the shared one.
  *
  * Every column is nullable because `daily_report` is built from a
- * `full outer join` — a day where she took her medicines but never played, and
+ * `full outer join` — a day where the patient took their medicines but never played, and
  * the reverse, both produce rows with one side missing.
  */
 import type { Database as SharedDatabase } from '@smriti/shared'

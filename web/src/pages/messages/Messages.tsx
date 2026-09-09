@@ -153,7 +153,7 @@ export default function Messages() {
 
   const rows = memos.data ?? []
   const unreadCount = rows.filter((memo) => !memo.read_at).length
-  const firstName = patient?.display_name.split(' ')[0] ?? 'her'
+  const firstName = patient?.display_name.split(' ')[0] ?? 'the patient'
 
   return (
     <>
@@ -176,7 +176,7 @@ export default function Messages() {
           <EmptyState
             icon={<MessageSquareHeart className="size-5" />}
             title="Nothing recorded yet"
-            description={`When ${firstName} answers a check-in or Smriti asks her about a photograph, what she says lands here. It usually takes a few days before the first one arrives.`}
+            description={`When ${firstName} answers a check-in or Smriti asks them about a photograph, what they say lands here. It usually takes a few days before the first one arrives.`}
           />
         )}
 

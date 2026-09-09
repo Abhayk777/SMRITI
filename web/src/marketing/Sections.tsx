@@ -20,7 +20,7 @@ import { Reveal } from './Reveal.tsx'
 const STEPS = [
   {
     n: 1,
-    title: 'She answers a gentle check-in',
+    title: 'They answer a gentle check-in',
     body: 'One card, one tap. “Did you sleep well?” — never a form, never an alarm.',
     chip: 'bg-clay text-bark',
     card: 'bg-sand',
@@ -35,7 +35,7 @@ const STEPS = [
   {
     n: 3,
     title: 'You get the short version',
-    body: 'A calm daily line, a weekly report the whole family can see, and one memory she chose to share.',
+    body: 'A calm daily line, a weekly report the whole family can see, and one memory they chose to share.',
     chip: 'bg-gold/25 text-[#8A6210]',
     card: 'bg-gold/[0.09]',
   },
@@ -245,7 +245,7 @@ export function ProductPreview() {
         <Reveal>
           <Eyebrow className="mb-3 text-sage">Your side of it</Eyebrow>
           <h2 className="max-w-[20ch] text-[clamp(28px,3.8vw,46px)] leading-[1.08]">
-            Her whole day, in one calm view.
+            Their whole day, in one calm view.
           </h2>
           <p className="mb-6 mt-4.5 max-w-[42ch] text-[16.5px] leading-relaxed text-body">
             Open Smriti at lunch and you know where the day stands. No dashboards, no charts
@@ -279,9 +279,9 @@ export function ProductPreview() {
 const STORIES = [
   {
     quote:
-      'I used to call three times a day and still worry. Now I see at lunch that Amma had her tablets, and I can get on with my afternoon.',
+      'I used to call three times a day and still worry. Now I see at lunch that Amma had their tablets, and I can get on with my afternoon.',
     name: 'Divya R.',
-    where: 'Seattle · her mother is in Pune',
+    where: 'Seattle · their mother is in Pune',
     tone: 'bg-cream',
     ring: 'bg-terracotta/15 text-terracotta',
   },
@@ -297,7 +297,7 @@ const STORIES = [
     quote:
       'Papa sends a memory every evening. Some days it is his old scooter. It has become the best message of my day.',
     name: 'Leila H.',
-    where: 'Lyon · her father lives two streets away',
+    where: 'Lyon · their father lives two streets away',
     tone: 'bg-gold/12',
     ring: 'bg-gold/25 text-[#8A6210]',
   },

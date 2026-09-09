@@ -57,14 +57,14 @@ export default function Access() {
   })
 
   const rows = members.data ?? []
-  const firstName = patient?.display_name.split(' ')[0] ?? 'her'
+  const firstName = patient?.display_name.split(' ')[0] ?? 'the patient'
 
   return (
     <>
       <PageHeader
         eyebrow="Manage"
         title="Who can access this"
-        description={`Everyone here can see ${firstName}'s day, her trends and her messages. Only caregivers can change her medicines, people and routine.`}
+        description={`Everyone here can see ${firstName}'s day, their trends and their messages. Only caregivers can change their medicines, people and routine.`}
       />
 
       {members.error && <ErrorState error={members.error} className="mb-6" />}

@@ -24,7 +24,7 @@ const SECTIONS = [
   {
     title: 'What Smriti can and cannot tell you',
     body: [
-      'Smriti compares your parent against her own past — never against other people, and never against a clinical benchmark. When it flags something, it is saying "this is different from how she usually is", and nothing more than that.',
+      'Smriti compares your parent against their own past — never against other people, and never against a clinical benchmark. When it flags something, it is saying "this is different from how they usually are", and nothing more than that.',
       'It cannot diagnose anything. A run of lower scores can mean a chest infection, a new tablet, a bad week of sleep, grief, a hot fortnight, or nothing at all. Those are all far more common than the thing you are afraid of.',
       'What it is good at is noticing a change earlier and more consistently than a weekly phone call can, and giving you dates and figures to take to a doctor instead of a feeling you cannot quite justify.',
     ],
@@ -33,24 +33,24 @@ const SECTIONS = [
     title: 'When something is flagged',
     body: [
       'Open the flag and read the evidence. It shows when the change appears to start, which areas are involved, and how many sessions it is based on. A flag from four sessions is a much weaker signal than one from thirty.',
-      'Before assuming anything, check the ordinary explanations: has she been unwell, has a medicine changed, has someone been staying, has the tablet moved to a room she does not sit in.',
-      'If it persists for more than two or three weeks, take the Report page to her doctor. Bring dates. "Since the middle of April she has been slower in the mornings" is something a GP can work with.',
+      'Before assuming anything, check the ordinary explanations: have they been unwell, has a medicine changed, has someone been staying, has the tablet moved to a room they do not sit in.',
+      'If it persists for more than two or three weeks, take the Report page to their doctor. Bring dates. "Since the middle of April they have been slower in the mornings" is something a GP can work with.',
     ],
   },
   {
     title: 'Getting the reminders right',
     body: [
-      'The best reminder time is one already attached to something she does — after morning tea, before the evening serial. A time chosen because it looks tidy on a form gets ignored.',
-      'The window matters as much as the chime. A wide window means she can take it when she gets to it and still have it count; a narrow one produces missed doses that were not really missed.',
-      'If Smriti is having to call you often, the reminder time is usually wrong rather than her memory. Move it before you escalate anything.',
+      'The best reminder time is one already attached to something they do — after morning tea, before the evening serial. A time chosen because it looks tidy on a form gets ignored.',
+      'The window matters as much as the chime. A wide window means they can take it when they get to it and still have it count; a narrow one produces missed doses that were not really missed.',
+      'If Smriti is having to call you often, the reminder time is usually wrong rather than their memory. Move it before you escalate anything.',
     ],
   },
   {
-    title: 'Talking to her about it',
+    title: 'Talking to them about it',
     body: [
-      'Tell her what it is. Almost everyone accepts a tablet that helps with medicines and shows photographs of the grandchildren; very few accept being monitored, and being told afterwards is what breaks trust.',
-      'She can see everything you can see. Say so, and show her once.',
-      'If she does not want a person in her circle, take them out. A face she resents is worse than no face.',
+      'Tell them what it is. Almost everyone accepts a tablet that helps with medicines and shows photographs of the grandchildren; very few accept being monitored, and being told afterwards is what breaks trust.',
+      'They can see everything you can see. Say so, and show them once.',
+      'If they do not want a person in their circle, take them out. A face they resent is worse than no face.',
     ],
   },
   {
@@ -58,7 +58,7 @@ const SECTIONS = [
     body: [
       'You do not have to open this every day. If nothing is flagged, nothing needs you — that is the whole point of the flags existing.',
       'Share it with your siblings. The most common thing families tell us is that the weekly report ended an argument, because everyone was finally reading the same week.',
-      'Distance is not neglect. Being four thousand miles away and knowing she took her tablets at nine is a real form of being there.',
+      'Distance is not neglect. Being four thousand miles away and knowing they took their tablets at nine is a real form of being there.',
     ],
   },
 ]
@@ -93,7 +93,7 @@ function Section({ title, body }: { title: string; body: string[] }) {
 
 export default function CareGuide() {
   const { patient } = usePatientAccess()
-  const firstName = patient?.display_name.split(' ')[0] ?? 'her'
+  const firstName = patient?.display_name.split(' ')[0] ?? 'the patient'
 
   return (
     <>
@@ -105,7 +105,7 @@ export default function CareGuide() {
 
       <Notice className="mb-6">
         Nothing here is medical advice, and Smriti does not diagnose anything. If you are
-        worried about her health, speak to her doctor — and take the Report page with you.
+        worried about their health, speak to their doctor — and take the Report page with you.
       </Notice>
 
       <div className="space-y-3">

@@ -53,7 +53,7 @@ export default function Device() {
   const style = HEALTH_STYLE[device.health]
   const Icon = style.icon
   const copy = DEVICE_HEALTH_COPY[device.health]
-  const firstName = patient?.display_name.split(' ')[0] ?? 'her'
+  const firstName = patient?.display_name.split(' ')[0] ?? 'the patient'
 
   return (
     <>

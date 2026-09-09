@@ -139,12 +139,12 @@ export function isoDateDaysAgo(days: number): string {
  *
  * This distinction is the whole point of the function. The `day` column on
  * `daily_report` and every other view is computed server-side as
- * `(to_timestamp(ts) at time zone p.timezone)::date` — her local date, not the
+ * `(to_timestamp(ts) at time zone p.timezone)::date` — the patient's local date, not the
  * viewer's. The viewer is very often somewhere else entirely; that is the
  * product. A daughter in Seattle opening this at 4pm is looking at a woman in
  * Pune for whom it is already tomorrow morning, and comparing against the
  * browser's own date makes today's row simply fail to match — the dashboard
- * then reports "no session today" on a day she has already played.
+ * then reports "no session today" on a day the patient has already played.
  *
  * Falls back to the viewer's timezone only when the patient row has not loaded
  * yet or names a zone this browser does not know.
@@ -159,7 +159,7 @@ export function isoDateDaysAgoInZone(
 
 export const todayIso = () => isoDateDaysAgo(0)
 
-/** Today, where she is. */
+/** Today, where the patient is. */
 export const todayInZone = (timezone: string | null | undefined) =>
   isoDateDaysAgoInZone(timezone, 0)
 

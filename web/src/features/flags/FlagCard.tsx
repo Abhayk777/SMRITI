@@ -114,7 +114,7 @@ export function FlagCard({ flag, patientId }: { flag: Flag; patientId: string })
           {zScores.length > 0 && (
             <div className="sm:col-span-2">
               <dt className="font-semibold text-muted">
-                How far from her own usual, by area
+                How far from their own usual, by area
               </dt>
               <dd className="mt-1.5 flex flex-wrap gap-2">
                 {zScores.map(([domain, z]) => (
