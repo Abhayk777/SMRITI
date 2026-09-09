@@ -44,7 +44,7 @@ Deno.serve(async (req) => {
     }
     if (claimed.length !== 1) return errorResponse(400, 'invalid or expired');
 
-    return jsonResponse(await provisionDevice(admin, claimed[0].patient_id));
+    return jsonResponse(await provisionDevice(admin, claimed[0].patient_id, parsed.data));
   } catch (error) {
     return handleError(error);
   }

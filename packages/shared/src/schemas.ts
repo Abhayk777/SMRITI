@@ -404,15 +404,29 @@ export const createPairingTokenBodySchema = z.object({
   patient_id: uuidSchema,
 }).strict();
 
+/**
+ * The tablet can include these at pairing time, before its first regular
+ * heartbeat. They are optional so an already-released tablet build that sends
+ * only a code can still pair safely.
+ */
+const pairingDeviceMetadataSchema = {
+  app_version: z.string().trim().min(1).max(128).optional(),
+  device_time_ms: z.number().int().nonnegative().optional(),
+};
+
 export const redeemPairingTokenBodySchema = z.object({
   token: z.string()
     .transform((token) => token.toUpperCase().replace(/-/g, ''))
     .refine((token) => /^[ACDEFGHJKLMNPQRSTUVWXYZ2345679]{8}$/.test(token), {
       message: 'token must be an eight-character Smriti pairing code',
     }),
+  ...pairingDeviceMetadataSchema,
 }).strict();
 
-export const pairDeviceAuthenticatedBodySchema = createPairingTokenBodySchema;
+export const pairDeviceAuthenticatedBodySchema = z.object({
+  patient_id: uuidSchema,
+  ...pairingDeviceMetadataSchema,
+}).strict();
 
 export const databaseWebhookOperationSchema = z.enum(['INSERT', 'UPDATE', 'DELETE']);
 

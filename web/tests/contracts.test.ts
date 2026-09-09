@@ -11,6 +11,7 @@ import {
   describeDays,
   isDayOn,
   isoDateDaysAgoInZone,
+  deviceHealth,
   minutesOfDayInZone,
   normaliseDaysOfWeek,
   parseDaysOfWeek,
@@ -78,4 +79,10 @@ test('zero-activity days are included and weeks align to Monday', () => {
       ['2026-04-06'],
     ],
   )
+})
+
+test('a paired tablet without a heartbeat is not shown as unpaired', () => {
+  assert.equal(deviceHealth(null, false), 'never')
+  assert.equal(deviceHealth(null, true), 'paired')
+  assert.equal(deviceHealth(new Date().toISOString(), true), 'ok')
 })

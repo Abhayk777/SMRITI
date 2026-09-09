@@ -8,6 +8,8 @@ export type CreatePairingTokenBody = {
 
 export type RedeemPairingTokenBody = {
   token: string;
+  app_version?: string;
+  device_time_ms?: number;
 };
 
 export type PairingResult = {
@@ -18,6 +20,11 @@ export type PairingResult = {
   elder_name: string;
   age: number;
   education_years: number;
+};
+
+export type PairingDeviceMetadata = {
+  app_version?: string;
+  device_time_ms?: number;
 };
 
 export type EscalationStatus =
@@ -176,19 +183,55 @@ export const createPairingTokenBodySchema = {
   },
 };
 
-export const pairDeviceAuthenticatedBodySchema = createPairingTokenBodySchema;
+function parsePairingDeviceMetadata(value: Record<string, unknown>): PairingDeviceMetadata | null {
+  if (
+    ('app_version' in value
+      && (typeof value.app_version !== 'string'
+        || value.app_version.trim().length === 0
+        || value.app_version.length > 128))
+    || ('device_time_ms' in value
+      && (typeof value.device_time_ms !== 'number'
+        || !Number.isSafeInteger(value.device_time_ms)
+        || value.device_time_ms < 0))
+  ) return null;
+
+  return {
+    ...(typeof value.app_version === 'string' ? { app_version: value.app_version.trim() } : {}),
+    ...(typeof value.device_time_ms === 'number' ? { device_time_ms: value.device_time_ms } : {}),
+  };
+}
+
+export const pairDeviceAuthenticatedBodySchema = {
+  safeParse(value: unknown): SafeParseResult<CreatePairingTokenBody & PairingDeviceMetadata> {
+    if (!isRecord(value)) return { success: false, error: 'invalid request body' };
+    const allowed = ['patient_id', 'app_version', 'device_time_ms'];
+    if (Object.keys(value).some((key) => !allowed.includes(key))) {
+      return { success: false, error: 'invalid request body' };
+    }
+    const patient = createPairingTokenBodySchema.safeParse({ patient_id: value.patient_id });
+    const metadata = parsePairingDeviceMetadata(value);
+    if (!patient.success || !metadata) return { success: false, error: 'invalid request body' };
+    return { success: true, data: { ...patient.data, ...metadata } };
+  },
+};
 
 export const redeemPairingTokenBodySchema = {
   safeParse(value: unknown): SafeParseResult<RedeemPairingTokenBody> {
-    if (!isStrictObjectWithKeys(value, ['token']) || typeof value.token !== 'string') {
+    if (!isRecord(value) || typeof value.token !== 'string') {
       return { success: false, error: 'invalid request body' };
     }
+    const allowed = ['token', 'app_version', 'device_time_ms'];
+    if (Object.keys(value).some((key) => !allowed.includes(key))) {
+      return { success: false, error: 'invalid request body' };
+    }
+    const metadata = parsePairingDeviceMetadata(value);
+    if (!metadata) return { success: false, error: 'invalid request body' };
 
     const token = value.token.toUpperCase().replace(/-/g, '');
     if (!PAIRING_TOKEN_PATTERN.test(token)) {
       return { success: false, error: 'invalid request body' };
     }
-    return { success: true, data: { token } };
+    return { success: true, data: { token, ...metadata } };
   },
 };
 

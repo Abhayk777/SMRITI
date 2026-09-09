@@ -32,6 +32,7 @@ const HEALTH_STYLE: Record<
   ok: { icon: CheckCircle2, tone: 'sage', color: 'text-sage' },
   stale: { icon: TriangleAlert, tone: 'warm', color: 'text-gold' },
   offline: { icon: CloudOff, tone: 'alert', color: 'text-alert' },
+  paired: { icon: CheckCircle2, tone: 'sage', color: 'text-sage' },
   never: { icon: Smartphone, tone: 'sand', color: 'text-muted' },
 }
 
@@ -94,7 +95,7 @@ export default function Device() {
 
           {device.isPaired && (
             <dl className="mt-6 grid gap-5 border-t border-ink/[0.08] pt-5 sm:grid-cols-2 lg:grid-cols-4">
-              <Detail label="App version" value={device.appVersion ?? 'unknown'} />
+              <Detail label="App version" value={device.appVersion ?? 'Awaiting first sync'} />
               <Detail
                 label="Content version"
                 value={device.contentVersion !== null ? `v${device.contentVersion}` : '—'}

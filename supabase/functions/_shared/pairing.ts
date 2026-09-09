@@ -2,11 +2,12 @@ import type { SupabaseClient } from '@supabase/supabase-js';
 
 import { createAnonClient } from './supabase.ts';
 import { sendSms } from './twilio.ts';
-import type { PairingResult } from './types.ts';
+import type { PairingDeviceMetadata, PairingResult } from './types.ts';
 
 export async function provisionDevice(
   admin: SupabaseClient,
   patientId: string,
+  metadata: PairingDeviceMetadata = {},
 ): Promise<PairingResult> {
   const { data: patient, error: patientError } = await admin
     .from('patients')
@@ -72,9 +73,21 @@ export async function provisionDevice(
     throw new Error('could not create device session');
   }
 
+  const pairedAt = new Date();
+  const clockSkewMs = metadata.device_time_ms === undefined
+    ? null
+    : metadata.device_time_ms - pairedAt.getTime();
   const { error: bindError } = await admin
     .from('patients')
-    .update({ device_user_id: deviceUserId })
+    .update({
+      device_user_id: deviceUserId,
+      device_last_seen_at: pairedAt.toISOString(),
+      device_pending_events: 0,
+      // An existing tablet can send its version immediately. Older builds are
+      // honest about not reporting it yet; their first heartbeat replaces this.
+      device_app_version: metadata.app_version ?? 'Awaiting first sync',
+      clock_skew_ms: clockSkewMs,
+    })
     .eq('id', patientId);
   if (bindError) {
     await admin.auth.admin.deleteUser(deviceUserId);

@@ -303,10 +303,13 @@ export function formatPairingToken(token: string): string {
 }
 
 /** Device health thresholds, matched to the watchdog's own (frontend.md §8). */
-export type DeviceHealth = 'ok' | 'stale' | 'offline' | 'never'
+export type DeviceHealth = 'ok' | 'stale' | 'offline' | 'paired' | 'never'
 
-export function deviceHealth(lastSeenAt: string | null | undefined): DeviceHealth {
-  if (!lastSeenAt) return 'never'
+export function deviceHealth(
+  lastSeenAt: string | null | undefined,
+  isPaired = false,
+): DeviceHealth {
+  if (!lastSeenAt) return isPaired ? 'paired' : 'never'
   const hours = (Date.now() - new Date(lastSeenAt).getTime()) / 3_600_000
   if (hours > 72) return 'offline'
   if (hours > 24) return 'stale'
@@ -322,6 +325,10 @@ export const DEVICE_HEALTH_COPY: Record<DeviceHealth, { label: string; detail: s
   offline: {
     label: 'Offline',
     detail: 'Nothing has come through for more than three days. Someone should check the tablet.',
+  },
+  paired: {
+    label: 'Paired',
+    detail: 'The tablet is connected and waiting for its first sync.',
   },
   never: {
     label: 'Not paired yet',

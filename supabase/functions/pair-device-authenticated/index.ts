@@ -22,7 +22,7 @@ Deno.serve(async (req) => {
     await requireCaregiver(req, parsed.data.patient_id);
 
     return jsonResponse(
-      await provisionDevice(createAdminClient(), parsed.data.patient_id),
+      await provisionDevice(createAdminClient(), parsed.data.patient_id, parsed.data),
     );
   } catch (error) {
     return handleError(error);
