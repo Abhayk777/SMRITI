@@ -188,6 +188,7 @@ export function MedicineForm({
           <PhotoPicker
             patientId={patientId}
             label="Pill photo"
+            hint="A clear photo of the pill. We shrink it before sending, so the tablet loads it fast."
             value={value.pill_photo_path}
             onChange={(path) => onChange({ ...value, pill_photo_path: path })}
           />

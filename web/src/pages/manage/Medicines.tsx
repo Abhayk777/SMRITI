@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Camera, Clock, Pencil, Pill, Plus, Trash2 } from 'lucide-react'
 
 import { PageHeader } from '@/components/layout/PageHeader.tsx'
+import { StoredPatientPhoto, StoredPatientVoice } from '@/components/media/StoredPatientMedia.tsx'
 import { Badge } from '@/components/ui/badge.tsx'
 import { Button } from '@/components/ui/button.tsx'
 import { Card } from '@/components/ui/card.tsx'
@@ -150,9 +151,13 @@ export default function Medicines() {
                 .sort((a, b) => a.chosen_time_min - b.chosen_time_min)
                 .map((med) => (
                   <Card key={med.id} padding="md" className="flex items-start gap-4">
-                    <span className="grid size-11 flex-none place-items-center rounded-full bg-terracotta/12 text-terracotta">
-                      <Pill className="size-5" />
-                    </span>
+                    <StoredPatientPhoto
+                      patientId={patientId}
+                      path={med.pill_photo_path}
+                      alt={`Photo of ${med.name}`}
+                      className="size-11 bg-terracotta/12 text-terracotta"
+                      fallback={<Pill className="size-5" />}
+                    />
 
                     <div className="min-w-0 flex-1">
                       <p className="truncate font-heading text-[17px] font-bold">{med.name}</p>
@@ -170,6 +175,11 @@ export default function Medicines() {
                           {formatMinutes(med.window_end_min)}
                         </Badge>
                       </div>
+                      <StoredPatientVoice
+                        patientId={patientId}
+                        path={med.voice_path}
+                        label={`Voice recording for ${med.name}`}
+                      />
                     </div>
 
                     {canEdit && (

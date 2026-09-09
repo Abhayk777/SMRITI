@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Pencil, Plus, Trash2, Users } from 'lucide-react'
 
 import { PageHeader } from '@/components/layout/PageHeader.tsx'
+import { StoredPatientPhoto, StoredPatientVoice } from '@/components/media/StoredPatientMedia.tsx'
 import { Badge } from '@/components/ui/badge.tsx'
 import { Button } from '@/components/ui/button.tsx'
 import { Card } from '@/components/ui/card.tsx'
@@ -114,9 +115,13 @@ export default function People() {
 
         {rows.map((person) => (
           <Card key={person.id} padding="md" className="flex items-center gap-4">
-            <span className="grid size-12 flex-none place-items-center rounded-full bg-terracotta/12 font-heading text-lg font-bold text-terracotta">
-              {person.name[0]}
-            </span>
+            <StoredPatientPhoto
+              patientId={patientId}
+              path={person.photo_path}
+              alt={person.name}
+              className="size-12 bg-terracotta/12 font-heading text-lg font-bold text-terracotta"
+              fallback={person.name[0]}
+            />
 
             <div className="min-w-0 flex-1">
               <div className="flex flex-wrap items-center gap-2">
@@ -138,6 +143,11 @@ export default function People() {
                   {person.memory_prompt}
                 </p>
               )}
+              <StoredPatientVoice
+                patientId={patientId}
+                path={person.voice_path}
+                label={`Voice recording for ${person.name}`}
+              />
             </div>
 
             {canEdit && (

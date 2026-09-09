@@ -2,7 +2,8 @@ import { useEffect, useRef, useState } from 'react'
 import { Camera, Trash2 } from 'lucide-react'
 
 import { Button } from '@/components/ui/button.tsx'
-import { useMediaUpload } from '@/hooks/useMediaUpload.ts'
+import { BUCKET } from '@/lib/db.ts'
+import { useMediaUpload, useSignedUrl } from '@/hooks/useMediaUpload.ts'
 import { cn } from '@/lib/utils.ts'
 
 /**
@@ -22,6 +23,7 @@ export function PhotoPicker({
   value,
   onChange,
   label = 'Photo',
+  hint,
   className,
 }: {
   patientId: string
@@ -29,11 +31,13 @@ export function PhotoPicker({
   value: string | null
   onChange: (path: string | null) => void
   label?: string
+  hint?: string
   className?: string
 }) {
   const inputRef = useRef<HTMLInputElement>(null)
   const [preview, setPreview] = useState<string | null>(null)
   const { upload, uploading, error } = useMediaUpload(patientId)
+  const stored = useSignedUrl(patientId, BUCKET.media, value, Boolean(value) && !preview)
 
   useEffect(() => () => {
     if (preview) URL.revokeObjectURL(preview)
@@ -64,6 +68,7 @@ export function PhotoPicker({
     if (inputRef.current) inputRef.current.value = ''
   }
 
+  const imageSrc = preview ?? stored.data
   const hasImage = Boolean(preview || value)
 
   return (
@@ -80,12 +85,9 @@ export function PhotoPicker({
           )}
           aria-label={hasImage ? `Change ${label.toLowerCase()}` : `Add a ${label.toLowerCase()}`}
         >
-          {preview ? (
-            <img src={preview} alt="" className="size-full object-cover" />
+          {imageSrc ? (
+            <img src={imageSrc} alt="" className="size-full object-cover" />
           ) : value ? (
-            // A saved path has no public URL — resolving one would mean a signed
-            // request per row. The tablet resolves the path with its own
-            // credentials; here it is enough to confirm one is set.
             <span className="text-[11px] font-semibold uppercase tracking-wider text-sage">
               Saved
             </span>
@@ -107,7 +109,8 @@ export function PhotoPicker({
           <p className="mt-1.5 text-[12.5px] leading-snug text-muted">
             {uploading
               ? 'Uploading…'
-              : 'A clear photo of their face. We shrink it before sending, so the tablet loads it fast.'}
+              : hint ??
+                'A clear photo of their face. We shrink it before sending, so the tablet loads it fast.'}
           </p>
         </div>
       </div>
