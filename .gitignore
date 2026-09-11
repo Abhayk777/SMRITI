@@ -13,6 +13,10 @@ __pycache__/
 venv/
 .ipynb_checkpoints/
 
+# raw reference footage — far over GitHub's 100 MB limit. The site plays the
+# compressed cuts in web/public/media/ instead.
+fontend references/
+
 # editors / os
 .DS_Store
 Thumbs.db

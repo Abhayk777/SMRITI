@@ -27,6 +27,15 @@
   --color-bark-deep: #643312;
   --color-alert: #b3402f;
 
+  /* Northeast natural-dye accents. Motif threads and grounds only — see the
+     `ner` block in tokens.ts for where each one comes from. */
+  --color-lac: #9e2b25;
+  --color-osak: #24303b;
+  --color-muga: #c99a3e;
+  --color-eri: #f1e8d6;
+  --color-paddy: #6b7f3a;
+  --color-mist: #e4e6e0;
+
   --font-heading: 'Baloo 2', 'Figtree', system-ui, sans-serif;
   --font-body: 'Figtree', system-ui, -apple-system, sans-serif;
   --font-sans: 'Figtree', system-ui, -apple-system, sans-serif;
@@ -44,6 +53,93 @@
   --animate-shimmer: shimmer 1.6s ease-in-out infinite;
   --animate-twinkle: twinkle 5.5s ease-in-out infinite;
   --animate-bob: bob 2.6s ease-in-out infinite;
+  --animate-rise: rise 0.55s cubic-bezier(0.22, 0.8, 0.18, 1) both;
+  --animate-spin-slow: spin 60s linear infinite;
+  --animate-overlay-in: fade-in 0.2s ease-out both;
+  --animate-dialog-in: dialog-in 0.26s cubic-bezier(0.22, 0.8, 0.18, 1) both;
+  --animate-ridge-sway: ridge-sway 80s ease-in-out infinite alternate;
+  --animate-mist-drift: mist-drift 70s ease-in-out infinite alternate;
+  --animate-pulse-ring: pulse-ring 2.4s cubic-bezier(0.2, 0.6, 0.3, 1) infinite;
+}
+
+/* The far ridge of the app backdrop, swaying a few percent side to side. */
+@keyframes ridge-sway {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-6%);
+  }
+}
+/* Mist lying in the valleys, drifting across and back. */
+@keyframes mist-drift {
+  from {
+    transform: translateX(-8vw);
+  }
+  to {
+    transform: translateX(8vw);
+  }
+}
+/* A soft ring that breathes out from something new — unread counts, an
+   unheard message, a serious flag. Opacity and scale only. */
+@keyframes pulse-ring {
+  0% {
+    opacity: 0.55;
+    transform: scale(1);
+  }
+  80%,
+  100% {
+    opacity: 0;
+    transform: scale(1.9);
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+/* Only `transform` here: Tailwind v4 centres the dialog with the separate
+   `translate` property, which this composes with rather than overrides. */
+@keyframes dialog-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+/* A motif band sliding by exactly one tile, so the loop point is invisible.
+   `--drift` is set per band from its tile width. */
+@keyframes drift {
+  to {
+    transform: translateX(calc(-1 * var(--drift, 0px)));
+  }
+}
+@keyframes eight-looms {
+  to {
+    transform: translateX(calc(-50% - 12px));
+  }
+}
+@keyframes drift-reverse {
+  from {
+    transform: translateX(calc(-1 * var(--drift, 0px)));
+  }
+  to {
+    transform: none;
+  }
 }
 
 @keyframes shimmer {
@@ -80,18 +176,219 @@
   background-image: linear-gradient(102deg, #e8a83f 0%, #ef9068 58%, #ef8b7c 100%);
 }
 
-/* Skeletons — a warm shimmer on sand, never a spinner. See §"loading". */
+/* Skeletons — a warm shimmer on sand, never a spinner. See §"loading".
+   Under the shimmer sits a faint cane twill, so a loading card reads as
+   something being woven rather than a grey placeholder. */
 @utility skeleton {
   background-color: var(--color-sand);
-  background-image: linear-gradient(
-    100deg,
-    rgba(249, 244, 237, 0) 20%,
-    rgba(249, 244, 237, 0.75) 50%,
-    rgba(249, 244, 237, 0) 80%
-  );
-  background-size: 220% 100%;
+  background-image:
+    linear-gradient(
+      100deg,
+      rgba(249, 244, 237, 0) 20%,
+      rgba(249, 244, 237, 0.75) 50%,
+      rgba(249, 244, 237, 0) 80%
+    ),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cg fill='%23a8793f' fill-opacity='.09'%3E%3Crect width='4' height='2'/%3E%3Crect x='2' y='2' width='4' height='2'/%3E%3Crect x='4' y='4' width='4' height='2'/%3E%3Crect x='6' y='6' width='4' height='2'/%3E%3Crect x='-2' y='6' width='4' height='2'/%3E%3C/g%3E%3C/svg%3E");
+  background-size:
+    220% 100%,
+    8px 8px;
   animation: var(--animate-shimmer);
   border-radius: 12px;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   Northeast textile textures.
+
+   The repeating, flat ones live here as CSS so they cost nothing to render
+   hundreds of times (skeletons, card edges, progress fills). The figurative
+   bands — gamosa, naga, siniar, temple hem — are SVG components in
+   `components/ner/`.
+   ───────────────────────────────────────────────────────────────────────── */
+
+/* Cane and bamboo basketry: a 2/2 diagonal twill, used as a ground texture. */
+@utility bg-cane-twill {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12'%3E%3Cg fill='%238c491a' fill-opacity='.07'%3E%3Crect width='6' height='3'/%3E%3Crect x='3' y='3' width='6' height='3'/%3E%3Crect x='6' y='6' width='6' height='3'/%3E%3Crect x='9' y='9' width='6' height='3'/%3E%3Crect x='-3' y='9' width='6' height='3'/%3E%3C/g%3E%3C/svg%3E");
+  background-size: 12px 12px;
+}
+
+/* Khasi Ryndia check (Meghalaya): maroon and mustard on undyed eri. */
+@utility bg-ryndia {
+  background-color: var(--color-eri);
+  background-image:
+    repeating-linear-gradient(
+      90deg,
+      rgba(158, 43, 37, 0.55) 0 2px,
+      transparent 2px 9px,
+      rgba(201, 154, 62, 0.6) 9px 10px,
+      transparent 10px 16px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      rgba(158, 43, 37, 0.45) 0 2px,
+      transparent 2px 9px,
+      rgba(201, 154, 62, 0.5) 9px 10px,
+      transparent 10px 16px
+    );
+}
+
+/* Tripura Risa: narrow multicolour warp stripes. Progress fills, indicators. */
+@utility bg-risa {
+  background-image: repeating-linear-gradient(
+    90deg,
+    var(--color-lac) 0 7px,
+    var(--color-muga) 7px 9px,
+    var(--color-eri) 9px 10px,
+    var(--color-osak) 10px 12px,
+    var(--color-eri) 12px 13px,
+    var(--color-muga) 13px 15px
+  );
+}
+@utility bg-risa-v {
+  background-image: repeating-linear-gradient(
+    180deg,
+    var(--color-muga) 0 3px,
+    var(--color-eri) 3px 4px,
+    var(--color-lac) 4px 7px,
+    var(--color-eri) 7px 8px
+  );
+}
+
+/* Lepcha Thara (Sikkim): stripe rows with small inset squares. */
+@utility bg-thara {
+  background-color: var(--color-eri);
+  background-image:
+    linear-gradient(
+      180deg,
+      transparent 0 30%,
+      var(--color-lac) 30% 38%,
+      transparent 38% 62%,
+      var(--color-lac) 62% 70%,
+      transparent 70%
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent 0 5px,
+      var(--color-paddy) 5px 9px,
+      transparent 9px 14px,
+      var(--color-muga) 14px 18px,
+      transparent 18px 23px
+    );
+  background-size:
+    100% 100%,
+    100% 22%;
+  background-position:
+    0 0,
+    0 50%;
+  background-repeat: no-repeat, repeat-x;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   Stitched surfaces — the app's card border.
+
+   A warm 1.5px outer border, and inside it a running stitch (the
+   hand-finished edge of a woven cloth) with a small knot where the stitch
+   turns the top-left corner. The stitch takes `--stitch` — each card tone
+   sets its own — and deepens when the pointer is over the card. Both marks
+   are pseudo-elements, so a stitched box needs no extra markup and nothing
+   in its layout moves.
+   ───────────────────────────────────────────────────────────────────────── */
+@utility stitched {
+  position: relative;
+  border-width: 1.5px;
+  border-style: solid;
+  transition:
+    box-shadow 0.25s ease,
+    border-color 0.25s ease;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 5px;
+    border-radius: max(0px, calc(var(--stitch-radius, 26px) - 6.5px));
+    border: 1.5px dashed var(--stitch, var(--color-terracotta));
+    opacity: 0.28;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+  }
+  /* Centred on the stitch line where it turns the corner. */
+  &::after {
+    content: '';
+    position: absolute;
+    left: 8px;
+    top: 8px;
+    width: 6px;
+    height: 6px;
+    transform: rotate(45deg);
+    background: var(--stitch, var(--color-terracotta));
+    box-shadow: 0 0 0 2px var(--knot-ground, var(--color-ivory));
+    opacity: 0.55;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+  }
+  &:hover::before {
+    opacity: 0.55;
+  }
+  &:hover::after {
+    opacity: 0.9;
+  }
+  &:hover {
+    box-shadow: 0 12px 30px -14px rgba(74, 36, 19, 0.28);
+  }
+}
+
+/* Faint vertical warp threads, as if the page were the loom. */
+@utility bg-loom {
+  background-image: repeating-linear-gradient(
+    90deg,
+    rgba(140, 73, 26, 0.035) 0 1px,
+    transparent 1px 30px
+  );
+}
+
+/* A bead ring of Risa colours — wraps the patient's avatar. */
+@utility bg-risa-ring {
+  background-image: repeating-conic-gradient(
+    var(--color-lac) 0deg 14deg,
+    var(--color-muga) 14deg 20deg,
+    var(--color-eri) 20deg 24deg,
+    var(--color-osak) 24deg 30deg,
+    var(--color-eri) 30deg 34deg,
+    var(--color-muga) 34deg 40deg
+  );
+}
+
+/* A thin woven edge in the card's own tone. Set `--edge` to the colour. */
+@utility textile-edge {
+  background-image: repeating-linear-gradient(
+    90deg,
+    var(--edge, var(--color-sand)) 0 12px,
+    transparent 12px 14px,
+    var(--edge, var(--color-sand)) 14px 17px,
+    transparent 17px 19px
+  );
+}
+
+/* Children of a `stagger` container rise in one after another. CSS rather
+   than Framer so it costs nothing on long lists and needs no wrapper. */
+@utility stagger {
+  & > * {
+    animation: var(--animate-rise);
+  }
+  & > :nth-child(2) {
+    animation-delay: 60ms;
+  }
+  & > :nth-child(3) {
+    animation-delay: 120ms;
+  }
+  & > :nth-child(4) {
+    animation-delay: 180ms;
+  }
+  & > :nth-child(5) {
+    animation-delay: 240ms;
+  }
+  & > :nth-child(n + 6) {
+    animation-delay: 300ms;
+  }
 }
 
 @layer base {
@@ -140,6 +437,24 @@
   ::selection {
     background: var(--color-gold);
     color: var(--color-ink);
+  }
+
+  /* Lenis (smooth scroll). The package's own stylesheet, inlined so there is
+     one CSS entry point. */
+  html.lenis,
+  html.lenis body {
+    height: auto;
+  }
+  .lenis:not(.lenis-autoToggle).lenis-stopped {
+    overflow: clip;
+  }
+  .lenis [data-lenis-prevent],
+  .lenis [data-lenis-prevent-wheel],
+  .lenis [data-lenis-prevent-touch] {
+    overscroll-behavior: contain;
+  }
+  .lenis.lenis-smooth iframe {
+    pointer-events: none;
   }
 
   /* Horizontal scrollers (feature slider, day strips) hide their bar but stay

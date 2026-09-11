@@ -8,7 +8,10 @@ import { z } from 'zod'
 
 import { Logomark } from '@/components/brand/Logomark.tsx'
 import { Wordmark } from '@/components/brand/Wordmark.tsx'
+import { AppBackdrop } from '@/components/layout/AppBackdrop.tsx'
+import { usePatientMinutes } from '@/components/layout/sky.ts'
 import { VoiceRecorder } from '@/components/media/VoiceRecorder.tsx'
+import { GamosaBand } from '@/components/ner/GamosaBand.tsx'
 import { SetupCompleteLoader } from '@/components/onboarding/SetupCompleteLoader.tsx'
 import { Badge } from '@/components/ui/badge.tsx'
 import { Button } from '@/components/ui/button.tsx'
@@ -108,6 +111,8 @@ export default function CreatePatient() {
   const [params, setParams] = useSearchParams()
   const navigate = useNavigate()
   const queryClient = useQueryClient()
+  // The profile being set up has no timezone yet, so the sky follows yours.
+  const minutes = usePatientMinutes(undefined)
 
   const patientId = params.get('patient')
   const [step, setStep] = useState(() => (patientId ? (savedSetupStep(patientId) ?? 1) : 0))
@@ -128,7 +133,8 @@ export default function CreatePatient() {
   }
 
   return (
-    <div className="min-h-dvh bg-ivory">
+    <div className="relative isolate min-h-dvh bg-ivory">
+      <AppBackdrop minutes={minutes} />
       {finishing && (
         <SetupCompleteLoader
           caption={patientName ? `Getting ${patientName}’s tablet ready` : 'Getting their tablet ready'}
@@ -136,8 +142,8 @@ export default function CreatePatient() {
         />
       )}
 
-      <header className="border-b border-ink/[0.07] px-5 py-4 sm:px-8">
-        <div className="mx-auto flex max-w-[820px] items-center gap-3">
+      <header className="bg-ivory">
+        <div className="mx-auto flex max-w-[820px] items-center gap-3 px-5 py-4 sm:px-8">
           <Link to="/" className="flex items-center gap-2.5 text-terracotta">
             <Logomark size={24} decorative />
             <Wordmark size={18} color="var(--color-ink)" />
@@ -146,6 +152,7 @@ export default function CreatePatient() {
             Step {step + 1} of {STEPS.length}
           </span>
         </div>
+        <GamosaBand variant="rule" size={4} />
       </header>
 
       {/* Progress. Steps already committed are shown as done, because they are:
@@ -163,7 +170,7 @@ export default function CreatePatient() {
                 <span
                   className={cn(
                     'block h-1.5 rounded-pill transition-colors',
-                    i < step ? 'bg-sage' : i === step ? 'bg-terracotta' : 'bg-sand',
+                    i < step ? 'bg-sage' : i === step ? 'bg-risa' : 'bg-sand',
                   )}
                 />
                 <span

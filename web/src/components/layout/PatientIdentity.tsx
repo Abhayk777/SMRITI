@@ -35,9 +35,14 @@ export function PatientIdentity({ compact = false }: { compact?: boolean }) {
 
   const identity = (
     <span className="flex min-w-0 items-center gap-3 text-left">
-      <Avatar className={compact ? 'size-9' : 'size-11'}>
-        <AvatarFallback>{initialsOf(name)}</AvatarFallback>
-      </Avatar>
+      {/* A bead ring of Risa colours around whoever the app is about. */}
+      <span className="flex-none rounded-full bg-risa-ring p-[2.5px]">
+        <span className="block rounded-full bg-ivory p-[2px]">
+          <Avatar className={compact ? 'size-8' : 'size-10'}>
+            <AvatarFallback>{initialsOf(name)}</AvatarFallback>
+          </Avatar>
+        </span>
+      </span>
       <span className="min-w-0">
         <span className="flex items-center gap-2">
           <span className="truncate font-heading text-[17px] font-bold leading-tight">

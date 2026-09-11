@@ -2,6 +2,7 @@ import type { ReactNode } from 'react'
 import { AlertTriangle, Info, ShieldOff } from 'lucide-react'
 
 import { Logomark } from '@/components/brand/Logomark.tsx'
+import { JapiRosette } from '@/components/ner/JapiRosette.tsx'
 import { cn } from '@/lib/utils.ts'
 
 /**
@@ -29,12 +30,20 @@ export function EmptyState({
   return (
     <div
       className={cn(
-        'flex flex-col items-center rounded-card border border-dashed border-ink/12 bg-sand/40 px-6 py-12 text-center',
+        'relative flex flex-col items-center overflow-hidden rounded-card border-[1.5px] border-[#E2D3B9] bg-[#F3EADB] px-6 pb-12 pt-14 text-center',
         className,
       )}
     >
-      <div className="grid size-14 place-items-center rounded-full bg-ivory text-terracotta/70">
+      {/* A strip of Ryndia check along the top: an empty list reads as a
+          length of cloth waiting to be filled, not a missing panel. */}
+      <span aria-hidden="true" className="absolute inset-x-0 top-0 h-1.5 bg-ryndia opacity-80" />
+      <div className="relative grid size-14 place-items-center rounded-full bg-ivory text-terracotta/70 ring-1 ring-ink/[0.06]">
         {icon ?? <Logomark size={24} decorative />}
+        <JapiRosette
+          size={76}
+          strokeWidth={1}
+          className="pointer-events-none absolute text-bark/15"
+        />
       </div>
       <p className="mt-4 font-heading text-lg font-bold">{title}</p>
       {description && (

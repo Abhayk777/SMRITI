@@ -39,9 +39,18 @@ export function FlagCard({ flag, patientId }: { flag: Flag; patientId: string })
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">
-            <Badge tone={severity.tone} size="sm">
-              {severity.label}
-            </Badge>
+            <span className="relative grid place-items-center">
+              {/* A serious flag breathes; the others sit still. */}
+              {flag.severity === 'high' && (
+                <span
+                  aria-hidden="true"
+                  className="absolute inset-0 rounded-pill bg-alert/40 animate-pulse-ring"
+                />
+              )}
+              <Badge tone={severity.tone} size="sm" className="relative">
+                {severity.label}
+              </Badge>
+            </span>
             {flag.domains.length > 0 && (
               <span className="text-[12.5px] text-muted">
                 {flag.domains.map((d) => DOMAIN_LABEL[d] ?? d).join(', ')}

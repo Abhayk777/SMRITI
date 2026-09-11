@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useCallback, useState } from 'react'
 
 import { FeatureSlider } from './FeatureSlider.tsx'
 import { Hero } from './Hero.tsx'
@@ -22,24 +22,22 @@ import {
  * ivory, **sage**, sand, ivory, terracotta, cream — and the gold/coral gradient
  * stays reserved for the two moments that actually matter, the primary buttons.
  *
- * Every section below the hero arrives on scroll (`<Reveal />`), which is the
- * other half of the same problem: the reference animated the hero and then
- * nothing, so the page had spent everything it had by the first scroll.
+ * The joins between sections are textile edges drawn from the eight Northeast
+ * states (see `components/ner/`), and scrolling is smoothed by Lenis, mounted
+ * once for the whole app in `main.tsx` — which is also what makes the `#how`
+ * and `#features` anchor links glide.
  */
 export default function MarketingPage() {
-  // Smooth anchor scrolling, scoped to this page so it does not affect the app.
-  useEffect(() => {
-    const previous = document.documentElement.style.scrollBehavior
-    document.documentElement.style.scrollBehavior = 'smooth'
-    return () => {
-      document.documentElement.style.scrollBehavior = previous
-    }
-  }, [])
+  // The nav waits for the intro's curtain to lift, so the logo is never on
+  // screen twice. On a return visit the hero skips the intro and this flips
+  // on its first effect.
+  const [navShown, setNavShown] = useState(false)
+  const showNav = useCallback(() => setNavShown(true), [])
 
   return (
-    <div className="overflow-x-hidden bg-terracotta">
-      <MarketingNav />
-      <Hero />
+    <div className="overflow-x-clip bg-terracotta">
+      <MarketingNav shown={navShown} />
+      <Hero onCurtainLift={showNav} />
       <HowItWorks />
       <FeatureSlider />
       <StatBand />

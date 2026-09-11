@@ -1,3 +1,5 @@
+import { useEffect, useState, type CSSProperties } from 'react'
+import { useReducedMotion } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import {
   ArrowRight,
@@ -46,6 +48,46 @@ import { usePatientAccess } from '@/patients/usePatientAccess.ts'
  * confident numbers drawn from three-day-old data is worse than no page.
  */
 
+/**
+ * Eases every number in a string up from zero — "3/4" counts to 3 and 4,
+ * "12 min" to 12 — and leaves the words where they are. The final text is the
+ * accessible name throughout, so a screen reader never hears the count.
+ */
+function CountUpText({ text }: { text: string }) {
+  const reduceMotion = useReducedMotion()
+  const [progress, setProgress] = useState(reduceMotion ? 1 : 0)
+
+  useEffect(() => {
+    if (reduceMotion) return
+    let frame = 0
+    const started = performance.now()
+    const tick = (now: number) => {
+      const t = Math.min(1, (now - started) / 700)
+      setProgress(1 - Math.pow(1 - t, 3))
+      if (t < 1) frame = requestAnimationFrame(tick)
+    }
+    frame = requestAnimationFrame(tick)
+    return () => cancelAnimationFrame(frame)
+  }, [text, reduceMotion])
+
+  const shown =
+    progress >= 1 ? text : text.replace(/\d+/g, (n) => String(Math.round(Number(n) * progress)))
+
+  return (
+    <span aria-label={text}>
+      <span aria-hidden="true">{shown}</span>
+    </span>
+  )
+}
+
+/** The woven top edge takes the tile's tone, so the colour still means the same thing. */
+const EDGE: Record<'plain' | 'sage' | 'warm' | 'alert', string> = {
+  plain: 'var(--color-sand)',
+  sage: 'var(--color-sage-bright)',
+  warm: 'var(--color-terracotta)',
+  alert: 'var(--color-alert)',
+}
+
 function StatTile({
   label,
   value,
@@ -58,11 +100,18 @@ function StatTile({
   tone?: 'plain' | 'sage' | 'warm' | 'alert'
 }) {
   return (
-    <Card tone={tone} padding="md">
+    <Card tone={tone} padding="md" className="relative overflow-hidden">
+      <span
+        aria-hidden="true"
+        className="textile-edge absolute inset-x-0 top-0 h-1"
+        style={{ '--edge': EDGE[tone] } as CSSProperties}
+      />
       <p className="text-[12.5px] font-semibold uppercase tracking-[0.1em] text-muted">
         {label}
       </p>
-      <p className="numeral mt-2 text-[clamp(28px,3.4vw,36px)] leading-none">{value}</p>
+      <p className="numeral mt-2 text-[clamp(28px,3.4vw,36px)] leading-none">
+        <CountUpText text={value} />
+      </p>
       {detail && <p className="mt-2 text-[13.5px] leading-snug text-body">{detail}</p>}
     </Card>
   )
@@ -125,7 +174,7 @@ export default function Dashboard() {
         </section>
       )}
 
-      <section className="grid gap-3 sm:grid-cols-3">
+      <section className="stagger grid gap-3 sm:grid-cols-3">
         {report.isPending ? (
           [0, 1, 2].map((i) => <SkeletonStat key={i} />)
         ) : (
@@ -207,9 +256,10 @@ export default function Dashboard() {
             {todaysMedicines.map((med) => (
               <div
                 key={med.id}
-                className="flex items-center gap-3 rounded-2xl bg-sand/60 px-4 py-3"
+                className="relative flex items-center gap-3 overflow-hidden rounded-2xl bg-sand/60 py-3 pl-5 pr-4 transition-[transform,background-color] duration-200 hover:translate-x-1 hover:bg-sand motion-reduce:hover:translate-x-0"
               >
-                <span className="grid size-9 flex-none place-items-center rounded-full bg-ivory text-terracotta">
+                <span aria-hidden="true" className="absolute inset-y-0 left-0 w-1.5 bg-risa-v" />
+                <span className="grid size-9 flex-none place-items-center rounded-full bg-ivory text-terracotta ring-1 ring-terracotta/15">
                   <Pill className="size-4" />
                 </span>
                 <div className="min-w-0 flex-1">
@@ -269,8 +319,12 @@ export default function Dashboard() {
               return (
                 <div
                   key={item.id}
-                  className="flex items-center gap-3 rounded-2xl bg-sage-soft/70 px-4 py-3"
+                  className="relative flex items-center gap-3 overflow-hidden rounded-2xl bg-sage-soft/70 py-3 pl-5 pr-4 transition-[transform,background-color] duration-200 hover:translate-x-1 hover:bg-sage-soft motion-reduce:hover:translate-x-0"
                 >
+                  <span
+                    aria-hidden="true"
+                    className={`absolute inset-y-0 left-0 w-1.5 ${past ? 'bg-sage-bright' : 'bg-sage/25'}`}
+                  />
                   <span
                     className={`grid size-8 flex-none place-items-center rounded-full ${
                       past ? 'bg-sage-bright' : 'border-2 border-dashed border-sage/40'

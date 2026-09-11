@@ -71,7 +71,7 @@ function DomainSpark({
   const delta = first !== null && last !== null ? last - first : null
 
   return (
-    <div className="rounded-card border border-ink/[0.07] bg-ivory p-4">
+    <div className="stitched rounded-card border-[#E7D9C2] bg-ivory p-4 [--stitch:var(--color-sage)]">
       <div className="flex items-baseline justify-between gap-2">
         <p className="text-[14px] font-semibold">{DOMAIN_LABEL[domain] ?? domain}</p>
         <span

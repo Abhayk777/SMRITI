@@ -4,7 +4,11 @@ import { Link, Navigate } from 'react-router-dom'
 
 import { useAuth } from '@/auth/useAuth.ts'
 import { Logomark } from '@/components/brand/Logomark.tsx'
+import { AppBackdrop } from '@/components/layout/AppBackdrop.tsx'
+import { usePatientMinutes } from '@/components/layout/sky.ts'
 import { Wordmark } from '@/components/brand/Wordmark.tsx'
+import { GamosaBand } from '@/components/ner/GamosaBand.tsx'
+import { TwinStar } from '@/components/ner/TwinStar.tsx'
 import { Badge } from '@/components/ui/badge.tsx'
 import { Button } from '@/components/ui/button.tsx'
 import { Avatar, AvatarFallback } from '@/components/ui/controls.tsx'
@@ -50,7 +54,7 @@ function PatientRow({ row }: { row: PatientOverview }) {
   return (
     <Link
       to={`/p/${row.patient_id}/dashboard`}
-      className="flex items-center gap-4 rounded-card border border-ink/[0.07] bg-ivory p-4 transition-colors hover:border-terracotta/30 hover:bg-clay/40 sm:p-5"
+      className="stitched flex items-center gap-4 rounded-card border-[#E7D9C2] bg-ivory p-4 transition-[translate,border-color,box-shadow] [--knot-ground:var(--color-ivory)] hover:-translate-y-0.5 hover:border-terracotta/35 motion-reduce:hover:translate-y-0 sm:p-5"
     >
       <Avatar className="size-14">
         <AvatarFallback className="text-lg">{initialsOf(row.display_name)}</AvatarFallback>
@@ -104,6 +108,8 @@ function PatientRow({ row }: { row: PatientOverview }) {
 
 export default function Overview() {
   const { signOut } = useAuth()
+  // No single patient is in scope here, so the sky follows your own clock.
+  const minutes = usePatientMinutes(undefined)
   useCaregiverFeedRealtime()
 
   const { data, isPending, error, refetch } = useQuery({
@@ -120,18 +126,24 @@ export default function Overview() {
   const needAttention = rows.filter((row) => urgency(row) >= 20)
 
   return (
-    <div className="min-h-dvh bg-ivory">
-      <header className="border-b border-ink/[0.07] px-5 py-4 sm:px-8">
-        <div className="mx-auto flex max-w-[880px] items-center gap-3">
+    <div className="relative isolate min-h-dvh bg-ivory">
+      <AppBackdrop minutes={minutes} />
+      <header className="bg-ivory">
+        <div className="mx-auto flex max-w-[880px] items-center gap-3 px-5 py-4 sm:px-8">
           <Logomark size={24} color="var(--color-terracotta)" decorative />
           <Wordmark size={18} />
           <Button variant="ghost" size="sm" className="ml-auto" onClick={() => void signOut()}>
             Sign out
           </Button>
         </div>
+        <GamosaBand variant="rule" size={4} />
       </header>
 
       <main className="mx-auto max-w-[880px] px-5 py-10 sm:px-8">
+        <p className="mb-2 flex items-center gap-2 text-[12px] font-medium uppercase tracking-[0.14em] text-bark">
+          <TwinStar size={7} className="text-lac" />
+          Everyone you look after
+        </p>
         <h1 className="text-[clamp(26px,3.4vw,34px)]">Your family</h1>
         <p className="mt-2 max-w-[52ch] text-[15.5px] leading-relaxed text-body">
           {isPending
@@ -141,7 +153,7 @@ export default function Overview() {
               : 'Everyone is on track today. Nothing needs you right now.'}
         </p>
 
-        <div className="mt-7 space-y-3">
+        <div className="stagger mt-7 space-y-3">
           {isPending && [0, 1].map((i) => <SkeletonRow key={i} />)}
           {error && <ErrorState error={error} onRetry={() => void refetch()} />}
           {rows.map((row) => (

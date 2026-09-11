@@ -57,6 +57,24 @@ export const color = {
   barkDeep: '#643312',
   /** Trouble. Used only where the caregiver must act. */
   alert: '#B3402F',
+
+  /*
+   * Northeast natural-dye accents. These colour the textile motifs in
+   * `components/ner/` — threads, borders, grounds — and are never used as a
+   * page or card surface, which stays on the cream/ivory/terracotta base.
+   */
+  /** Lac-insect red: the red of the Assamese gamosa border. */
+  lac: '#9E2B25',
+  /** Assam indigo ("osak" to the Ao Naga): the blue-black of Naga shawls. Threads only. */
+  osak: '#24303B',
+  /** The natural gold of Muga silk. */
+  muga: '#C99A3E',
+  /** Undyed Eri / Ryndia "peace silk". The ground motifs are woven on. */
+  eri: '#F1E8D6',
+  /** Paddy green, for hill and field silhouettes. */
+  paddy: '#6B7F3A',
+  /** Dawn cloud over the Khasi hills. The ground behind hill layers. */
+  mist: '#E4E6E0',
 } as const
 
 /** The one gradient in the system. Buttons, progress fills, the wordmark sweep. */

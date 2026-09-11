@@ -26,7 +26,7 @@ export function SkeletonText({ lines = 3, className }: { lines?: number; classNa
 /** Matches the shape of a stat tile so the number does not shift on arrival. */
 export function SkeletonStat({ className }: { className?: string }) {
   return (
-    <div className={cn('rounded-card border border-ink/[0.07] bg-ivory p-5', className)}>
+    <div className={cn('stitched rounded-card border-[#E7D9C2] bg-ivory p-5', className)}>
       <Skeleton className="h-3 w-24" />
       <Skeleton className="mt-3 h-9 w-20" />
       <Skeleton className="mt-2 h-3 w-32" />
@@ -36,7 +36,7 @@ export function SkeletonStat({ className }: { className?: string }) {
 
 export function SkeletonRow({ className }: { className?: string }) {
   return (
-    <div className={cn('flex items-center gap-4 rounded-card bg-sand/60 p-4', className)}>
+    <div className={cn('flex items-center gap-4 rounded-card bg-[#F1E6D5] p-4', className)}>
       <Skeleton className="size-12 rounded-full" />
       <div className="flex-1 space-y-2">
         <Skeleton className="h-4 w-1/3" />
@@ -48,7 +48,7 @@ export function SkeletonRow({ className }: { className?: string }) {
 
 export function SkeletonChart({ className }: { className?: string }) {
   return (
-    <div className={cn('rounded-card border border-ink/[0.07] bg-ivory p-6', className)}>
+    <div className={cn('stitched rounded-card border-[#E7D9C2] bg-ivory p-6', className)}>
       <Skeleton className="h-3.5 w-40" />
       <div className="mt-6 flex h-48 items-end gap-2">
         {[38, 62, 48, 74, 55, 81, 44, 69, 58, 77, 51, 66].map((h, i) => (

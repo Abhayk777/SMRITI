@@ -15,20 +15,16 @@ export function DialogContent({
 }: React.ComponentProps<typeof DialogPrimitive.Content>) {
   return (
     <DialogPrimitive.Portal>
+      {/* A plain scrim, not a blur: the page behind is simply set aside. */}
       <DialogPrimitive.Overlay
-        className={cn(
-          'fixed inset-0 z-50 bg-ink/40 backdrop-blur-[2px]',
-          'data-[state=open]:animate-in data-[state=closed]:animate-out',
-          'data-[state=open]:fade-in-0 data-[state=closed]:fade-out-0',
-        )}
+        className="fixed inset-0 z-50 bg-ink/40 data-[state=open]:animate-overlay-in"
       />
       <DialogPrimitive.Content
+        data-lenis-prevent
         className={cn(
           'fixed left-1/2 top-1/2 z-50 w-[calc(100vw-2rem)] max-w-lg -translate-x-1/2 -translate-y-1/2',
-          'max-h-[calc(100dvh-3rem)] overflow-y-auto rounded-panel bg-ivory p-6 shadow-panel',
-          'data-[state=open]:animate-in data-[state=closed]:animate-out',
-          'data-[state=open]:fade-in-0 data-[state=closed]:fade-out-0',
-          'data-[state=open]:zoom-in-95 data-[state=closed]:zoom-out-95',
+          'max-h-[calc(100dvh-3rem)] overflow-y-auto overscroll-contain rounded-panel bg-ivory p-6 shadow-panel',
+          'data-[state=open]:animate-dialog-in',
           className,
         )}
         {...props}

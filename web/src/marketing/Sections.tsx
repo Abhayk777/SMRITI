@@ -1,20 +1,32 @@
 import { useEffect, useRef, useState } from 'react'
-import { motion, useInView, useReducedMotion } from 'framer-motion'
+import { motion, useInView, useReducedMotion, useScroll, useTransform } from 'framer-motion'
 import { Check, Image as ImageIcon } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
 import { Logomark } from '@/components/brand/Logomark.tsx'
 import { Wordmark } from '@/components/brand/Wordmark.tsx'
+import { ThreadLine } from '@/components/motion/ThreadLine.tsx'
+import { WeaveIn } from '@/components/motion/WeaveIn.tsx'
+import {
+  EightLooms,
+  GamosaBand,
+  HillLayers,
+  JapiRosette,
+  NagaBands,
+  TwinStar,
+} from '@/components/ner/index.ts'
 import { Badge } from '@/components/ui/badge.tsx'
 import { Button } from '@/components/ui/button.tsx'
 import { Eyebrow } from '@/components/ui/card.tsx'
 import { cn } from '@/lib/utils.ts'
+import { color } from '@/styles/tokens.ts'
 import { Reveal } from './Reveal.tsx'
 
 /* ══════════════════════════════════════════════════════════════════════════
    How it works — cream.
    Each step carries a different accent chip, so "three steps" reads as three
-   distinct things rather than one thing repeated.
+   distinct things rather than one thing repeated. A single thread runs down
+   beside them and draws itself as you scroll, tying the three together.
    ══════════════════════════════════════════════════════════════════════════ */
 
 const STEPS = [
@@ -45,21 +57,28 @@ export function HowItWorks() {
   return (
     <section id="how" className="bg-cream px-5 py-[clamp(64px,9vw,132px)] sm:px-12">
       <div className="mx-auto grid max-w-[1180px] items-start gap-[clamp(32px,5vw,72px)] md:grid-cols-2">
-        <Reveal>
-          <Eyebrow className="mb-3.5">How it works</Eyebrow>
-          <h2 className="max-w-[22ch] text-[clamp(28px,3.6vw,44px)] leading-[1.1]">
-            Three small things a day. One quiet answer for you.
-          </h2>
-          <p className="mt-4.5 max-w-[44ch] text-[16.5px] leading-relaxed text-body">
-            Smriti sits in the background of your parent&rsquo;s home — a tablet or their own
-            phone — and asks for very little. What it gathers, it turns into something you
-            can read in half a minute.
-          </p>
+        <Reveal className="flex gap-5">
+          <GamosaBand vertical size={12} className="hidden self-stretch rounded-[2px] sm:block" />
+          <div>
+            <Eyebrow className="mb-3.5 flex items-center gap-2">
+              <TwinStar size={7} className="text-lac" />
+              How it works
+            </Eyebrow>
+            <h2 className="max-w-[22ch] text-[clamp(28px,3.6vw,44px)] leading-[1.1]">
+              Three small things a day. One quiet answer for you.
+            </h2>
+            <p className="mt-4.5 max-w-[44ch] text-[16.5px] leading-relaxed text-body">
+              Smriti sits in the background of your parent&rsquo;s home — a tablet or their
+              own phone — and asks for very little. What it gathers, it turns into something
+              you can read in half a minute.
+            </p>
+          </div>
         </Reveal>
 
-        <div className="flex flex-col gap-3.5">
+        <div className="relative flex flex-col gap-3.5">
+          <ThreadLine className="absolute inset-y-6 -left-7 hidden w-5 md:block" />
           {STEPS.map((step, i) => (
-            <Reveal key={step.n} delay={0.08 * i} y={16}>
+            <WeaveIn key={step.n} delay={0.1 * i}>
               <div className={cn('flex items-start gap-4 rounded-card px-6 py-5.5', step.card)}>
                 <span
                   className={cn(
@@ -74,7 +93,7 @@ export function HowItWorks() {
                   <p className="mt-1.5 text-[15px] leading-relaxed text-body">{step.body}</p>
                 </div>
               </div>
-            </Reveal>
+            </WeaveIn>
           ))}
         </div>
       </div>
@@ -88,7 +107,9 @@ export function HowItWorks() {
    The reference put this on sand, which made it the fourth cream section in a
    row and the point where the page stopped registering as sections at all.
    Sage is the palette's third voice and it earns its place here: a dark band
-   between two light ones gives the page a spine.
+   between two light ones gives the page a spine. It is edged top and bottom
+   with Naga shawl banding, drifting in opposite directions, so the band reads
+   as a length of woven cloth laid across the page.
    ══════════════════════════════════════════════════════════════════════════ */
 
 const STATS = [
@@ -145,15 +166,19 @@ function CountUp({ stat }: { stat: (typeof STATS)[number] }) {
 
 export function StatBand() {
   return (
-    <section className="bg-sage px-5 py-[clamp(48px,6vw,80px)] sm:px-12">
-      <div className="mx-auto grid max-w-[1180px] gap-[clamp(24px,4vw,40px)] sm:grid-cols-2 lg:grid-cols-4">
-        {STATS.map((stat, i) => (
-          <Reveal key={stat.label} delay={i * 0.08} y={14}>
-            <CountUp stat={stat} />
-            <p className="mt-2.5 text-[14.5px] leading-snug text-cream/75">{stat.label}</p>
-          </Reveal>
-        ))}
+    <section className="relative bg-sage">
+      <NagaBands size={20} drift={7} />
+      <div className="px-5 py-[clamp(48px,6vw,80px)] sm:px-12">
+        <div className="mx-auto grid max-w-[1180px] gap-[clamp(24px,4vw,40px)] sm:grid-cols-2 lg:grid-cols-4">
+          {STATS.map((stat, i) => (
+            <Reveal key={stat.label} delay={i * 0.08} y={14}>
+              <CountUp stat={stat} />
+              <p className="mt-2.5 text-[14.5px] leading-snug text-cream/80">{stat.label}</p>
+            </Reveal>
+          ))}
+        </div>
       </div>
+      <NagaBands size={20} drift={7} reverse />
     </section>
   )
 }
@@ -163,16 +188,31 @@ export function StatBand() {
    ══════════════════════════════════════════════════════════════════════════ */
 
 const PROMISES = [
-  'Ma decides what is shared, and can see everything you see.',
+  'Mei decides what is shared, and can see everything you see.',
   'Invite siblings, a carer or a neighbour with their own view.',
   'Quiet hours by default. We only push when it matters.',
 ]
 
 function PhonePreview() {
+  // The phone rides a little slower than the page, so it sits "in front of"
+  // the section rather than being printed on it.
+  const ref = useRef<HTMLDivElement>(null)
+  const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'end start'] })
+  const y = useTransform(scrollYProgress, [0, 1], [36, -36])
+
   return (
-    <div className="relative flex justify-center">
-      <div className="absolute top-[6%] aspect-square w-[min(420px,90%)] rounded-full bg-cream" />
-      <div className="relative w-[min(310px,82vw)] rounded-[44px] bg-ink p-2.5 shadow-panel">
+    <div ref={ref} className="relative flex justify-center">
+      <div className="absolute top-[6%] aspect-square w-[min(420px,90%)] overflow-hidden rounded-full bg-cream">
+        <JapiRosette
+          size={420}
+          strokeWidth={0.9}
+          className="absolute inset-0 m-auto size-[92%] text-bark/12 animate-spin-slow"
+        />
+      </div>
+      <motion.div
+        style={{ y }}
+        className="relative w-[min(310px,82vw)] rounded-[44px] bg-ink p-2.5 shadow-panel"
+      >
         <div className="overflow-hidden rounded-[36px] bg-ivory">
           <div className="flex justify-center pb-1 pt-2.5">
             <span className="h-1.5 w-16 rounded-pill bg-ink/18" />
@@ -184,7 +224,7 @@ function PhonePreview() {
                 All well
               </Badge>
             </div>
-            <p className="mb-3.5 mt-0.5 text-[12.5px] text-muted">Amma · Pune · 3 things today</p>
+            <p className="mb-3.5 mt-0.5 text-[12.5px] text-muted">Mei · Shillong · 3 things today</p>
 
             <div className="flex flex-col gap-2.5">
               <div className="flex items-center gap-3 rounded-[20px] bg-sage-soft px-3.5 py-3">
@@ -214,7 +254,7 @@ function PhonePreview() {
               <div className="flex items-center gap-3 rounded-[20px] bg-[#EEE7DB] px-3.5 py-3">
                 <span className="size-6.5 flex-none rounded-full border-2 border-dashed border-[#C0B6A5]" />
                 <div className="min-w-0">
-                  <p className="text-[13.5px] font-semibold leading-tight">Walk with Anita</p>
+                  <p className="text-[13.5px] font-semibold leading-tight">Walk with Iba</p>
                   <p className="text-[12px] leading-tight text-muted">5:30 pm · not yet</p>
                 </div>
               </div>
@@ -226,24 +266,27 @@ function PhonePreview() {
                 <div className="min-w-0">
                   <p className="text-[11px] uppercase tracking-[0.1em] text-bark">Memory shared</p>
                   <p className="text-[13px] leading-snug">
-                    “Your grandfather&rsquo;s Ambassador, 1974.”
+                    “Your grandfather&rsquo;s first radio, from Iewduh, 1974.”
                   </p>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
+      </motion.div>
     </div>
   )
 }
 
 export function ProductPreview() {
   return (
-    <section className="overflow-hidden bg-sand px-5 py-[clamp(64px,9vw,130px)] sm:px-12">
+    <section className="overflow-hidden bg-sand bg-cane-twill px-5 py-[clamp(64px,9vw,130px)] sm:px-12">
       <div className="mx-auto grid max-w-[1180px] items-center gap-[clamp(40px,6vw,80px)] md:grid-cols-2">
         <Reveal>
-          <Eyebrow className="mb-3 text-sage">Your side of it</Eyebrow>
+          <Eyebrow className="mb-3 flex items-center gap-2 text-sage">
+            <TwinStar size={7} />
+            Your side of it
+          </Eyebrow>
           <h2 className="max-w-[20ch] text-[clamp(28px,3.8vw,46px)] leading-[1.08]">
             Their whole day, in one calm view.
           </h2>
@@ -253,8 +296,8 @@ export function ProductPreview() {
           </p>
           <ul className="flex max-w-[44ch] flex-col gap-3.5">
             {PROMISES.map((promise) => (
-              <li key={promise} className="flex gap-3 text-[15.5px] leading-snug">
-                <span className="flex-none text-terracotta">—</span>
+              <li key={promise} className="flex items-baseline gap-3 text-[15.5px] leading-snug">
+                <TwinStar size={6} className="relative -top-px flex-none text-lac" />
                 {promise}
               </li>
             ))}
@@ -276,30 +319,38 @@ export function ProductPreview() {
    Stories — ivory.
    ══════════════════════════════════════════════════════════════════════════ */
 
+/*
+ * The families here are the ones Smriti is for in the Northeast: children
+ * who went to Bengaluru, Delhi or Pune for work, and parents who stayed in
+ * Jorhat, Aizawl or Kohima. Each card is edged with a different weave.
+ */
 const STORIES = [
   {
     quote:
-      'I used to call three times a day and still worry. Now I see at lunch that Amma had their tablets, and I can get on with my afternoon.',
-    name: 'Divya R.',
-    where: 'Seattle · their mother is in Pune',
+      'I used to call three times a day and still worry. Now I see at lunch that Maa had their tablets, and I can get on with my afternoon.',
+    name: 'Ananya B.',
+    where: 'Bengaluru · their mother is in Jorhat',
     tone: 'bg-cream',
     ring: 'bg-terracotta/15 text-terracotta',
+    edge: 'bg-risa',
   },
   {
     quote:
       'The weekly report ended a lot of arguments between my brother and me. We finally read the same week.',
-    name: 'Marcus T.',
-    where: 'Atlanta · his dad is in Macon',
+    name: 'Lalrin T.',
+    where: 'Delhi · their father is in Aizawl',
     tone: 'bg-sage-soft',
     ring: 'bg-sage/15 text-sage',
+    edge: 'bg-ryndia',
   },
   {
     quote:
-      'Papa sends a memory every evening. Some days it is his old scooter. It has become the best message of my day.',
-    name: 'Leila H.',
-    where: 'Lyon · their father lives two streets away',
+      'Papa sends a memory every evening. Some days it is his old scooter on the Dimapur road. It has become the best message of my day.',
+    name: 'Temsu A.',
+    where: 'Pune · their father is in Kohima',
     tone: 'bg-gold/12',
     ring: 'bg-gold/25 text-[#8A6210]',
+    edge: 'bg-thara',
   },
 ]
 
@@ -308,7 +359,10 @@ export function Stories() {
     <section id="stories" className="bg-ivory px-5 py-[clamp(64px,9vw,130px)] sm:px-12">
       <div className="mx-auto max-w-[1180px]">
         <Reveal>
-          <Eyebrow className="mb-3">Stories</Eyebrow>
+          <Eyebrow className="mb-3 flex items-center gap-2">
+            <TwinStar size={7} className="text-lac" />
+            Stories
+          </Eyebrow>
           <h2 className="mb-[clamp(32px,4vw,56px)] max-w-[24ch] text-[clamp(26px,3.4vw,42px)]">
             From sons and daughters, mostly at a distance
           </h2>
@@ -316,20 +370,21 @@ export function Stories() {
 
         <div className="grid gap-[clamp(18px,2.5vw,28px)] md:grid-cols-3">
           {STORIES.map((story, i) => (
-            <Reveal key={story.name} delay={i * 0.1} y={20}>
+            <WeaveIn key={story.name} delay={i * 0.12} className="h-full">
               <figure
                 className={cn(
-                  'flex h-full flex-col gap-5 rounded-panel p-[clamp(24px,3vw,32px)]',
+                  'relative flex h-full flex-col gap-5 overflow-hidden rounded-panel p-[clamp(24px,3vw,32px)] pt-[clamp(32px,3.6vw,40px)]',
                   story.tone,
                 )}
               >
+                <span aria-hidden="true" className={cn('absolute inset-x-0 top-0 h-2', story.edge)} />
                 <blockquote className="font-heading text-[clamp(18px,1.9vw,21px)] font-medium leading-snug">
                   “{story.quote}”
                 </blockquote>
                 <figcaption className="mt-auto flex items-center gap-3.5 text-[13.5px] leading-snug text-muted">
                   <span
                     className={cn(
-                      'grid size-14 flex-none place-items-center rounded-full font-heading text-lg font-bold',
+                      'grid size-14 flex-none place-items-center rounded-full font-heading text-lg font-bold ring-2 ring-current/15 ring-offset-2 ring-offset-transparent',
                       story.ring,
                     )}
                   >
@@ -343,7 +398,7 @@ export function Stories() {
                   </span>
                 </figcaption>
               </figure>
-            </Reveal>
+            </WeaveIn>
           ))}
         </div>
       </div>
@@ -353,6 +408,9 @@ export function Stories() {
 
 /* ══════════════════════════════════════════════════════════════════════════
    Closing call to action — terracotta.
+   The logomark turns slowly beside a japi crown, and the section ends on the
+   hills: three ridgelines rising at different rates as it scrolls in, the
+   nearest one in the footer's cream so the page lands on the ground.
    ══════════════════════════════════════════════════════════════════════════ */
 
 export function FinalCta() {
@@ -361,7 +419,7 @@ export function FinalCta() {
   return (
     <section
       id="start"
-      className="relative overflow-hidden bg-terracotta px-5 py-[clamp(72px,10vw,140px)] sm:px-12"
+      className="relative overflow-hidden bg-terracotta px-5 pb-[clamp(140px,16vw,230px)] pt-[clamp(72px,10vw,140px)] sm:px-12"
     >
       <motion.div
         className="pointer-events-none absolute -right-[6vw] -top-[4vw] w-[min(46vw,420px)] opacity-[0.09]"
@@ -370,10 +428,22 @@ export function FinalCta() {
       >
         <Logomark size={420} color="var(--color-cream)" strokeWidth={8.6} decorative />
       </motion.div>
+      <motion.div
+        className="pointer-events-none absolute -left-[5vw] top-[18%] hidden text-cream opacity-[0.1] md:block"
+        animate={reduceMotion ? undefined : { rotate: -360 }}
+        transition={{ duration: 160, repeat: Infinity, ease: 'linear' }}
+      >
+        <JapiRosette size={300} strokeWidth={1.1} />
+      </motion.div>
+
+      <HillLayers
+        colors={[color.terracottaDeep, color.bark, color.cream]}
+        className="absolute inset-x-0 bottom-0"
+      />
 
       <Reveal className="relative mx-auto max-w-[760px] text-center">
         <h2 className="text-[clamp(28px,4.2vw,52px)] leading-[1.08] text-ivory">
-          Tonight, this takes about as long as making tea.
+          Tonight, this takes about as long as brewing a cup of Assam tea.
         </h2>
         <p className="mx-auto mb-7.5 mt-4.5 max-w-[46ch] text-[17px] leading-relaxed text-ivory/86">
           Set Smriti up on your parent&rsquo;s phone or tablet, invite your siblings, and see
@@ -434,8 +504,19 @@ const FOOTER_COLUMNS = [
 
 export function MarketingFooter() {
   return (
-    <footer className="bg-cream px-5 pb-8 pt-[clamp(48px,7vw,88px)] text-body sm:px-12">
-      <div className="mx-auto grid max-w-[1180px] gap-[clamp(28px,4vw,56px)] sm:grid-cols-2 lg:grid-cols-4">
+    <footer className="bg-cream pb-8 text-body">
+      <GamosaBand size={16} />
+
+      {/* Eight sisters, eight looms: the weave behind every border on this
+          page, named and credited to its state. */}
+      <div className="mx-auto max-w-[1180px] px-5 pt-[clamp(40px,5vw,64px)] sm:px-12">
+        <p className="mb-4 text-[11.5px] font-semibold uppercase tracking-[0.12em] text-muted">
+          Eight sisters, eight looms
+        </p>
+      </div>
+      <EightLooms className="mx-auto max-w-[1280px] px-5 sm:px-12" />
+
+      <div className="mx-auto mt-[clamp(40px,5vw,64px)] grid max-w-[1180px] gap-[clamp(28px,4vw,56px)] px-5 sm:grid-cols-2 sm:px-12 lg:grid-cols-4">
         <div>
           <div className="flex items-center gap-2.5 text-terracotta">
             <Logomark size={24} decorative />
@@ -462,9 +543,15 @@ export function MarketingFooter() {
         ))}
       </div>
 
-      <p className="mx-auto mt-[clamp(36px,5vw,64px)] max-w-[1180px] border-t border-ink/10 pt-5 text-[12.5px] text-muted">
-        © {new Date().getFullYear()} Smriti Care · Made for the ones who worry.
-      </p>
+      <div className="mx-auto mt-[clamp(36px,5vw,64px)] max-w-[1180px] px-5 sm:px-12">
+        <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2 border-t border-ink/10 pt-5 text-[12.5px] text-muted">
+          <p>© {new Date().getFullYear()} Smriti Care · Made for the ones who worry.</p>
+          <p className="max-w-[62ch]">
+            Motifs drawn from the handloom traditions of Assam, Arunachal Pradesh, Manipur,
+            Meghalaya, Mizoram, Nagaland, Sikkim and Tripura.
+          </p>
+        </div>
+      </div>
     </footer>
   )
 }

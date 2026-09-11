@@ -60,15 +60,24 @@ function MemoRow({ memo, patientId, canEdit }: { memo: Memo; patientId: string; 
       className={cn(unread && 'border-terracotta/25')}
     >
       <div className="flex items-start gap-4">
-        <button
-          type="button"
-          onClick={toggle}
-          disabled={signed.isPending && wanted}
-          aria-label={playing ? 'Pause' : 'Play this message'}
-          className="grid size-12 flex-none place-items-center rounded-full bg-terracotta text-ivory transition-colors hover:bg-terracotta-deep disabled:opacity-60"
-        >
-          {playing ? <Pause className="size-5" /> : <Play className="size-5 translate-x-0.5" />}
-        </button>
+        <span className="relative grid flex-none place-items-center">
+          {/* An unheard message breathes until someone listens. */}
+          {unread && !playing && (
+            <span
+              aria-hidden="true"
+              className="absolute inset-0 rounded-full bg-terracotta/35 animate-pulse-ring"
+            />
+          )}
+          <button
+            type="button"
+            onClick={toggle}
+            disabled={signed.isPending && wanted}
+            aria-label={playing ? 'Pause' : 'Play this message'}
+            className="relative grid size-12 place-items-center rounded-full bg-terracotta text-ivory ring-4 ring-clay transition-[background-color,transform] duration-200 hover:scale-105 hover:bg-terracotta-deep disabled:opacity-60"
+          >
+            {playing ? <Pause className="size-5" /> : <Play className="size-5 translate-x-0.5" />}
+          </button>
+        </span>
 
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">

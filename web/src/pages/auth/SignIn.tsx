@@ -8,11 +8,14 @@ import { z } from 'zod'
 import { useAuth } from '@/auth/useAuth.ts'
 import { Logomark } from '@/components/brand/Logomark.tsx'
 import { Wordmark } from '@/components/brand/Wordmark.tsx'
+import { GamosaBand, JapiRosette, TempleHem } from '@/components/ner/index.ts'
 import { Button } from '@/components/ui/button.tsx'
 import { Field, Input } from '@/components/ui/field.tsx'
 import { Notice } from '@/components/ui/feedback.tsx'
 import { isMockMode } from '@/lib/supabase.ts'
+import { cn } from '@/lib/utils.ts'
 import { FRESH_SIGNIN_KEY } from '@/routes/RootRedirect.tsx'
+import { color } from '@/styles/tokens.ts'
 
 /**
  * Phone + OTP, Supabase Auth's native flow (frontend.md §3). There is nothing
@@ -47,6 +50,14 @@ type PhoneValues = z.infer<typeof phoneSchema>
 type OtpValues = z.infer<typeof otpSchema>
 
 const RESEND_SECONDS = 45
+
+/**
+ * Sign-in keeps its original, lighter field style. The heavier stitched
+ * controls are for the dense forms inside the app; this page has one field at
+ * a time.
+ */
+const SIGNIN_INPUT =
+  'border border-ink/12 shadow-none hover:border-ink/12 focus-visible:bg-ivory focus-visible:ring-2 focus-visible:ring-terracotta/20'
 
 export default function SignIn() {
   const { sendOtp, verifyOtp, session } = useAuth()
@@ -129,8 +140,16 @@ export default function SignIn() {
           </p>
         </div>
 
-        <div className="pointer-events-none absolute -bottom-24 -right-24 opacity-[0.08]">
-          <Logomark size={420} color="var(--color-cream)" strokeWidth={8.6} decorative />
+        {/* A loom's worth of Northeast bands, drifting slowly in alternate
+            directions behind the copy — cream on terracotta, at low weight. */}
+        <div className="pointer-events-none absolute inset-x-0 bottom-28 space-y-5 opacity-[0.16]">
+          <GamosaBand size={22} thread={color.cream} ground="transparent" drift={9} />
+          <TempleHem size={16} fill={color.cream} accent="transparent" />
+          <GamosaBand size={10} variant="rule" thread={color.cream} ground="transparent" drift={6} />
+          <GamosaBand size={22} thread={color.cream} ground="transparent" drift={11} />
+        </div>
+        <div className="pointer-events-none absolute -right-20 -top-20 text-cream opacity-[0.1] animate-spin-slow">
+          <JapiRosette size={300} strokeWidth={1.1} />
         </div>
 
         <p className="text-[13px] text-ivory/55">
@@ -174,6 +193,7 @@ export default function SignIn() {
                     inputMode="tel"
                     autoComplete="tel"
                     placeholder="+91 98765 43210"
+                    className={SIGNIN_INPUT}
                     aria-invalid={Boolean(phoneForm.formState.errors.phone)}
                     {...phoneForm.register('phone')}
                   />
@@ -222,7 +242,7 @@ export default function SignIn() {
                     autoComplete="one-time-code"
                     maxLength={6}
                     placeholder="123456"
-                    className="text-center font-heading text-2xl tracking-[0.5em]"
+                    className={cn(SIGNIN_INPUT, 'text-center font-heading text-2xl tracking-[0.5em]')}
                     aria-invalid={Boolean(otpForm.formState.errors.token)}
                     {...otpForm.register('token')}
                   />

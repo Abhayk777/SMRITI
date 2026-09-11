@@ -10,16 +10,25 @@ import { cn } from '@/lib/utils.ts'
  * `sage` means on track, `warm` means attention, `alert` means act now, and
  * `plain` means neutral information. Picking a tone for its colour rather than
  * its meaning is how a dashboard stops being scannable.
+ *
+ * Every card is `stitched`: a warm 1.5px border with a running stitch just
+ * inside it, in the tone's own colour, so the tone reads from the edge as well
+ * as the fill. `--knot-ground` is the card's fill, which the corner knot uses
+ * to sit cleanly on the stitch line. All fills are solid, so the animated app
+ * backdrop never shows through anything that has to be read.
  */
-const cardVariants = cva('rounded-card transition-colors', {
+const cardVariants = cva('stitched rounded-card', {
   variants: {
     tone: {
-      plain: 'bg-ivory border border-ink/[0.07]',
-      sand: 'bg-sand',
-      sage: 'bg-sage-soft border border-sage/15',
-      warm: 'bg-clay border border-terracotta/12',
-      alert: 'bg-alert/[0.07] border border-alert/25',
-      dark: 'bg-terracotta text-ivory',
+      plain:
+        'bg-ivory border-[#E7D9C2] [--stitch:var(--color-terracotta)] [--knot-ground:var(--color-ivory)]',
+      sand: 'bg-sand border-[#DCCBAE] [--stitch:var(--color-bark)] [--knot-ground:var(--color-sand)]',
+      sage: 'bg-sage-soft border-sage/25 [--stitch:var(--color-sage)] [--knot-ground:var(--color-sage-soft)]',
+      warm: 'bg-clay border-terracotta/25 [--stitch:var(--color-terracotta)] [--knot-ground:var(--color-clay)]',
+      // alert/7% on ivory, as a solid colour.
+      alert:
+        'bg-[#F5E8E0] border-alert/35 [--stitch:var(--color-alert)] [--knot-ground:#F5E8E0]',
+      dark: 'bg-terracotta text-ivory border-terracotta-deep [--stitch:var(--color-cream)] [--knot-ground:var(--color-terracotta)]',
     },
     padding: {
       none: '',
