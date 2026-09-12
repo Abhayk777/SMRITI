@@ -1,33 +1,21 @@
 import { useMutation } from '@tanstack/react-query'
 
+import * as db from '@/lib/db.ts'
 
 /**
  * Prescription OCR (frontend.md §9).
  *
- * The `ocr-prescription` Edge Function **is not built yet**. This hook fails
- * locally and performs no network request; its disabled UI remains as an
- * honest placeholder for the already-defined candidate contract.
- *
  * ── A note on the confidence type ─────────────────────────────────────────
- * frontend.md §9 types `confidence` as `'high' | 'low' | 'unrecognized'`;
- * `packages/shared`'s `ocrMedicationCandidateSchema` — which the backend team
- * owns and the real function will be validated against — types it as a
- * `number`. The number is the one that will actually arrive, so that is what
- * `OcrCandidate` uses, and `confidenceBand()` below derives the three-way band
- * the review UI needs. If the function ends up returning the string form
- * instead, `confidenceBand` is the single place that changes.
+ * The shared Edge Function contract represents catalogue-match confidence as
+ * a number. `confidenceBand()` derives the three labels shown by the review UI.
  */
 
 export type OcrConfidenceBand = 'high' | 'low' | 'unrecognized'
 
-export type OcrCandidate = {
-  name: string
-  dose: string
-  frequency: string
-  /** 0–1, as `packages/shared` defines it. */
-  confidence: number
-  raw_text: string
-}
+export type { OcrMedicationCandidate as OcrCandidate } from '@smriti/shared'
+import type { OcrMedicationCandidate as OcrCandidate } from '@smriti/shared'
+
+export type OcrDocument = { base64: string; mimeType: string }
 
 /** Thresholds are a product call, not a spec one — stated here rather than buried. */
 export function confidenceBand(confidence: number): OcrConfidenceBand {
@@ -58,10 +46,8 @@ export const CONFIDENCE_COPY: Record<
 }
 
 export function useOcrPrescription(patientId: string) {
-  return useMutation<{ medications: OcrCandidate[] }, Error, string>({
-    mutationFn: async (): Promise<{ medications: OcrCandidate[] }> => {
-      void patientId
-      throw new Error('Prescription scanning is not available yet.')
-    },
+  return useMutation<{ medications: OcrCandidate[] }, Error, OcrDocument>({
+    mutationFn: ({ base64, mimeType }) =>
+      db.unwrap(db.scanPrescription(patientId, base64, mimeType)),
   })
 }

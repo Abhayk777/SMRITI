@@ -32,6 +32,7 @@ import type {
 
 import type {
   CreatePatientArgs,
+  Database,
   EscalationConfig,
   Flag,
   InviteMemberArgs,
@@ -44,6 +45,8 @@ import type {
   Person,
   RoutineItem,
 } from '@smriti/shared'
+import { ocrPrescriptionResultSchema } from '@smriti/shared'
+import type { OcrMedicationCandidate } from '@smriti/shared'
 
 import type { DailyDomainRow, DailyReportRow } from './database.types.ts'
 import {
@@ -64,6 +67,7 @@ import {
 import { isMockMode, supabase } from './supabase.ts'
 
 export type { RealtimeChannel, Session, User }
+export type MedicationInsert = Database['public']['Tables']['medications']['Insert']
 
 /** The shape every export below resolves to — PostgREST's own. */
 export type DbResult<T> = { data: T | null; error: PostgrestError | Error | null }
@@ -387,6 +391,18 @@ export const contentInsert = (
         .select()
         .single()
 
+/** One SQL statement: a failed OCR row cannot leave a half-saved prescription. */
+export const medicationInsertMany = (
+  patientId: string,
+  payloads: Array<Omit<MedicationInsert, 'patient_id'>>,
+): PromiseLike<DbResult<unknown[]>> =>
+  isMockMode
+    ? ok(payloads.map((payload) => ({ ...payload, patient_id: patientId, id: crypto.randomUUID() })))
+    : supabase
+        .from('medications')
+        .insert(payloads.map((payload) => ({ ...payload, patient_id: patientId })))
+        .select()
+
 export const contentUpdate = (
   table: ContentTable,
   key: string,
@@ -460,6 +476,64 @@ export const createPairingToken = async (
     body: { patient_id: pid },
   })
   return { data: data ?? null, error }
+}
+
+export async function scanPrescription(
+  patientId: string,
+  documentBase64: string,
+  mimeType: string,
+): Promise<DbResult<{ medications: OcrMedicationCandidate[] }>> {
+  if (isMockMode) {
+    return { data: null, error: new Error('Prescription scanning requires a configured Supabase project.') }
+  }
+
+  // A scan is a privileged, billable operation. Explicitly validate and pass
+  // the current session rather than allowing functions-js to fall back to the
+  // public anon key if a persisted browser session has gone stale.
+  const { data: { session }, error: sessionError } = await supabase.auth.getSession()
+  if (sessionError || !session) {
+    return { data: null, error: new Error('not authenticated') }
+  }
+  const { error: userError } = await supabase.auth.getUser()
+  if (userError) {
+    return { data: null, error: new Error('not authenticated') }
+  }
+  const { data: { session: refreshedSession } } = await supabase.auth.getSession()
+  if (!refreshedSession) {
+    return { data: null, error: new Error('not authenticated') }
+  }
+
+  const { data, error } = await supabase.functions.invoke('ocr-prescription', {
+    body: {
+      patient_id: patientId,
+      document_base64: documentBase64,
+      mime_type: mimeType,
+    },
+    headers: { Authorization: `Bearer ${refreshedSession.access_token}` },
+  })
+  if (error) {
+    // functions-js reports non-2xx responses as a generic FunctionsHttpError.
+    // The function's own error body is deliberately safe for caregivers, and
+    // is the useful answer here (for example, access versus an unreadable file).
+    const response = (error as Error & { context?: unknown }).context
+    if (response instanceof Response) {
+      const body: unknown = await response.clone().json().catch(() => null)
+      if (
+        body !== null
+        && typeof body === 'object'
+        && 'error' in body
+        && typeof body.error === 'string'
+        && body.error.trim()
+      ) return { data: null, error: new Error(body.error) }
+    }
+    return { data: null, error }
+  }
+
+  const parsed = ocrPrescriptionResultSchema.safeParse(data)
+  if (!parsed.success) {
+    return { data: null, error: new Error('The prescription reader returned an invalid response.') }
+  }
+  return { data: parsed.data, error: null }
 }
 
 /* ────────────────────────────────────────────────────────────────────────

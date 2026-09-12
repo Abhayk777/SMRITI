@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { ArrowLeft, ArrowRight, Check, Plus, Trash2 } from 'lucide-react'
+import { ArrowLeft, ArrowRight, Camera, Check, Plus, Trash2 } from 'lucide-react'
 import { useForm, useWatch } from 'react-hook-form'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { z } from 'zod'
@@ -25,7 +25,8 @@ import {
   emptyMedicine,
   type MedicineDraft,
 } from '@/features/medicines/MedicineForm.tsx'
-import { useMedicines } from '@/features/medicines/useMedicines.ts'
+import { OcrReview } from '@/features/medicines/OcrReview.tsx'
+import { useMedicines, useMedicineBatchMutation } from '@/features/medicines/useMedicines.ts'
 import { PersonForm, emptyPerson, type PersonDraft } from '@/features/people/PersonForm.tsx'
 import { usePeople } from '@/features/people/usePeople.ts'
 import {
@@ -553,7 +554,9 @@ function VoicesStep({ patientId, onNext }: { patientId: string; onNext: () => vo
 function MedicinesStep({ patientId, onNext }: { patientId: string; onNext: () => void }) {
   const medicines = useMedicines(patientId)
   const { save, remove } = useContentMutation<MedicineDraft>('medications', patientId)
+  const saveScanned = useMedicineBatchMutation(patientId)
   const [draft, setDraft] = useState<MedicineDraft | null>(null)
+  const [scanning, setScanning] = useState(false)
 
   const rows = medicines.data ?? []
 
@@ -566,9 +569,23 @@ function MedicinesStep({ patientId, onNext }: { patientId: string; onNext: () =>
       </p>
 
       <Notice className="mt-5">
-        Prescription scanning is not available yet. Add each medicine by hand so every line is
-        checked before it reaches the tablet.
+        Scan a printed or handwritten prescription photo or PDF, then check every medicine
+        before it reaches the tablet.
       </Notice>
+
+      {scanning && (
+        <div className="mt-6">
+          <OcrReview
+            patientId={patientId}
+            saving={saveScanned.isPending}
+            onClose={() => setScanning(false)}
+            onSave={(drafts) =>
+              saveScanned.mutate(drafts, { onSuccess: () => setScanning(false) })
+            }
+          />
+          {saveScanned.error && <ErrorState error={saveScanned.error} className="mt-4" />}
+        </div>
+      )}
 
       <div className="mt-6 space-y-3">
         {rows.map((med) => (
@@ -590,7 +607,7 @@ function MedicinesStep({ patientId, onNext }: { patientId: string; onNext: () =>
           </Card>
         ))}
 
-        {rows.length === 0 && !draft && (
+        {rows.length === 0 && !draft && !scanning && (
           <EmptyState
             title="No medicines yet"
             description="Add the ones that matter most. You do not have to enter everything tonight."
@@ -610,11 +627,17 @@ function MedicinesStep({ patientId, onNext }: { patientId: string; onNext: () =>
             onSubmit={() => save.mutate(draft, { onSuccess: () => setDraft(null) })}
           />
         </Card>
-      ) : (
-        <Button variant="outline" className="mt-4" onClick={() => setDraft(emptyMedicine())}>
-          <Plus className="size-4" />
-          Add {rows.length === 0 ? 'a medicine' : 'another medicine'}
-        </Button>
+      ) : !scanning && (
+        <div className="mt-4 flex flex-wrap gap-2">
+          <Button variant="outline" onClick={() => setScanning(true)}>
+            <Camera className="size-4" />
+            Scan prescription
+          </Button>
+          <Button variant="outline" onClick={() => setDraft(emptyMedicine())}>
+            <Plus className="size-4" />
+            Add {rows.length === 0 ? 'a medicine' : 'another medicine'} by hand
+          </Button>
+        </div>
       )}
 
       <Button variant="accent" size="lg" className="mt-8 w-full sm:w-auto" onClick={onNext}>

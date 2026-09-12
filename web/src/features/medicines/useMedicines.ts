@@ -1,10 +1,12 @@
-import { useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 import { useContentMutation } from '@/hooks/useContentMutation.ts'
 import * as db from '@/lib/db.ts'
 import { qk } from '@/lib/queryKeys.ts'
+import { normaliseDaysOfWeek } from '@/lib/utils.ts'
 import { assertPatientMatchAll } from '@/patients/usePatientAccess.ts'
 import type { Medication } from '@smriti/shared'
+import type { MedicineDraft } from './MedicineForm.tsx'
 
 export function useMedicines(patientId: string) {
   return useQuery({
@@ -20,6 +22,32 @@ export function useMedicines(patientId: string) {
 /** Parameterised for the same reason as `usePeopleMutation` — forms submit drafts. */
 export function useMedicineMutation<T extends object = Medication>(patientId: string) {
   return useContentMutation<T>('medications', patientId)
+}
+
+export function useMedicineBatchMutation(patientId: string) {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (drafts: MedicineDraft[]) =>
+      db.unwrap(
+        db.medicationInsertMany(
+          patientId,
+          drafts.map((draft) => {
+            const payload = { ...draft }
+            delete payload.id
+            return {
+              ...payload,
+              days_of_week: normaliseDaysOfWeek(draft.days_of_week),
+              active: true,
+            }
+          }),
+        ),
+      ),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: qk.medications(patientId) })
+      void queryClient.invalidateQueries({ queryKey: qk.deviceStatus(patientId) })
+      void queryClient.invalidateQueries({ queryKey: qk.patient(patientId) })
+    },
+  })
 }
 
 /**

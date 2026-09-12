@@ -483,7 +483,15 @@ export const twilioWebhookBodySchema = z.union([
 ]);
 
 export const ocrPrescriptionBodySchema = z.object({
-  image_base64: z.string().min(1),
+  document_base64: z.string().min(1),
+  mime_type: z.enum([
+    'image/jpeg',
+    'image/png',
+    'image/webp',
+    'image/heic',
+    'image/heif',
+    'application/pdf',
+  ]),
   patient_id: uuidSchema,
 }).strict();
 

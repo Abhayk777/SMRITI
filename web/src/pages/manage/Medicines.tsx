@@ -22,7 +22,12 @@ import {
   toDraft,
   type MedicineDraft,
 } from '@/features/medicines/MedicineForm.tsx'
-import { useMedicines, useMedicineMutation } from '@/features/medicines/useMedicines.ts'
+import { OcrReview } from '@/features/medicines/OcrReview.tsx'
+import {
+  useMedicines,
+  useMedicineBatchMutation,
+  useMedicineMutation,
+} from '@/features/medicines/useMedicines.ts'
 import { describeDays, formatMinutes, partOfDay } from '@/lib/utils.ts'
 import { usePatientAccess } from '@/patients/usePatientAccess.ts'
 import type { Medication } from '@smriti/shared'
@@ -30,8 +35,8 @@ import type { Medication } from '@smriti/shared'
 /**
  * Manage → Medicines (frontend.md §8).
  *
- * Medicines are entered by hand through the content-write choke point. The OCR
- * affordance remains visible but disabled until its Edge Function exists.
+ * Medicines use the same content-write choke point whether entered by hand or
+ * confirmed from a prescription scan. OCR only proposes review rows.
  *
  * Removing a medicine sets `active: false` rather than deleting the row. The
  * adherence history in `daily_adherence` is built from `reminder_events` that
@@ -42,8 +47,10 @@ export default function Medicines() {
   const { patientId, canEdit } = usePatientAccess()
   const medicines = useMedicines(patientId)
   const { save, remove } = useMedicineMutation<MedicineDraft>(patientId)
+  const saveScanned = useMedicineBatchMutation(patientId)
 
   const [draft, setDraft] = useState<MedicineDraft | null>(null)
+  const [scanning, setScanning] = useState(false)
   const [confirmRemove, setConfirmRemove] = useState<Medication | null>(null)
 
   const rows = medicines.data ?? []
@@ -62,11 +69,11 @@ export default function Medicines() {
         description="A gentle chime at their hour, in their language. If they do not respond, Smriti waits, chimes again, and only then calls you — one call covering everything due, never one per pill."
         actions={
           canEdit &&
-          !draft && (
+          !draft && !scanning && (
             <>
-              <Button variant="outline" disabled title="Prescription scanning is not available yet">
+              <Button variant="outline" onClick={() => setScanning(true)}>
                 <Camera className="size-4" />
-                Scanning unavailable
+                Scan prescription
               </Button>
               <Button variant="accent" onClick={() => setDraft(emptyMedicine())}>
                 <Plus className="size-4" />
@@ -83,10 +90,10 @@ export default function Medicines() {
         </Notice>
       )}
 
-      {canEdit && !draft && (
+      {canEdit && !draft && !scanning && (
         <Notice className="mb-6">
-          Prescription scanning is not available yet. Add medicines by hand so every line is
-          checked before it reaches the tablet.
+          Scan a printed or handwritten prescription photo or PDF, then check every medicine
+          before it reaches the tablet.
         </Notice>
       )}
 
@@ -110,6 +117,20 @@ export default function Medicines() {
         </Card>
       )}
 
+      {scanning && (
+        <div className="mb-6">
+          <OcrReview
+            patientId={patientId}
+            saving={saveScanned.isPending}
+            onClose={() => setScanning(false)}
+            onSave={(drafts) =>
+              saveScanned.mutate(drafts, { onSuccess: () => setScanning(false) })
+            }
+          />
+          {saveScanned.error && <ErrorState error={saveScanned.error} className="mt-4" />}
+        </div>
+      )}
+
       {medicines.isPending && (
         <div className="space-y-3">
           {[0, 1].map((i) => (
@@ -118,7 +139,7 @@ export default function Medicines() {
         </div>
       )}
 
-      {!medicines.isPending && rows.length === 0 && !draft && (
+      {!medicines.isPending && rows.length === 0 && !draft && !scanning && (
         <EmptyState
           icon={<Pill className="size-5" />}
           title="No medicines yet"
@@ -130,9 +151,9 @@ export default function Medicines() {
                   <Plus className="size-4" />
                   Add by hand
                 </Button>
-                <Button variant="outline" disabled title="Prescription scanning is not available yet">
+                <Button variant="outline" onClick={() => setScanning(true)}>
                   <Camera className="size-4" />
-                  Scanning unavailable
+                  Scan prescription
                 </Button>
               </div>
             )
