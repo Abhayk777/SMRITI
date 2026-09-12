@@ -166,7 +166,7 @@ export function AppShell({ children }: { children: ReactNode }) {
             <PatientIdentity />
           </div>
 
-          <DropdownMenu.Root>
+          <DropdownMenu.Root modal={false}>
             <DropdownMenu.Trigger
               className="grid size-10 flex-none place-items-center rounded-full text-muted transition-colors hover:bg-ink/[0.06] hover:text-ink"
               aria-label="Account"

@@ -74,7 +74,7 @@ export function PatientIdentity({ compact = false }: { compact?: boolean }) {
   }
 
   return (
-    <DropdownMenu.Root>
+    <DropdownMenu.Root modal={false}>
       <DropdownMenu.Trigger
         className="flex min-w-0 items-center gap-2 rounded-2xl px-1 py-1 transition-colors hover:bg-ink/[0.05]"
         aria-label={`${name} — switch patient`}
