@@ -119,11 +119,7 @@ export function AppShell({ children }: { children: ReactNode }) {
                   aria-hidden="true"
                   className="absolute inset-0 overflow-hidden rounded-pill bg-terracotta"
                   transition={{ type: 'spring', stiffness: 520, damping: 42 }}
-                >
-                  {variant === 'sidebar' && (
-                    <span className="absolute inset-y-2 right-3 w-[3px] rounded-full bg-risa-v opacity-80" />
-                  )}
-                </motion.span>
+                />
               )}
               <Icon
                 className={cn(
