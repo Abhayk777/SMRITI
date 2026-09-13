@@ -77,7 +77,13 @@ const ok = <T>(data: T): Promise<DbResult<T>> => Promise.resolve({ data, error: 
  */
 export async function unwrap<T>(promise: PromiseLike<DbResult<T>>): Promise<T> {
   const { data, error } = await promise
-  if (error) throw error
+  if (error) {
+    if (error instanceof Error) throw error
+    const message = (error as { message?: string }).message ?? 'Database error'
+    const err = new Error(message)
+    Object.assign(err, error)
+    throw err
+  }
   return data as T
 }
 
@@ -348,6 +354,38 @@ export const inviteMember = (
   isMockMode
     ? ok({ status: 'pending' as const, message: 'no account yet (mock mode)' })
     : supabase.rpc('invite_member', { p_patient_id: pid, p_phone: phone, p_role: role })
+
+export const deletePatient = async (pid: string): Promise<DbResult<boolean>> => {
+  if (isMockMode) {
+    const idx = mockOverview.findIndex((p) => p.patient_id === pid)
+    if (idx !== -1) mockOverview.splice(idx, 1)
+    delete mockPatients[pid]
+    delete mockMembers[pid]
+    delete mockPeople[pid]
+    delete mockMedications[pid]
+    delete mockRoutine[pid]
+    delete mockEscalation[pid]
+    delete mockDailyReport[pid]
+    delete mockDailyDomain[pid]
+    delete mockFlags[pid]
+    delete mockMemos[pid]
+    return ok(true)
+  }
+
+  // Best-effort cleanup of storage folders via Storage API
+  try {
+    for (const bucket of ['patient-media', 'patient-memos', 'reports'] as const) {
+      const { data: list } = await supabase.storage.from(bucket).list(pid)
+      if (list && list.length > 0) {
+        await supabase.storage.from(bucket).remove(list.map((f) => `${pid}/${f.name}`))
+      }
+    }
+  } catch {
+    // Non-critical: database cascade deletion is authoritative
+  }
+
+  return supabase.rpc('delete_patient', { p_patient_id: pid })
+}
 
 /* ────────────────────────────────────────────────────────────────────────
    Writes — content tables

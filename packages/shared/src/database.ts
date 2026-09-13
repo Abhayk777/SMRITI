@@ -476,6 +476,12 @@ export type Database = {
         };
         Returns: InviteMemberResult;
       };
+      delete_patient: {
+        Args: {
+          p_patient_id: string;
+        };
+        Returns: boolean;
+      };
     };
     Enums: Record<string, never>;
     CompositeTypes: Record<string, never>;

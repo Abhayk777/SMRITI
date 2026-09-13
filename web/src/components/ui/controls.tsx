@@ -1,11 +1,38 @@
 import * as React from 'react'
 import * as AvatarPrimitive from '@radix-ui/react-avatar'
+import * as CheckboxPrimitive from '@radix-ui/react-checkbox'
 import * as SeparatorPrimitive from '@radix-ui/react-separator'
 import * as SliderPrimitive from '@radix-ui/react-slider'
 import * as SwitchPrimitive from '@radix-ui/react-switch'
 import * as TabsPrimitive from '@radix-ui/react-tabs'
+import { Check } from 'lucide-react'
 
 import { cn } from '@/lib/utils.ts'
+
+/* ── Checkbox ────────────────────────────────────────────────────────── */
+
+export function Checkbox({
+  className,
+  ...props
+}: React.ComponentProps<typeof CheckboxPrimitive.Root>) {
+  return (
+    <CheckboxPrimitive.Root
+      className={cn(
+        'peer size-5 shrink-0 rounded-md border border-ink/25 bg-ivory shadow-xs transition-all',
+        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-terracotta/40',
+        'hover:border-terracotta/70',
+        'data-[state=checked]:border-terracotta data-[state=checked]:bg-terracotta data-[state=checked]:text-ivory',
+        'disabled:cursor-not-allowed disabled:opacity-50',
+        className,
+      )}
+      {...props}
+    >
+      <CheckboxPrimitive.Indicator className="flex items-center justify-center text-current">
+        <Check className="size-3.5 stroke-[2.5]" />
+      </CheckboxPrimitive.Indicator>
+    </CheckboxPrimitive.Root>
+  )
+}
 
 /* ── Switch ──────────────────────────────────────────────────────────── */
 
