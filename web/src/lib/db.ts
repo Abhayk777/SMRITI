@@ -92,7 +92,7 @@ export async function unwrap<T>(promise: PromiseLike<DbResult<T>>): Promise<T> {
 }
 
 /* ────────────────────────────────────────────────────────────────────────
-   Auth (frontend.md §3) — phone + OTP, Supabase's native flow.
+   Auth (frontend.md §3) — phone OTP and Google, Supabase's native flows.
    ──────────────────────────────────────────────────────────────────────── */
 
 /**
@@ -186,6 +186,28 @@ export const verifyOtp = (phone: string, token: string) => {
     })
   }
   return supabase.auth.verifyOtp({ phone, token, type: 'sms' })
+}
+
+/**
+ * Google OAuth credentials belong in Supabase's Google provider settings, not
+ * in this browser bundle. The application requests only Google's standard
+ * identity scopes; it neither requests Google API access nor retains a Google
+ * provider token.
+ */
+export const signInWithGoogle = () => {
+  if (isMockMode) {
+    setMockSignedIn(true)
+    emitMockAuth()
+    return Promise.resolve({ data: { provider: 'google', url: null }, error: null })
+  }
+
+  return supabase.auth.signInWithOAuth({
+    provider: 'google',
+    options: {
+      // This exact URL must be in Supabase Auth's Redirect URLs allow-list.
+      redirectTo: `${window.location.origin}/auth`,
+    },
+  })
 }
 
 export const signOut = () => {

@@ -12,6 +12,7 @@ export type AuthContextValue = {
   loading: boolean
   sendOtp: (phone: string) => Promise<void>
   verifyOtp: (phone: string, token: string) => Promise<void>
+  signInWithGoogle: () => Promise<void>
   signOut: () => Promise<void>
 }
 
@@ -64,6 +65,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (error) throw error
   }, [])
 
+  const signInWithGoogle = useCallback(async () => {
+    const { error } = await db.signInWithGoogle()
+    if (error) throw error
+  }, [])
+
   const signOut = useCallback(async () => {
     await db.signOut()
     queryClient.clear()
@@ -76,9 +82,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       loading,
       sendOtp,
       verifyOtp,
+      signInWithGoogle,
       signOut,
     }),
-    [session, loading, sendOtp, verifyOtp, signOut],
+    [session, loading, sendOtp, verifyOtp, signInWithGoogle, signOut],
   )
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

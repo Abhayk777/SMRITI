@@ -68,7 +68,10 @@ export const supabase = createClient<Database>(
     auth: {
       persistSession: !isMockMode,
       autoRefreshToken: !isMockMode,
-      detectSessionInUrl: false,
+      // Google returns the browser to `/auth` with the OAuth result. Let the
+      // SDK consume it and persist the resulting Supabase session before the
+      // route redirects the caregiver into the app.
+      detectSessionInUrl: !isMockMode,
     },
   },
 )

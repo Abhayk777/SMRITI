@@ -59,12 +59,36 @@ const RESEND_SECONDS = 45
 const SIGNIN_INPUT =
   'border border-ink/12 shadow-none hover:border-ink/12 focus-visible:bg-ivory focus-visible:ring-2 focus-visible:ring-terracotta/20'
 
+function GoogleMark() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true" className="size-5">
+      <path
+        fill="#4285F4"
+        d="M21.8 12.23c0-.71-.06-1.39-.18-2.05H12v3.88h5.5a4.7 4.7 0 0 1-2.04 3.08v2.52h3.25c1.9-1.75 3.09-4.34 3.09-7.43Z"
+      />
+      <path
+        fill="#34A853"
+        d="M12 22c2.76 0 5.08-.91 6.71-2.34l-3.25-2.52c-.9.6-2.06.96-3.46.96-2.66 0-4.91-1.8-5.72-4.21H2.92v2.6A10.13 10.13 0 0 0 12 22Z"
+      />
+      <path
+        fill="#FBBC05"
+        d="M6.28 13.89A6.1 6.1 0 0 1 5.96 12c0-.66.11-1.3.32-1.89v-2.6H2.92A10 10 0 0 0 1.8 12c0 1.61.39 3.14 1.12 4.49l3.36-2.6Z"
+      />
+      <path
+        fill="#EA4335"
+        d="M12 5.9c1.5 0 2.84.52 3.9 1.53l2.93-2.93C17.08 2.87 14.76 2 12 2a10.13 10.13 0 0 0-9.08 5.51l3.36 2.6C7.09 7.7 9.34 5.9 12 5.9Z"
+      />
+    </svg>
+  )
+}
+
 export default function SignIn() {
-  const { sendOtp, verifyOtp, session } = useAuth()
+  const { sendOtp, verifyOtp, signInWithGoogle, session } = useAuth()
   const navigate = useNavigate()
   const [phone, setPhone] = useState<string | null>(null)
   const [serverError, setServerError] = useState<string | null>(null)
   const [cooldown, setCooldown] = useState(0)
+  const [googlePending, setGooglePending] = useState(false)
 
   useEffect(() => {
     if (session) navigate('/', { replace: true })
@@ -117,6 +141,23 @@ export default function SignIn() {
     } catch (error) {
       setServerError(
         error instanceof Error ? error.message : 'That code did not work. Try again.',
+      )
+    }
+  }
+
+  const continueWithGoogle = async () => {
+    setServerError(null)
+    setGooglePending(true)
+    try {
+      await signInWithGoogle()
+      // The browser immediately leaves for Google in production. Storing this
+      // first lets the existing root arrival show its one-time sign-in splash
+      // when Google returns to this tab.
+      sessionStorage.setItem(FRESH_SIGNIN_KEY, '1')
+    } catch (error) {
+      setGooglePending(false)
+      setServerError(
+        error instanceof Error ? error.message : 'Could not start Google sign-in. Try again.',
       )
     }
   }
@@ -176,9 +217,26 @@ export default function SignIn() {
             <>
               <h1 className="text-[28px]">Sign in</h1>
               <p className="mb-7 mt-2 text-[15px] leading-relaxed text-body">
-                Enter your mobile number and we will text you a code. No password to
-                remember.
+                Use Google or your mobile number. No password to remember.
               </p>
+
+              <Button
+                type="button"
+                variant="outline"
+                size="lg"
+                className="w-full border-ink/20 bg-white hover:bg-sand/40"
+                onClick={() => void continueWithGoogle()}
+                disabled={googlePending}
+              >
+                <GoogleMark />
+                {googlePending ? 'Opening Google…' : 'Continue with Google'}
+              </Button>
+
+              <div className="my-6 flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.14em] text-muted">
+                <span className="h-px flex-1 bg-ink/10" />
+                or use your mobile number
+                <span className="h-px flex-1 bg-ink/10" />
+              </div>
 
               <form onSubmit={phoneForm.handleSubmit(requestCode)} noValidate>
                 <Field
