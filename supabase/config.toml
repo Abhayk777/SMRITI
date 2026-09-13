@@ -390,6 +390,9 @@ verify_jwt = false
 [functions.watchdog]
 verify_jwt = false
 
+[functions.ocr-prescription]
+static_files = [ "./functions/ocr-prescription/catalog/*.json.gz", "./functions/ocr-prescription/catalog/manifest.json", "./functions/ocr-prescription/catalog/LICENSE", "./functions/ocr-prescription/catalog/README.md" ]
+
 # [edge_runtime.secrets]
 # secret_key = "env(SECRET_VALUE)"
 

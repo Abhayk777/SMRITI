@@ -1,13 +1,25 @@
 import { useRef, useState } from 'react'
 import { AlertTriangle, Camera, Check, ShieldCheck, Trash2 } from 'lucide-react'
+import imageCompression from 'browser-image-compression'
 
+import { PhotoPicker } from '@/components/media/PhotoPicker.tsx'
+import { VoiceRecorder } from '@/components/media/VoiceRecorder.tsx'
 import { Badge } from '@/components/ui/badge.tsx'
 import { Button } from '@/components/ui/button.tsx'
 import { Card } from '@/components/ui/card.tsx'
 import { Input, Label } from '@/components/ui/field.tsx'
 import { ErrorState, Notice } from '@/components/ui/feedback.tsx'
 import { Skeleton } from '@/components/ui/skeleton.tsx'
-import { cn, describeDays, EVERY_DAY, formatMinutes } from '@/lib/utils.ts'
+import {
+  cn,
+  DAY_LABELS,
+  describeDays,
+  EVERY_DAY,
+  formatMinutes,
+  isDayOn,
+  parseDaysOfWeek,
+  toggleDay,
+} from '@/lib/utils.ts'
 import { MedicineWindow } from './MedicineWindow.tsx'
 import type { MedicineDraft } from './MedicineForm.tsx'
 import {
@@ -33,9 +45,6 @@ import {
  *   - the save button stays disabled until **every single row** has been ticked
  *     individually. Not "confirm all". One tick per line, deliberately tedious;
  *   - the copy says plainly that nothing activates until every line is checked.
- *
- * All of it is built and usable against the mock, because the review is what
- * has to be right — the function behind it can arrive later.
  *
  * ── A product call the spec left open ─────────────────────────────────────
  * OCR returns a `frequency` string ("Once daily, morning"); the schema needs a
@@ -129,19 +138,59 @@ export function OcrReview({
 }) {
   const fileRef = useRef<HTMLInputElement>(null)
   const [rows, setRows] = useState<ReviewRow[] | null>(null)
+  const [fileError, setFileError] = useState<string | null>(null)
   const ocr = useOcrPrescription(patientId)
 
-  const readFile = (file: File | undefined) => {
+  const readFile = async (file: File | undefined) => {
     if (!file) return
+    setFileError(null)
+    ocr.reset()
+
+    const mimeType = file.type === 'image/jpg' ? 'image/jpeg' : file.type
+    const allowed = new Set([
+      'image/jpeg',
+      'image/png',
+      'image/webp',
+      'image/heic',
+      'image/heif',
+      'application/pdf',
+    ])
+    if (!allowed.has(mimeType)) {
+      setFileError('Choose a JPEG, PNG, WebP, HEIC, HEIF, or PDF prescription.')
+      return
+    }
+
+    let processed: File | Blob = file
+    if (mimeType === 'image/jpeg' || mimeType === 'image/png' || mimeType === 'image/webp') {
+      try {
+        processed = await imageCompression(file, {
+          maxSizeMB: 3,
+          maxWidthOrHeight: 2400,
+          useWebWorker: true,
+        })
+      } catch {
+        setFileError('That image could not be prepared. Try a different photo or PDF.')
+        return
+      }
+    }
+    if (processed.size > 10 * 1024 * 1024) {
+      setFileError('The prescription must be 10 MB or smaller.')
+      return
+    }
+
     const reader = new FileReader()
     reader.onload = () => {
       const result = String(reader.result)
       const base64 = result.slice(result.indexOf(',') + 1)
-      ocr.mutate(base64, {
+      const processedMimeType = processed.type === 'image/jpg'
+        ? 'image/jpeg'
+        : processed.type || mimeType
+      ocr.mutate({ base64, mimeType: processedMimeType }, {
         onSuccess: (data) => setRows(data.medications.map(toReviewRow)),
       })
     }
-    reader.readAsDataURL(file)
+    reader.onerror = () => setFileError('That file could not be read. Try choosing it again.')
+    reader.readAsDataURL(processed)
   }
 
   const update = (key: string, patch: Partial<ReviewRow>) =>
@@ -149,11 +198,13 @@ export function OcrReview({
       current ? current.map((row) => (row.key === key ? { ...row, ...patch } : row)) : current,
     )
 
-  const usable = (rows ?? []).filter((row) => row.name.trim() && row.dose.trim())
+  const validRow = (row: ReviewRow) =>
+    Boolean(row.name.trim() && row.dose.trim() && parseDaysOfWeek(row.days_of_week).length)
+  const usable = (rows ?? []).filter(validRow)
   // Lines the OCR could not read and the caregiver has not filled in. They are
   // excluded from the save rather than blocking it forever — but never
   // silently, or a medicine on the prescription just quietly does not exist.
-  const skipped = (rows ?? []).filter((row) => !row.name.trim() || !row.dose.trim())
+  const skipped = (rows ?? []).filter((row) => !validRow(row))
   const allConfirmed = usable.length > 0 && usable.every((row) => row.confirmed)
   const outstanding = usable.filter((row) => !row.confirmed).length
 
@@ -163,8 +214,8 @@ export function OcrReview({
         <div className="min-w-0">
           <h2 className="text-[20px]">Read a prescription</h2>
           <p className="mt-1.5 max-w-[56ch] text-[14.5px] leading-relaxed text-body">
-            Photograph the printed prescription and Smriti will pull out what it can. You
-            check every line before anything is saved.
+            Upload a clear photo or PDF of a printed or handwritten prescription. Smriti
+            will pull out what it can, and you check every line before anything is saved.
           </p>
         </div>
         <Button variant="ghost" size="sm" onClick={onClose}>
@@ -181,16 +232,20 @@ export function OcrReview({
             disabled={ocr.isPending}
           >
             <Camera className="size-4" />
-            {ocr.isPending ? 'Reading…' : 'Photograph the prescription'}
+            {ocr.isPending ? 'Reading…' : 'Scan a photo or PDF'}
           </Button>
           <input
             ref={fileRef}
             type="file"
-            accept="image/*"
-            capture="environment"
+            accept="image/jpeg,image/png,image/webp,image/heic,image/heif,application/pdf,.pdf"
             className="sr-only"
-            onChange={(e) => readFile(e.target.files?.[0])}
+            onChange={(e) => {
+              void readFile(e.target.files?.[0])
+              e.target.value = ''
+            }}
           />
+
+          {fileError && <p role="alert" className="mt-3 text-[13px] font-medium text-alert">{fileError}</p>}
 
           {ocr.isPending && (
             <div className="mt-6 space-y-3">
@@ -203,9 +258,8 @@ export function OcrReview({
           {ocr.error && (
             <div className="mt-5">
               <Notice tone="warn">
-                <strong>Reading prescriptions is not switched on yet.</strong> The function
-                behind this is still being built. Add the medicines by hand for now — it is
-                the same form, and nothing you enter will need redoing later.
+                <strong>Smriti could not read that prescription.</strong> Try a clearer photo
+                or PDF, or add the medicines by hand.
               </Notice>
               <ErrorState error={ocr.error} className="mt-3" />
             </div>
@@ -218,9 +272,28 @@ export function OcrReview({
           <Notice tone="warn" className="mt-5">
             <strong>Nothing here is scheduled yet.</strong> Smriti will not remind{' '}
             anyone about any of these until you have ticked every line individually. Check
-            each one against the printed prescription — the name, the dose, and the time
+            each one against the original prescription — the name, the dose, and the time
             Smriti proposes.
           </Notice>
+
+          {rows.length === 0 && (
+            <div className="mt-5">
+              <Notice tone="warn">
+                <strong>No medicine lines were found.</strong> Try a clearer photo or PDF,
+                or add the medicines by hand.
+              </Notice>
+              <Button
+                variant="outline"
+                className="mt-3"
+                onClick={() => {
+                  setRows(null)
+                  ocr.reset()
+                }}
+              >
+                Choose another file
+              </Button>
+            </div>
+          )}
 
           <div className="mt-5 space-y-3">
             {rows.map((row) => {
@@ -328,7 +401,7 @@ export function OcrReview({
                   )}
 
                   {row.expanded && (
-                    <div className="mt-3">
+                    <div className="mt-3 space-y-4">
                       <MedicineWindow
                         windowStart={row.window_start_min}
                         windowEnd={row.window_end_min}
@@ -342,22 +415,73 @@ export function OcrReview({
                           })
                         }
                       />
+                      <div>
+                        <Label>Which days</Label>
+                        <div className="mt-2 flex flex-wrap gap-2">
+                          {DAY_LABELS.map((day, index) => (
+                            <button
+                              key={day}
+                              type="button"
+                              aria-pressed={isDayOn(row.days_of_week, index)}
+                              onClick={() => update(row.key, {
+                                days_of_week: toggleDay(row.days_of_week, index),
+                                confirmed: false,
+                              })}
+                              className={cn(
+                                'rounded-pill px-3.5 py-2 text-[13.5px] font-semibold transition-colors',
+                                isDayOn(row.days_of_week, index)
+                                  ? 'bg-terracotta text-ivory'
+                                  : 'bg-sand text-body hover:bg-sand/70',
+                              )}
+                            >
+                              {day}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
                     </div>
                   )}
+
+                  <details className="mt-4 rounded-card border border-ink/[0.08] p-4">
+                    <summary className="cursor-pointer text-[14.5px] font-semibold">
+                      Add this pill’s photo and voice reminder
+                    </summary>
+                    <div className="mt-4 space-y-5">
+                      <PhotoPicker
+                        patientId={patientId}
+                        label="Pill photo"
+                        hint="Photograph the actual pill or packaging, not the prescription page."
+                        value={row.pill_photo_path}
+                        onChange={(path) => update(row.key, {
+                          pill_photo_path: path,
+                          confirmed: false,
+                        })}
+                      />
+                      <VoiceRecorder
+                        patientId={patientId}
+                        value={row.voice_path}
+                        onChange={(path) => update(row.key, {
+                          voice_path: path,
+                          confirmed: false,
+                        })}
+                        prompt="Say the medicine’s name and what it is for, in their language. The tablet plays this with the reminder."
+                      />
+                    </div>
+                  </details>
 
                   {/* One tick per line. Deliberately not a "confirm all". */}
                   <label
                     className={cn(
                       'mt-4 flex cursor-pointer items-start gap-3 rounded-2xl p-3 transition-colors',
                       row.confirmed ? 'bg-sage/12' : 'bg-sand/60 hover:bg-sand',
-                      !row.name.trim() || !row.dose.trim() ? 'pointer-events-none opacity-50' : '',
+                      !validRow(row) ? 'pointer-events-none opacity-50' : '',
                     )}
                   >
                     <input
                       type="checkbox"
                       className="sr-only"
                       checked={row.confirmed}
-                      disabled={!row.name.trim() || !row.dose.trim()}
+                      disabled={!validRow(row)}
                       onChange={(e) => update(row.key, { confirmed: e.target.checked })}
                     />
                     <span
@@ -374,7 +498,7 @@ export function OcrReview({
                     <span className="text-[13.5px] font-semibold leading-snug">
                       {row.confirmed
                         ? 'Checked against the prescription.'
-                        : 'I have compared this line with the printed prescription.'}
+                        : 'I have compared this line with the original prescription.'}
                     </span>
                   </label>
                 </div>
@@ -415,7 +539,8 @@ export function OcrReview({
               {skipped.length > 0 && (
                 <p className="mt-1 font-semibold text-alert">
                   {skipped.length} line{skipped.length === 1 ? '' : 's'} will not be saved —
-                  they still have no name or dose. Type them in, or discard them.
+                  they still need a name, dose, and at least one day. Complete them, or
+                  discard them.
                 </p>
               )}
             </div>

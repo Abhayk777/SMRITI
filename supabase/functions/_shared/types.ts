@@ -62,6 +62,18 @@ export type EscalationWorkerBody =
 
 export type WatchdogBody = Record<string, never>;
 
+export type OcrPrescriptionBody = {
+  document_base64: string;
+  mime_type:
+    | 'image/jpeg'
+    | 'image/png'
+    | 'image/webp'
+    | 'image/heic'
+    | 'image/heif'
+    | 'application/pdf';
+  patient_id: string;
+};
+
 export type EscalationCallbackContext = {
   patient_id: string;
   escalation_id: string;
@@ -109,6 +121,14 @@ const ESCALATION_STATUSES = new Set([
   'completed',
   'cancelled',
   'failed',
+]);
+const OCR_MIME_TYPES = new Set<OcrPrescriptionBody['mime_type']>([
+  'image/jpeg',
+  'image/png',
+  'image/webp',
+  'image/heic',
+  'image/heif',
+  'application/pdf',
 ]);
 
 function isStrictObjectWithKeys(
@@ -278,6 +298,22 @@ export const watchdogBodySchema = {
       return { success: false, error: 'invalid request body' };
     }
     return { success: true, data: {} };
+  },
+};
+
+export const ocrPrescriptionBodySchema = {
+  safeParse(value: unknown): SafeParseResult<OcrPrescriptionBody> {
+    if (
+      !isStrictObjectWithKeys(value, ['document_base64', 'mime_type', 'patient_id'])
+      || typeof value.document_base64 !== 'string'
+      || value.document_base64.length === 0
+      || typeof value.mime_type !== 'string'
+      || !OCR_MIME_TYPES.has(value.mime_type as OcrPrescriptionBody['mime_type'])
+      || typeof value.patient_id !== 'string'
+      || !UUID_PATTERN.test(value.patient_id)
+    ) return { success: false, error: 'invalid request body' };
+
+    return { success: true, data: value as OcrPrescriptionBody };
   },
 };
 
