@@ -2,7 +2,9 @@ import { z } from 'zod';
 
 const uuid = z.string().uuid();
 const timestamp = z.string().datetime({ offset: true });
-const revision = z.bigint().nonnegative();
+// API JSON cannot carry bigint values. Database revisions remain bigint, while
+// the client contract carries their safe integer representation.
+const revision = z.number().int().nonnegative();
 
 export const voicebotErrorCodeSchema = z.enum([
   'NOT_AUTHENTICATED', 'NOT_AUTHORISED', 'PATIENT_MISMATCH', 'DEVICE_REPLACED',
@@ -10,7 +12,7 @@ export const voicebotErrorCodeSchema = z.enum([
   'INVALID_REQUEST', 'INVALID_WAV', 'PAYLOAD_TOO_LARGE', 'RATE_LIMITED',
   'UPSTREAM_TIMEOUT', 'UPSTREAM_UNAVAILABLE', 'UPSTREAM_CONTRACT_ERROR',
   'SESSION_NOT_FOUND', 'JOB_NOT_FOUND', 'AUDIO_NOT_FOUND', 'JOB_EXPIRED',
-  'CONFLICT', 'INTERNAL_ERROR',
+  'CONFLICT', 'INTERNAL_ERROR', 'METHOD_NOT_ALLOWED', 'PATIENT_NOT_FOUND', 'CONSENT_REQUIRED',
 ]);
 export const voicebotIntegrationStatusSchema = z.enum(['disabled', 'pending', 'syncing', 'ready', 'error', 'unavailable']);
 export const voicebotCapabilitySchema = z.object({
