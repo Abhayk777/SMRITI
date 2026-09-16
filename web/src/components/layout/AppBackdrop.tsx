@@ -1,8 +1,10 @@
+import { useState } from 'react'
 import { motion } from 'framer-motion'
 
 import { TwinStar } from '@/components/ner/TwinStar.tsx'
 import { color } from '@/styles/tokens.ts'
-import { arcProgress, skyPhase, type SkyPhase } from './sky.ts'
+import { arcProgress, scrubToMinutes, skyPhase, type SkyPhase } from './sky.ts'
+import { SkyScrubber } from './SkyScrubber.tsx'
 
 /**
  * The room the app is drawn in.
@@ -24,6 +26,11 @@ import { arcProgress, skyPhase, type SkyPhase } from './sky.ts'
  * Cards are opaque, so all of this lives in the gutters between them and never
  * behind anything that has to be read. Every movement is a compositor-only
  * transform or opacity animation, and the layer stills under reduced motion.
+ *
+ * A scrubber sits at the foot of the window (`SkyScrubber`) for pushing the
+ * sun and moon along the arc by hand. While it is held away from the real
+ * time the sky follows it instead of the clock, and its reset button hands the
+ * sky back. Nothing outside this layer reads that override.
  */
 
 const SKY: Record<SkyPhase, string> = {
@@ -53,8 +60,13 @@ const MIST =
   'radial-gradient(closest-side, rgba(249,244,237,0.9), rgba(249,244,237,0))'
 
 export function AppBackdrop({ minutes }: { minutes: number }) {
-  const phase = skyPhase(minutes)
-  const { body, t } = arcProgress(minutes)
+  // `null` while the sky follows the patient's clock; a scrubber position once
+  // it has been moved by hand.
+  const [scrub, setScrub] = useState<number | null>(null)
+  const shown = scrub === null ? minutes : scrubToMinutes(scrub)
+
+  const phase = skyPhase(shown)
+  const { body, t } = arcProgress(shown)
   const night = phase === 'night'
 
   // The arc: rises on the left of the content area (clear of the sidebar),
@@ -63,103 +75,112 @@ export function AppBackdrop({ minutes }: { minutes: number }) {
   const y = 36 - Math.sin(Math.PI * t) * 20
 
   return (
-    <div
-      aria-hidden="true"
-      className="pointer-events-none fixed inset-0 -z-10 overflow-hidden bg-ivory"
-    >
-      {/* One layer per phase, cross-fading, because gradients cannot tween. */}
-      {(Object.keys(SKY) as SkyPhase[]).map((p) => (
-        <motion.div
-          key={p}
-          className="absolute inset-0"
-          style={{ background: SKY[p] }}
-          initial={false}
-          animate={{ opacity: p === phase ? 1 : 0 }}
-          transition={{ duration: 2.4, ease: 'easeInOut' }}
-        />
-      ))}
-
-      <div className="absolute inset-0 bg-loom" />
-
-      {/* Sun or moon: a flat disc with a crisp edge inside a slowly turning
-          stitched ring — drawn, not glowing. */}
-      <motion.div
-        className="absolute size-[clamp(56px,6vw,88px)] -translate-x-1/2 -translate-y-1/2"
-        initial={false}
-        animate={{ left: `${x}%`, top: `${y}%` }}
-        transition={{ duration: 3, ease: [0.22, 0.8, 0.18, 1] }}
+    <>
+      <div
+        aria-hidden="true"
+        className="pointer-events-none fixed inset-0 -z-10 overflow-hidden bg-ivory"
       >
-        <div
-          className="absolute -inset-3 rounded-full border-[1.5px] border-dashed animate-spin-slow"
-          style={{
-            borderColor: body === 'sun' ? 'rgba(201,154,62,0.45)' : 'rgba(36,48,59,0.16)',
-          }}
-        />
-        <div
-          className="absolute inset-0 rounded-full"
-          style={
-            body === 'sun'
-              ? { backgroundColor: 'rgba(232,168,63,0.3)' }
-              : {
-                  backgroundColor: 'rgba(245,234,216,0.95)',
-                  boxShadow: 'inset -9px -5px 0 0 rgba(36,48,59,0.08)',
-                }
-          }
-        />
-      </motion.div>
+        {/* One layer per phase, cross-fading, because gradients cannot tween. */}
+        {(Object.keys(SKY) as SkyPhase[]).map((p) => (
+          <motion.div
+            key={p}
+            className="absolute inset-0"
+            style={{ background: SKY[p] }}
+            initial={false}
+            animate={{ opacity: p === phase ? 1 : 0 }}
+            transition={{ duration: 2.4, ease: 'easeInOut' }}
+          />
+        ))}
 
-      {STARS.map((star) => (
-        <TwinStar
-          key={star.left + star.top}
-          size={star.size}
-          className="absolute animate-twinkle"
-          style={{
-            left: star.left,
-            top: star.top,
-            color: night ? color.osak : color.muga,
-            opacity: night ? 0.5 : 0.28,
-            animationDelay: star.delay,
-          }}
-        />
-      ))}
+        <div className="absolute inset-0 bg-loom" />
 
-      {/* The hills, and the mist lying between them. */}
-      <div className="absolute inset-x-0 bottom-0 h-[26vh] min-h-[160px]">
-        <svg
-          viewBox="0 0 2400 200"
-          preserveAspectRatio="none"
-          className="absolute bottom-0 left-0 h-full w-[112%] animate-ridge-sway"
+        {/* Sun or moon: a flat disc with a crisp edge inside a slowly turning
+            stitched ring — drawn, not glowing. */}
+        <motion.div
+          className="absolute size-[clamp(56px,6vw,88px)] -translate-x-1/2 -translate-y-1/2"
+          initial={false}
+          animate={{ left: `${x}%`, top: `${y}%` }}
+          transition={{ duration: scrub === null ? 3 : 0.12, ease: [0.22, 0.8, 0.18, 1] }}
         >
-          <path d={RIDGES[0]} fill={color.paddy} fillOpacity={0.07} />
-        </svg>
-        <div
-          className="absolute bottom-[34%] left-[8%] h-[38%] w-[46%] animate-mist-drift rounded-[50%]"
-          style={{ background: MIST }}
-        />
-        <svg
-          viewBox="0 0 2400 200"
-          preserveAspectRatio="none"
-          className="absolute inset-0 size-full"
-        >
-          <path d={RIDGES[1]} fill={color.sage} fillOpacity={0.08} />
-        </svg>
-        <div
-          className="absolute bottom-[14%] right-[4%] h-[34%] w-[40%] animate-mist-drift rounded-[50%]"
-          style={{
-            animationDelay: '-30s',
-            animationDirection: 'alternate-reverse',
-            background: MIST,
-          }}
-        />
-        <svg
-          viewBox="0 0 2400 200"
-          preserveAspectRatio="none"
-          className="absolute inset-0 size-full"
-        >
-          <path d={RIDGES[2]} fill={color.bark} fillOpacity={0.07} />
-        </svg>
+          <div
+            className="absolute -inset-3 rounded-full border-[1.5px] border-dashed animate-spin-slow"
+            style={{
+              borderColor: body === 'sun' ? 'rgba(201,154,62,0.45)' : 'rgba(36,48,59,0.16)',
+            }}
+          />
+          <div
+            className="absolute inset-0 rounded-full"
+            style={
+              body === 'sun'
+                ? { backgroundColor: 'rgba(232,168,63,0.3)' }
+                : {
+                    backgroundColor: 'rgba(245,234,216,0.95)',
+                    boxShadow: 'inset -9px -5px 0 0 rgba(36,48,59,0.08)',
+                  }
+            }
+          />
+        </motion.div>
+
+        {STARS.map((star) => (
+          <TwinStar
+            key={star.left + star.top}
+            size={star.size}
+            className="absolute animate-twinkle"
+            style={{
+              left: star.left,
+              top: star.top,
+              color: night ? color.osak : color.muga,
+              opacity: night ? 0.5 : 0.28,
+              animationDelay: star.delay,
+            }}
+          />
+        ))}
+
+        {/* The hills, and the mist lying between them. */}
+        <div className="absolute inset-x-0 bottom-0 h-[26vh] min-h-[160px]">
+          <svg
+            viewBox="0 0 2400 200"
+            preserveAspectRatio="none"
+            className="absolute bottom-0 left-0 h-full w-[112%] animate-ridge-sway"
+          >
+            <path d={RIDGES[0]} fill={color.paddy} fillOpacity={0.07} />
+          </svg>
+          <div
+            className="absolute bottom-[34%] left-[8%] h-[38%] w-[46%] animate-mist-drift rounded-[50%]"
+            style={{ background: MIST }}
+          />
+          <svg
+            viewBox="0 0 2400 200"
+            preserveAspectRatio="none"
+            className="absolute inset-0 size-full"
+          >
+            <path d={RIDGES[1]} fill={color.sage} fillOpacity={0.08} />
+          </svg>
+          <div
+            className="absolute bottom-[14%] right-[4%] h-[34%] w-[40%] animate-mist-drift rounded-[50%]"
+            style={{
+              animationDelay: '-30s',
+              animationDirection: 'alternate-reverse',
+              background: MIST,
+            }}
+          />
+          <svg
+            viewBox="0 0 2400 200"
+            preserveAspectRatio="none"
+            className="absolute inset-0 size-full"
+          >
+            <path d={RIDGES[2]} fill={color.bark} fillOpacity={0.07} />
+          </svg>
+        </div>
       </div>
-    </div>
+
+      <SkyScrubber
+        value={scrub}
+        realMinutes={minutes}
+        onChange={setScrub}
+        onReset={() => setScrub(null)}
+      />
+    </>
   )
 }
 

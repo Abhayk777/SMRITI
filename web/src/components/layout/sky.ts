@@ -52,3 +52,32 @@ export function usePatientMinutes(timezone: string | null | undefined): number {
 
   return minutesOfDayInZone(timezone)
 }
+
+/**
+ * The scrubber's scale: one continuous sweep of the sky, 0 to `SKY_SCRUB_MAX`.
+ *
+ * The first half of the travel is the sun's arc (5:00 → 19:30) and the second
+ * half the moon's (19:30 → 5:00), so the two bodies swap exactly at the
+ * midpoint of the slider. The top of the range stops just short of sunrise so
+ * that dragging to the far end leaves the moon setting rather than snapping
+ * back round to the dawn sun.
+ */
+export const SKY_SCRUB_MAX = 1435
+const SKY_SCRUB_MID = 720
+
+/** A scrubber position → the minute of day it stands for. */
+export function scrubToMinutes(value: number): number {
+  const v = Math.max(0, Math.min(SKY_SCRUB_MAX, value))
+  if (v < SKY_SCRUB_MID) {
+    return Math.round(300 + (v / SKY_SCRUB_MID) * (1170 - 300))
+  }
+  const night = (v - SKY_SCRUB_MID) / SKY_SCRUB_MID
+  return Math.round(1170 + night * (1440 - 1170 + 300)) % 1440
+}
+
+/** The inverse: where the scrubber sits for a given minute of day. */
+export function minutesToScrub(minutes: number): number {
+  const { body, t } = arcProgress(minutes)
+  const v = body === 'sun' ? t * SKY_SCRUB_MID : SKY_SCRUB_MID + t * SKY_SCRUB_MID
+  return Math.round(Math.max(0, Math.min(SKY_SCRUB_MAX, v)))
+}
