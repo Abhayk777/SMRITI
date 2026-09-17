@@ -32,8 +32,8 @@ function dependencies(overrides: Record<string, unknown> = {}) {
   };
   return {
     admin: () => db,
-    fetch: async () => new Response(JSON.stringify({ success: true, user_id: patientId, authorized: true, active: true })),
-    env: (name: string) => ({ VOICEBOT_INTEGRATION_ENABLED: "true", VOICEBOT_BASE_URL: "http://fake", VOICEBOT_API_KEY: "key", VOICEBOT_PROVISIONING_API_KEY: "provisioning" } as Record<string, string>)[name],
+    fetch: async () => new Response(JSON.stringify({ success: true, user_id: patientId, status: "applied", source_revision: 1 })),
+    env: (name: string) => ({ VOICEBOT_INTEGRATION_ENABLED: "true", VOICEBOT_BASE_URL: "http://fake", VOICEBOT_API_KEY: "key" } as Record<string, string>)[name],
     now: () => new Date("2026-01-01T00:00:00.000Z"),
     random: () => requestId,
     authorizeCaregiver: async () => {},
@@ -75,17 +75,34 @@ test("admin checks mutation and queue failures", async () => {
   assert.equal((await responseBody(response)).error.code, "INTERNAL_ERROR");
 });
 
-test("admin disable uses the bounded transport and validates durable revocation", async () => {
+test("admin disable uses the bounded sync transport and keeps local revocation immediate", async () => {
   const calls: RequestInit[] = [];
-  const handler = createVoicebotAdminHandler(dependencies({ fetch: async (_url: string, init: RequestInit) => { calls.push(init); return new Response(JSON.stringify({ success: true, user_id: patientId, authorized: false, active: false })); } }) as any);
+  const handler = createVoicebotAdminHandler(dependencies({ fetch: async (_url: string, init: RequestInit) => { calls.push(init); return new Response(JSON.stringify({ success: true, user_id: patientId, status: "applied", source_revision: null })); } }) as any);
   const response = await handler(new Request("http://x", { method: "POST", body: JSON.stringify({ operation: "disable", patient_id: patientId }) }));
   assert.equal(response.status, 200);
-  assert.deepEqual(JSON.parse(String(calls[0].body)), { authorized: false, active: false });
+  assert.deepEqual(JSON.parse(String(calls[0].body)), { user_id: patientId, active: false, family_members: [], medicines: [], daily_routines: [] });
   assert.equal(calls[0].redirect, "error");
+});
+
+test("admin disable remains locally successful when upstream cleanup is unavailable", async () => {
+  const localState = { ...state };
+  const stateQuery = query({ data: localState, error: null });
+  stateQuery.upsert = async (value: Record<string, unknown>) => { Object.assign(localState, value); return { error: null }; };
+  stateQuery.update = (value: Record<string, unknown>) => { Object.assign(localState, value); return stateQuery; };
+  const db = {
+    from: (table: string) => table === "patients" ? query({ data: patient, error: null }) : table === "voicebot_patient_state" ? stateQuery : query({ data: null, error: null }),
+    rpc: async () => ({ data: [], error: null }),
+  };
+  const handler = createVoicebotAdminHandler(dependencies({ admin: () => db, fetch: async () => { throw new Error("network unavailable"); } }) as any);
+  const response = await handler(new Request("http://x", { method: "POST", body: JSON.stringify({ operation: "disable", patient_id: patientId }) }));
+  assert.equal(response.status, 200);
+  assert.equal((await responseBody(response)).data.status, "disabled");
+  assert.equal(localState.last_error_code, "UPSTREAM_UNAVAILABLE");
 });
 
 function workerDependencies(overrides: Record<string, unknown> = {}) {
   const selected: string[] = [];
+  const urls: string[] = [];
   const db = {
     from(table: string) {
       if (table === "voicebot_patient_state") return query({ data: { enabled: true }, error: null }, (value) => selected.push(value));
@@ -97,21 +114,21 @@ function workerDependencies(overrides: Record<string, unknown> = {}) {
     rpc: async () => ({ data: [{ patient_id: patientId, revision: 1 }], error: null }),
   };
   let calls = 0;
-  const fetch = async () => {
+  const fetch = async (url: string) => {
     calls += 1;
-    return new Response(JSON.stringify(calls === 1
-      ? { success: true, user_id: patientId, authorized: true, active: true }
-      : { success: true, user_id: patientId, source_revision: 1, status: "applied" }));
+    urls.push(url);
+    return new Response(JSON.stringify({ success: true, user_id: patientId, source_revision: 1, status: "applied" }));
   };
-  return { deps: dependencies({ admin: () => db, fetch, ...overrides }), selected, calls: () => calls };
+  return { deps: dependencies({ admin: () => db, fetch, ...overrides }), selected, calls: () => calls, urls };
 }
 
-test("worker uses approved snapshot fields and validates provision then sync", async () => {
+test("worker uses one dynamic-key memory sync with approved snapshot fields", async () => {
   const fixture = workerDependencies();
   const handler = createVoicebotSyncWorkerHandler(fixture.deps as any);
   const response = await handler(new Request("http://x", { method: "POST" }));
   assert.equal(response.status, 200);
-  assert.equal(fixture.calls(), 2);
+  assert.equal(fixture.calls(), 1);
+  assert.deepEqual(fixture.urls, ["http://fake/v1/memory/sync"]);
   assert.equal(fixture.selected.includes("*"), false);
 });
 

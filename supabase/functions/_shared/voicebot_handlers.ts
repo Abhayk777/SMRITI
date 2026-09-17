@@ -30,8 +30,8 @@ function validStatus(value: ReturnType<typeof statusData>) {
     && typeof value.language.smriti_code === "string"
     && typeof value.language.voicebot_code === "string";
 }
-function validProvision(body: Record<string, unknown>, patientId: string, authorized: boolean, active: boolean) { return body.success === true && body.user_id === patientId && body.authorized === authorized && body.active === active; }
 function validSync(body: Record<string, unknown>, patientId: string, revision: number) { return body.success === true && body.user_id === patientId && Number(body.source_revision) === revision && (body.status === "applied" || body.status === "no_op"); }
+function validDeactivation(body: Record<string, unknown>, patientId: string) { return body.success === true && body.user_id === patientId && (body.status === "applied" || body.status === "no_op"); }
 
 export async function voicebotJson(fetchFn: typeof fetch, url: string, init: RequestInit, timeoutMs = 8_000): Promise<{ response: Response; body: Record<string, unknown> }> {
   const controller = new AbortController(); const timer = setTimeout(() => controller.abort(), timeoutMs);
@@ -77,11 +77,23 @@ export function createVoicebotAdminHandler(d: VoicebotDeps) {
       const { error: stateError } = await db.from("voicebot_patient_state").upsert({ patient_id: patientId, enabled: false, status: "disabled", updated_at: d.now().toISOString() }); if (stateError) throw stateError;
       const { error: queueError } = await db.from("voicebot_sync_queue").delete().eq("patient_id", patientId); if (queueError) throw queueError;
       if (isEnabled(d)) {
-        const base = d.env("VOICEBOT_BASE_URL"), key = d.env("VOICEBOT_PROVISIONING_API_KEY"); if (!base || !key) return failure(requestId, "UPSTREAM_UNAVAILABLE");
-        try {
-          const response = await voicebotJson(d.fetch, `${base.replace(/\/$/, "")}/v1/admin/patients/${encodeURIComponent(patientId)}`, { method: "PUT", headers: { "content-type": "application/json", "x-api-key": key }, body: JSON.stringify({ authorized: false, active: false }) });
-          if (!response.response.ok || !validProvision(response.body, patientId, false, false)) return failure(requestId, upstreamCode(response.response.status));
-        } catch (cause) { return failure(requestId, cause instanceof Error && cause.message === "UPSTREAM_TIMEOUT" ? "UPSTREAM_TIMEOUT" : "UPSTREAM_UNAVAILABLE"); }
+        const base = d.env("VOICEBOT_BASE_URL"), key = d.env("VOICEBOT_API_KEY");
+        // Local disable always wins: the SMRITI gateway stops immediately even
+        // if the optional upstream privacy cleanup is temporarily unavailable.
+        if (!base || !key) {
+          const { error } = await db.from("voicebot_patient_state").update({ last_error_code: "UPSTREAM_UNAVAILABLE" }).eq("patient_id", patientId);
+          if (error) throw error;
+        } else try {
+          const response = await voicebotJson(d.fetch, `${base.replace(/\/$/, "")}/v1/memory/sync`, { method: "POST", headers: { "content-type": "application/json", "x-api-key": key }, body: JSON.stringify({ user_id: patientId, active: false, family_members: [], medicines: [], daily_routines: [] }) });
+          if (!response.response.ok || !validDeactivation(response.body, patientId)) {
+            const { error } = await db.from("voicebot_patient_state").update({ last_error_code: upstreamCode(response.response.status) }).eq("patient_id", patientId);
+            if (error) throw error;
+          }
+        } catch (cause) {
+          const code = cause instanceof Error && cause.message === "UPSTREAM_TIMEOUT" ? "UPSTREAM_TIMEOUT" : "UPSTREAM_UNAVAILABLE";
+          const { error } = await db.from("voicebot_patient_state").update({ last_error_code: code }).eq("patient_id", patientId);
+          if (error) throw error;
+        }
       }
     }
     const data = statusData(await stateFor(db, patientId), patient.lang_code);
@@ -111,9 +123,7 @@ export function createVoicebotSyncWorkerHandler(d: VoicebotDeps) {
           const { error: deleteError } = await db.from("voicebot_sync_queue").delete().eq("patient_id", job.patient_id).eq("lock_token", token); if (deleteError) throw deleteError;
           return { patient_id: job.patient_id, success: true };
         }
-        const base = d.env("VOICEBOT_BASE_URL"), apiKey = d.env("VOICEBOT_API_KEY"), provisioningKey = d.env("VOICEBOT_PROVISIONING_API_KEY"); if (!base || !apiKey || !provisioningKey) throw new Error("UPSTREAM_UNAVAILABLE");
-        const provision = await voicebotJson(d.fetch, `${base.replace(/\/$/, "")}/v1/admin/patients/${encodeURIComponent(job.patient_id)}`, { method: "PUT", headers: { "content-type": "application/json", "x-api-key": provisioningKey }, body: JSON.stringify({ authorized: true, active: true, display_name: patient.data.display_name }) });
-        if (!provision.response.ok || !validProvision(provision.body, job.patient_id, true, true)) throw new Error(upstreamCode(provision.response.status));
+        const base = d.env("VOICEBOT_BASE_URL"), apiKey = d.env("VOICEBOT_API_KEY"); if (!base || !apiKey) throw new Error("UPSTREAM_UNAVAILABLE");
         const payload = { user_id: job.patient_id, external_id: job.patient_id, display_name: patient.data.display_name, language_code: capability(patient.data.lang_code).voicebot_code, timezone: patient.data.timezone, active: true, source_revision: job.revision, schema_version: 1,
           family_members: people.data.map((item: any) => ({ external_id: item.id, name: item.name, relationship: item.relationship, memory_prompt: item.memory_prompt, is_deceased: item.is_deceased })),
           medicines: medications.data.map((item: any) => ({ external_id: item.id, name: item.name, dose: item.dose, active: item.active, days_of_week: item.days_of_week, chosen_time_min: item.chosen_time_min, window_start_min: item.window_start_min, window_end_min: item.window_end_min })),
