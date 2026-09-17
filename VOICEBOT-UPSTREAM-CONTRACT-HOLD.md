@@ -1,37 +1,41 @@
 # VoiceBot upstream authorisation — pending contract confirmation
 
-Status: **do not enable any patient or send patient content upstream** until this
-single live-contract question is answered by the VoiceBot owner.
+Status: **contract resolved; keep the integration disabled** until the VoiceBot
+owner confirms the live backend credential is configured as a dynamic key.
 
 ## Why this exists
 
-The SMRITI-side sync worker was originally prepared for a narrowly scoped dynamic
-patient-provisioning endpoint. The VoiceBot owner reports that the deployed service
-instead uses `POST /v1/memory/sync` plus `SMRITI_API_KEYS`, with no admin router.
-Those are materially different authorisation models. This note prevents us from
-silently choosing one or forgetting to reconcile the difference.
+The SMRITI-side sync worker originally expected a patient-provisioning endpoint.
+The confirmed VoiceBot contract instead uses `POST /v1/memory/sync` and a backend
+credential explicitly configured as `dynamic: true` in `SMRITI_API_KEYS`. A
+successful first sync both provisions the patient and durably grants that dynamic
+key access to the patient UUID. The worker now follows that contract.
 
-## Awaiting from the VoiceBot owner
+## Remaining confirmation from the VoiceBot owner
 
-For a **brand-new random patient UUID** that is not preconfigured, confirm whether
-an ordinary backend credential can successfully call:
+Confirm the deployed backend credential is configured using the dynamic object
+form—not a single-user key or fixed UUID list. Then, for a **brand-new random
+patient UUID** that is not preconfigured, confirm this call succeeds:
 
 ```text
 POST /v1/memory/sync
 { user_id: <new UUID>, active: true, ...complete explicit snapshot arrays }
 ```
 
-They must state whether that operation succeeds without changing
-`SMRITI_API_KEYS`, editing server environment variables, or restarting VoiceBot.
-No keys, patient information, or request bodies are needed in the reply.
+```text
+SMRITI_API_KEYS={"<backend-key>": {"dynamic": true, "id": "backend-primary", "user_ids": []}}
+```
+
+The deployment must expose that environment value to the running process. Do not
+send a key or patient data in the confirmation.
 
 ## Resume decision
 
-### If a new UUID is dynamically accepted
+### Confirmed implementation path
 
-Adapt the SMRITI worker to the deployed VoiceBot contract:
+SMRITI uses the deployed VoiceBot contract:
 
-- remove the upstream provisioning/revocation endpoint dependency;
+- no upstream provisioning/revocation endpoint dependency;
 - use `memory/sync` with a full explicit snapshot and `active: true` to enable;
 - immediately block access locally on disable, then synchronise `active: false`;
 - preserve existing SMRITI RLS, consent, queue, idempotency, redaction, and
@@ -39,7 +43,7 @@ Adapt the SMRITI worker to the deployed VoiceBot contract:
 - update fake-upstream tests to the confirmed endpoint and payload contract;
 - keep the VoiceBot integration kill switch off until staging acceptance.
 
-### If a new UUID needs an allow-list change or restart
+### Contingency if the live key is not dynamic
 
 The live service is static-per-patient. Choose one before enabling real patients:
 
