@@ -38,6 +38,28 @@ function createCallerClient(req: Request): SupabaseClient {
   );
 }
 
+export async function requireDevice(req: Request, patientId: string): Promise<User> {
+  const caller = createCallerClient(req);
+  const { data: { user }, error: userError } = await caller.auth.getUser();
+  if (userError || !user) throw new HttpError(401, 'not authenticated');
+
+  if (
+    user.app_metadata?.is_device !== true
+    || user.app_metadata?.patient_id !== patientId
+  ) throw new HttpError(403, 'device only');
+
+  const { data: patient, error } = await createAdminClient()
+    .from('patients')
+    .select('device_user_id, archived_at')
+    .eq('id', patientId)
+    .maybeSingle();
+  if (error) throw new HttpError(500, 'authorization check failed');
+  if (!patient || patient.archived_at || patient.device_user_id !== user.id) {
+    throw new HttpError(403, 'device revoked');
+  }
+  return user;
+}
+
 export async function requireCaregiver(req: Request, patientId: string): Promise<User> {
   const caller = createCallerClient(req);
   const { data: { user }, error: userError } = await caller.auth.getUser();

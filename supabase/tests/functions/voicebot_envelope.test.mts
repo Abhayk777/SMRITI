@@ -6,7 +6,9 @@ const requestId = "11111111-1111-4111-8111-111111111111";
 const body = async (response: Response) => response.json() as Promise<any>;
 
 test("success envelopes have an opaque request id and data", async () => {
-  assert.deepEqual(await body(success(requestId, { value: 1 })), { ok: true, request_id: requestId, data: { value: 1 } });
+  const response = success(requestId, { value: 1 });
+  assert.equal(response.headers.get("access-control-allow-origin"), "*");
+  assert.deepEqual(await body(response), { ok: true, request_id: requestId, data: { value: 1 } });
 });
 
 test("known failures are sanitised and use their conventional status", async () => {

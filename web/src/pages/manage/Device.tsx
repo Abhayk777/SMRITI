@@ -7,6 +7,7 @@ import { ErrorState, Notice } from '@/components/ui/feedback.tsx'
 import { Skeleton } from '@/components/ui/skeleton.tsx'
 import { useDeviceStatus } from '@/features/device/useDeviceStatus.ts'
 import { PairingPanel } from '@/features/pairing/PairingPanel.tsx'
+import { VoicebotStatusCard } from '@/features/voicebot/VoicebotStatusCard.tsx'
 import { DEVICE_HEALTH_COPY, cn, timeAgo, type DeviceHealth } from '@/lib/utils.ts'
 import { usePatientAccess } from '@/patients/usePatientAccess.ts'
 
@@ -158,6 +159,8 @@ export default function Device() {
           Only a caregiver can connect or replace the tablet on this profile.
         </Notice>
       )}
+
+      <VoicebotStatusCard patientId={patientId} canEdit={canEdit} />
     </>
   )
 }

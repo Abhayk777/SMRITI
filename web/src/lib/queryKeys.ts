@@ -22,6 +22,7 @@ export const qk = {
   memos: (pid: string) => ['memos', pid] as const,
   members: (pid: string) => ['members', pid] as const,
   deviceStatus: (pid: string) => ['device-status', pid] as const,
+  voicebotStatus: (pid: string) => ['voicebot-status', pid] as const,
   dailyReports: (pid: string) => ['daily_report', pid] as const,
   dailyReport: (pid: string, fromDate: string, toDateExclusive: string) =>
     ['daily_report', pid, fromDate, toDateExclusive] as const,

@@ -22,6 +22,7 @@ test('patient updates invalidate overview, device, aggregate, and changed conten
     ['overview'],
     ['patient', patientId],
     ['device-status', patientId],
+    ['voicebot-status', patientId],
     ['daily_report', patientId],
     ['daily_domain', patientId],
     ['people', patientId],
@@ -36,13 +37,14 @@ test('patient heartbeats do not refetch unchanged content tables', () => {
     ['overview'],
     ['patient', patientId],
     ['device-status', patientId],
+    ['voicebot-status', patientId],
     ['daily_report', patientId],
     ['daily_domain', patientId],
   ])
 })
 
 test('missing cached version is treated as content possibly changed', () => {
-  assert.equal(patientUpdateInvalidationKeys(patientId, undefined, 4).length, 9)
+  assert.equal(patientUpdateInvalidationKeys(patientId, undefined, 4).length, 10)
 })
 
 test('flag changes refresh alert caches and all affected counts', () => {

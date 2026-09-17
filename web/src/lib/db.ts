@@ -45,8 +45,9 @@ import type {
   Person,
   RoutineItem,
 } from '@smriti/shared'
-import { ocrPrescriptionResultSchema } from '@smriti/shared'
+import { ocrPrescriptionResultSchema, voicebotAdminResponseSchema } from '@smriti/shared'
 import type { OcrMedicationCandidate } from '@smriti/shared'
+import type { VoicebotAdminResponse } from '@smriti/shared'
 
 import type { DailyDomainRow, DailyReportRow } from './database.types.ts'
 import {
@@ -594,6 +595,40 @@ export async function scanPrescription(
     return { data: null, error: new Error('The prescription reader returned an invalid response.') }
   }
   return { data: parsed.data, error: null }
+}
+
+/**
+ * The caregiver-only Voice Assistant control plane. This calls SMRITI's
+ * narrow Edge Function; it never exposes or contacts the upstream VoiceBot.
+ */
+export async function voicebotAdmin(
+  patientId: string,
+  operation: 'status' | 'enable' | 'disable' | 'retry_sync',
+): Promise<DbResult<NonNullable<VoicebotAdminResponse['data']>>> {
+  if (isMockMode) {
+    return { data: null, error: new Error('Voice Assistant requires a configured Supabase project.') }
+  }
+
+  const { data, error } = await supabase.functions.invoke('voicebot-admin', {
+    body: { operation, patient_id: patientId },
+  })
+  const parsed = voicebotAdminResponseSchema.safeParse(data)
+  if (parsed.success) {
+    if (parsed.data.ok && parsed.data.data) return { data: parsed.data.data, error: null }
+    return { data: null, error: new Error(parsed.data.error?.message ?? 'Voice Assistant could not complete that request.') }
+  }
+  if (error) {
+    const response = (error as Error & { context?: unknown }).context
+    if (response instanceof Response) {
+      const body = await response.clone().json().catch(() => null)
+      const safe = voicebotAdminResponseSchema.safeParse(body)
+      if (safe.success && !safe.data.ok) {
+        return { data: null, error: new Error(safe.data.error?.message ?? 'Voice Assistant could not complete that request.') }
+      }
+    }
+    return { data: null, error }
+  }
+  return { data: null, error: new Error('Voice Assistant returned an invalid response.') }
 }
 
 /* ────────────────────────────────────────────────────────────────────────
