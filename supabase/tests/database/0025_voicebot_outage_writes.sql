@@ -1,0 +1,14 @@
+begin;
+create extension if not exists pgtap with schema extensions;
+select plan(5);
+insert into patients (id,display_name,age,education_years,content_version) values ('ffffffff-0000-4000-8000-000000000001','Async Test',75,8,1);
+insert into voicebot_patient_state (patient_id,enabled,status) values ('ffffffff-0000-4000-8000-000000000001',true,'error');
+insert into people (patient_id,name,relationship,photo_path) values ('ffffffff-0000-4000-8000-000000000001','Person','Daughter','x.jpg');
+insert into medications (patient_id,name,dose,window_start_min,window_end_min,chosen_time_min) values ('ffffffff-0000-4000-8000-000000000001','Med','One',480,600,540);
+insert into routine_items (patient_id,time_min,label_key,icon_asset) values ('ffffffff-0000-4000-8000-000000000001',600,'Walk','walk');
+select is((select count(*) from people where patient_id='ffffffff-0000-4000-8000-000000000001'),1::bigint,'people write succeeds while async sync is errored');
+select is((select count(*) from medications where patient_id='ffffffff-0000-4000-8000-000000000001'),1::bigint,'medication write succeeds while async sync is errored');
+select is((select count(*) from routine_items where patient_id='ffffffff-0000-4000-8000-000000000001'),1::bigint,'routine write succeeds while async sync is errored');
+select is((select content_version from patients where id='ffffffff-0000-4000-8000-000000000001'),4,'tablet content version has exactly its normal three bumps');
+select is((select count(*) from voicebot_sync_queue where patient_id='ffffffff-0000-4000-8000-000000000001'),1::bigint,'VoiceBot work is coalesced asynchronously');
+select * from finish(); rollback;

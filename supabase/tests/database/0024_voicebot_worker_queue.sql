@@ -1,0 +1,10 @@
+begin;
+create extension if not exists pgtap with schema extensions;
+select plan(3);
+insert into patients (id,display_name,age,education_years) values ('eeeeeeee-0000-4000-8000-000000000001','Queue Test',75,8);
+insert into voicebot_patient_state (patient_id,enabled,status,desired_revision) values ('eeeeeeee-0000-4000-8000-000000000001',true,'pending',9);
+insert into voicebot_sync_queue (patient_id,revision,available_at,locked_until,attempts) values ('eeeeeeee-0000-4000-8000-000000000001',9,now()-interval '1 minute',now()-interval '1 second',0);
+select is((select count(*) from claim_voicebot_sync_jobs(1,'11111111-1111-4111-8111-111111111111')),1::bigint,'expired lease is reclaimed once');
+select is((select attempts from voicebot_sync_queue where patient_id='eeeeeeee-0000-4000-8000-000000000001'),1,'reclaim increments attempts once');
+select is((select count(*) from claim_voicebot_sync_jobs(1,'22222222-2222-4222-8222-222222222222')),0::bigint,'active lease is not claimed twice');
+select * from finish(); rollback;

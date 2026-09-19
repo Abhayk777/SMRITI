@@ -81,6 +81,7 @@ export function useSwitchPatient() {
         'memos',
         'members',
         'device-status',
+        'voicebot-status',
         'daily_report',
         'daily_domain',
         'signed-url',

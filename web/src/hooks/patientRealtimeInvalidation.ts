@@ -24,6 +24,7 @@ export function patientUpdateInvalidationKeys(
     qk.overview(),
     qk.patient(patientId),
     qk.deviceStatus(patientId),
+    qk.voicebotStatus(patientId),
     qk.dailyReports(patientId),
     qk.dailyDomains(patientId),
   ]
