@@ -1,8 +1,10 @@
 import { useState } from 'react'
 import {
+  Area,
+  AreaChart,
   CartesianGrid,
+  ComposedChart,
   Line,
-  LineChart,
   ReferenceLine,
   ResponsiveContainer,
   Tooltip,
@@ -71,9 +73,21 @@ function DomainSpark({
   const first = rows.find((r) => r.accuracy !== null)?.accuracy ?? null
   const last = [...rows].reverse().find((r) => r.accuracy !== null)?.accuracy ?? null
   const delta = first !== null && last !== null ? last - first : null
+  const chartData = rows.map((row, index) => {
+    const values = rows
+      .slice(Math.max(0, index - 3), index + 4)
+      .map((item) => item.accuracy)
+      .filter((value): value is number => value !== null)
+
+    return {
+      ...row,
+      mean: values.length ? values.reduce((sum, value) => sum + value, 0) / values.length : null,
+    }
+  })
+  const gradientId = `domain-${domain.replace(/[^a-z0-9]/gi, '')}`
 
   return (
-    <div className="stitched rounded-card border-[#E7D9C2] bg-ivory p-4 [--stitch:var(--color-sage)]">
+    <div className="stitched rounded-card border-[#E7D9C2] bg-ivory p-5 [--stitch:var(--color-sage)]">
       <div className="flex items-baseline justify-between gap-2">
         <p className="text-[14px] font-semibold">{DOMAIN_LABEL[domain] ? t(DOMAIN_LABEL[domain] as 'domains.memory') : domain}</p>
         <span
@@ -86,11 +100,30 @@ function DomainSpark({
             : t('trends.points', { count: `${delta >= 0 ? '+' : ''}${Math.round(delta * 100)}` })}
         </span>
       </div>
-      <div className="mt-2 h-20">
+      <div className="mt-1 flex items-center justify-between gap-3">
+        <span className="text-[12px] text-muted">{t('trends.thatDay')}</span>
+        <span className="numeral text-[15px] font-semibold text-ink">
+          {last === null ? '—' : t('trends.percentCorrect', { percent: Math.round(last * 100) })}
+        </span>
+      </div>
+      <div className="mt-3 h-36">
         <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={rows} margin={{ top: 4, right: 2, bottom: 0, left: 2 }}>
+          <AreaChart data={chartData} margin={{ top: 6, right: 4, bottom: 0, left: 4 }}>
+            <defs>
+              <linearGradient id={gradientId} x1="0" x2="0" y1="0" y2="1">
+                <stop offset="0%" stopColor={SERIES.primary} stopOpacity={0.34} />
+                <stop offset="95%" stopColor={SERIES.primary} stopOpacity={0.02} />
+              </linearGradient>
+            </defs>
+            <CartesianGrid stroke={CHART.grid} vertical={false} />
             <YAxis domain={[0.3, 1]} hide />
-            <XAxis dataKey="day" hide />
+            <XAxis
+              dataKey="day"
+              {...axisProps}
+              height={20}
+              minTickGap={38}
+              tickFormatter={(value: string) => formatDayShort(value).slice(4)}
+            />
             {changepoint && (
               <ReferenceLine x={changepoint} stroke={CHART.axis} strokeDasharray="3 3" />
             )}
@@ -103,18 +136,35 @@ function DomainSpark({
                 />
               }
             />
-            <Line
+            <Area
+              name={t('trends.thatDay')}
               type="monotone"
               dataKey="accuracy"
-              stroke={SERIES.primary}
+              stroke={SERIES.primarySoft}
+              strokeWidth={1.5}
+              fill={`url(#${gradientId})`}
+              dot={false}
+              activeDot={{ r: CHART.activeDotRadius, strokeWidth: 2, stroke: CHART.surface }}
+              connectNulls
+              isAnimationActive={false}
+            />
+            <Line
+              name={t('trends.sevenDay')}
+              type="monotone"
+              dataKey="mean"
+              stroke={SERIES.trend}
               strokeWidth={CHART.strokeWidth}
               dot={false}
               activeDot={{ r: CHART.activeDotRadius, strokeWidth: 2, stroke: CHART.surface }}
               connectNulls
               isAnimationActive={false}
             />
-          </LineChart>
+          </AreaChart>
         </ResponsiveContainer>
+      </div>
+      <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1">
+        <LegendItem color={SERIES.primarySoft} label={t('trends.thatDay')} />
+        <LegendItem color={SERIES.trend} label={t('trends.sevenDay')} />
       </div>
     </div>
   )
@@ -159,6 +209,8 @@ export default function Trends() {
 
   const domainRows = byDomain(domains.data ?? [])
   const hasPlay = rows.some((row) => row.played)
+  const latestAccuracy = [...accuracyData].reverse().find((row) => row.accuracy !== null) ?? null
+  const latestMean = [...accuracyData].reverse().find((row) => row.mean !== null) ?? null
 
   return (
     <>
@@ -223,9 +275,39 @@ export default function Trends() {
                 ]),
             }}
           >
-            <div className="h-64">
+            <div className="mb-5 grid gap-3 sm:grid-cols-2">
+              <div className="rounded-xl bg-sand/65 px-4 py-3">
+                <p className="text-[12px] font-semibold uppercase tracking-[0.1em] text-muted">
+                  {t('trends.thatDay')}
+                </p>
+                <p className="numeral mt-1 text-2xl font-bold text-ink">
+                  {latestAccuracy?.accuracy === null || !latestAccuracy
+                    ? '—'
+                    : t('trends.percentCorrect', { percent: Math.round(latestAccuracy.accuracy * 100) })}
+                </p>
+                {latestAccuracy && <p className="mt-0.5 text-xs text-muted">{formatDayShort(latestAccuracy.day)}</p>}
+              </div>
+              <div className="rounded-xl bg-clay/70 px-4 py-3">
+                <p className="text-[12px] font-semibold uppercase tracking-[0.1em] text-muted">
+                  {t('trends.sevenDay')}
+                </p>
+                <p className="numeral mt-1 text-2xl font-bold text-ink">
+                  {latestMean?.mean === null || !latestMean
+                    ? '—'
+                    : t('trends.percentCorrect', { percent: Math.round(latestMean.mean * 100) })}
+                </p>
+                {latestMean && <p className="mt-0.5 text-xs text-muted">{formatDayShort(latestMean.day)}</p>}
+              </div>
+            </div>
+            <div className="h-80 sm:h-[22rem]">
               <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={accuracyData} margin={{ top: 8, right: 8, bottom: 0, left: -18 }}>
+                <ComposedChart data={accuracyData} margin={{ top: 10, right: 12, bottom: 0, left: -12 }}>
+                  <defs>
+                    <linearGradient id="accuracy-area" x1="0" x2="0" y1="0" y2="1">
+                      <stop offset="0%" stopColor={SERIES.primary} stopOpacity={0.28} />
+                      <stop offset="95%" stopColor={SERIES.primary} stopOpacity={0.015} />
+                    </linearGradient>
+                  </defs>
                   <CartesianGrid stroke={CHART.grid} vertical={false} />
                   <XAxis
                     dataKey="day"
@@ -260,12 +342,13 @@ export default function Trends() {
                       />
                     }
                   />
-                  <Line
+                  <Area
                     name={t('trends.thatDay')}
                     type="monotone"
                     dataKey="accuracy"
                     stroke={SERIES.primarySoft}
-                    strokeWidth={CHART.strokeWidth}
+                    strokeWidth={1.75}
+                    fill="url(#accuracy-area)"
                     dot={false}
                     activeDot={{ r: CHART.activeDotRadius, strokeWidth: 2, stroke: CHART.surface }}
                     connectNulls
@@ -282,7 +365,7 @@ export default function Trends() {
                     connectNulls
                     isAnimationActive={false}
                   />
-                </LineChart>
+                </ComposedChart>
               </ResponsiveContainer>
             </div>
           </ChartFrame>
@@ -301,7 +384,7 @@ export default function Trends() {
                 description={t('trends.noDomainDescription')}
               />
             ) : (
-              <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              <div className="mt-4 grid gap-4 lg:grid-cols-2">
                 {Object.entries(domainRows).map(([domain, domainData]) => (
                   <DomainSpark
                     key={domain}
