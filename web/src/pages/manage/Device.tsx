@@ -8,7 +8,8 @@ import { Skeleton } from '@/components/ui/skeleton.tsx'
 import { useDeviceStatus } from '@/features/device/useDeviceStatus.ts'
 import { PairingPanel } from '@/features/pairing/PairingPanel.tsx'
 import { VoicebotStatusCard } from '@/features/voicebot/VoicebotStatusCard.tsx'
-import { DEVICE_HEALTH_COPY, cn, timeAgo, type DeviceHealth } from '@/lib/utils.ts'
+import { useTranslation } from '@/i18n/index.ts'
+import { cn, type DeviceHealth } from '@/lib/utils.ts'
 import { usePatientAccess } from '@/patients/usePatientAccess.ts'
 
 /**
@@ -51,22 +52,26 @@ function Detail({ label, value }: { label: string; value: string }) {
 export default function Device() {
   const { patientId, canEdit, patient } = usePatientAccess()
   const device = useDeviceStatus(patientId)
+  const { t, formatRelativeTime, formatNumber } = useTranslation()
 
   const style = HEALTH_STYLE[device.health]
   const Icon = style.icon
-  const copy = DEVICE_HEALTH_COPY[device.health]
+  const copy = {
+    label: t(`device.health.${device.health}.label` as const),
+    detail: t(`device.health.${device.health}.detail` as const),
+  }
   const firstName = patient?.display_name.split(' ')[0] ?? 'the patient'
 
   return (
     <>
       <PageHeader
-        eyebrow="Manage"
-        title="The tablet"
-        description={`Whether ${firstName}'s tablet is reaching Smriti, and what it is currently running. Everything you see anywhere else in this app came through here.`}
+        eyebrow={t('device.eyebrow')}
+        title={t('device.title')}
+        description={t('device.description', { name: firstName })}
         actions={
           <Button variant="ghost" size="sm" onClick={() => void device.refetch()}>
             <RefreshCw className={cn('size-4', device.isFetching && 'animate-spin')} />
-            Check now
+            {t('device.checkNow')}
           </Button>
         }
       />
@@ -88,7 +93,7 @@ export default function Device() {
               </p>
               {device.lastSeenAt && (
                 <p className="mt-2 text-[13.5px] text-muted">
-                  Last heard from {timeAgo(device.lastSeenAt)}.
+                  {t('device.lastHeard', { time: formatRelativeTime(device.lastSeenAt) })}
                 </p>
               )}
             </div>
@@ -96,25 +101,25 @@ export default function Device() {
 
           {device.isPaired && (
             <dl className="mt-6 grid gap-5 border-t border-ink/[0.08] pt-5 sm:grid-cols-2 lg:grid-cols-4">
-              <Detail label="App version" value={device.appVersion ?? 'Awaiting first sync'} />
+              <Detail label={t('device.appVersion')} value={device.appVersion ?? t('device.awaitingFirstSync')} />
               <Detail
-                label="Content version"
-                value={device.contentVersion !== null ? `v${device.contentVersion}` : '—'}
+                label={t('device.contentVersion')}
+                value={device.contentVersion !== null ? `v${formatNumber(device.contentVersion)}` : '—'}
               />
               <Detail
-                label="Waiting to upload"
+                label={t('device.waitingToUpload')}
                 value={
                   device.pendingEvents === null
                     ? '—'
-                    : `${device.pendingEvents} event${device.pendingEvents === 1 ? '' : 's'}`
+                    : t('device.eventsWaiting', { count: formatNumber(device.pendingEvents), suffix: device.pendingEvents === 1 ? '' : 's' })
                 }
               />
               <Detail
-                label="Clock difference"
+                label={t('device.clockDifference')}
                 value={
                   device.clockSkewMs === null
                     ? '—'
-                    : `${Math.round(device.clockSkewMs / 1000)}s`
+                    : `${formatNumber(Math.round(device.clockSkewMs / 1000))}s`
                 }
               />
             </dl>
@@ -124,30 +129,24 @@ export default function Device() {
 
       {device.health === 'offline' && (
         <Notice tone="warn" className="mt-5">
-          Local scheduled reminders and chimes continue on the tablet while it is offline.
-          Sync, remote visibility, and escalation updates stop until it reconnects, so the
-          Today, Trends and Engagement pages may be out of date. Usually it is the charger or
-          the wifi.
+          {t('device.offlineNotice')}
         </Notice>
       )}
 
       {(device.pendingEvents ?? 0) > 0 && (
         <Notice className="mt-5">
-          The tablet has {device.pendingEvents} thing
-          {device.pendingEvents === 1 ? '' : 's'} it has not managed to send yet. It will
-          catch up on its own once it has a connection — nothing is lost in the meantime.
+          {t('device.pendingEventsNotice', { count: formatNumber(device.pendingEvents ?? 0), suffix: device.pendingEvents === 1 ? '' : 's' })}
         </Notice>
       )}
 
       {canEdit && (
         <div className="mt-8">
           <h2 className="mb-4 text-[19px]">
-            {device.isPaired ? 'Connect a different tablet' : 'Connect a tablet'}
+            {device.isPaired ? t('device.connectDifferentTablet') : t('device.connectTablet')}
           </h2>
           {device.isPaired && (
             <Notice className="mb-4">
-              This profile already has a tablet connected. Generating a new code is for
-              replacing it — after a factory reset, or a new device.
+              {t('device.connectedTabletNotice')}
             </Notice>
           )}
           <PairingPanel patientId={patientId} patientName={firstName} />
@@ -156,7 +155,7 @@ export default function Device() {
 
       {!canEdit && (
         <Notice className="mt-8">
-          Only a caregiver can connect or replace the tablet on this profile.
+          {t('device.caregiverOnlyNotice')}
         </Notice>
       )}
 

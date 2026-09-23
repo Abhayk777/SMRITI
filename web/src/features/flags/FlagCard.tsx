@@ -7,6 +7,7 @@ import { Card } from '@/components/ui/card.tsx'
 import { cn, formatDayShort } from '@/lib/utils.ts'
 import { usePatientAccess } from '@/patients/usePatientAccess.ts'
 import { DOMAIN_LABEL } from '@/features/reports/useDailyReport.ts'
+import { useTranslation } from '@/i18n/index.ts'
 import { FLAG_COPY, SEVERITY_COPY, readZScores, useAcknowledgeFlag } from './useFlags.ts'
 import type { Flag } from '@smriti/shared'
 
@@ -23,6 +24,7 @@ import type { Flag } from '@smriti/shared'
  * evidence and cannot clear it (§15 rule 8).
  */
 export function FlagCard({ flag, patientId }: { flag: Flag; patientId: string }) {
+  const { t } = useTranslation()
   const [open, setOpen] = useState(false)
   const { canEdit } = usePatientAccess()
   const acknowledge = useAcknowledgeFlag(patientId)
@@ -48,18 +50,18 @@ export function FlagCard({ flag, patientId }: { flag: Flag; patientId: string })
                 />
               )}
               <Badge tone={severity.tone} size="sm" className="relative">
-                {severity.label}
+                {t(severity.label)}
               </Badge>
             </span>
             {flag.domains.length > 0 && (
               <span className="text-[12.5px] text-muted">
-                {flag.domains.map((d) => DOMAIN_LABEL[d] ?? d).join(', ')}
+                {flag.domains.map((d) => DOMAIN_LABEL[d] ? t(DOMAIN_LABEL[d] as 'domains.memory') : d).join(', ')}
               </span>
             )}
           </div>
-          <h3 className="mt-2 text-[18px] leading-snug">{copy.title}</h3>
+          <h3 className="mt-2 text-[18px] leading-snug">{t(copy.title)}</h3>
           <p className="mt-1.5 max-w-[58ch] text-[14.5px] leading-relaxed text-body">
-            {copy.body}
+            {t(copy.body)}
           </p>
         </div>
 
@@ -71,14 +73,14 @@ export function FlagCard({ flag, patientId }: { flag: Flag; patientId: string })
             disabled={acknowledge.isPending}
           >
             <Check className="size-4" />
-            {acknowledge.isPending ? 'Clearing…' : 'I have seen this'}
+            {acknowledge.isPending ? t('flags.clearing') : t('flags.seen')}
           </Button>
         )}
       </div>
 
       {acknowledge.error && (
         <p role="alert" className="mt-3 text-[13px] font-medium text-alert">
-          This flag could not be cleared. Nothing changed; please try again.
+          {t('flags.clearFailed')}
         </p>
       )}
 
@@ -88,7 +90,7 @@ export function FlagCard({ flag, patientId }: { flag: Flag; patientId: string })
         aria-expanded={open}
         className="mt-3 flex items-center gap-1.5 text-[13.5px] font-semibold text-bark hover:underline"
       >
-        See the evidence
+        {t('flags.evidence')}
         <ChevronDown className={cn('size-4 transition-transform', open && 'rotate-180')} />
       </button>
 
@@ -96,39 +98,39 @@ export function FlagCard({ flag, patientId }: { flag: Flag; patientId: string })
         <dl className="mt-4 grid gap-x-8 gap-y-3 border-t border-ink/[0.08] pt-4 text-[13.5px] sm:grid-cols-2">
           {flag.changepoint_date && (
             <div>
-              <dt className="font-semibold text-muted">Change appears to start</dt>
+              <dt className="font-semibold text-muted">{t('flags.changeStart')}</dt>
               <dd className="mt-0.5">{formatDayShort(flag.changepoint_date)}</dd>
             </div>
           )}
           {flag.confidence !== null && (
             <div>
-              <dt className="font-semibold text-muted">How sure Smriti is</dt>
+              <dt className="font-semibold text-muted">{t('flags.confidence')}</dt>
               <dd className="mt-0.5">
-                {Math.round(flag.confidence * 100)}% — not a diagnosis
+                {t('flags.confidenceValue', { percent: Math.round(flag.confidence * 100) })}
               </dd>
             </div>
           )}
           {flag.baseline_window && (
             <div>
-              <dt className="font-semibold text-muted">Compared against</dt>
+              <dt className="font-semibold text-muted">{t('flags.compared')}</dt>
               <dd className="mt-0.5">{flag.baseline_window.replace('..', ' to ')}</dd>
             </div>
           )}
           {flag.recent_window && (
             <div>
-              <dt className="font-semibold text-muted">Recent period</dt>
+              <dt className="font-semibold text-muted">{t('flags.recent')}</dt>
               <dd className="mt-0.5">{flag.recent_window.replace('..', ' to ')}</dd>
             </div>
           )}
           {zScores.length > 0 && (
             <div className="sm:col-span-2">
               <dt className="font-semibold text-muted">
-                How far from their own usual, by area
+                {t('flags.usualByArea')}
               </dt>
               <dd className="mt-1.5 flex flex-wrap gap-2">
                 {zScores.map(([domain, z]) => (
                   <Badge key={domain} tone={z < -2 ? 'alert' : 'gold'} size="sm">
-                    {DOMAIN_LABEL[domain] ?? domain}: {z > 0 ? '+' : ''}
+                    {DOMAIN_LABEL[domain] ? t(DOMAIN_LABEL[domain] as 'domains.memory') : domain}: {z > 0 ? '+' : ''}
                     {z.toFixed(1)}
                   </Badge>
                 ))}
@@ -137,10 +139,9 @@ export function FlagCard({ flag, patientId }: { flag: Flag; patientId: string })
           )}
           {flag.evidence_session_ids && flag.evidence_session_ids.length > 0 && (
             <div className="sm:col-span-2">
-              <dt className="font-semibold text-muted">Based on</dt>
+              <dt className="font-semibold text-muted">{t('flags.basedOn')}</dt>
               <dd className="mt-0.5">
-                {flag.evidence_session_ids.length} session
-                {flag.evidence_session_ids.length === 1 ? '' : 's'} on the tablet
+                {t('flags.sessions', { count: flag.evidence_session_ids.length })}
               </dd>
             </div>
           )}

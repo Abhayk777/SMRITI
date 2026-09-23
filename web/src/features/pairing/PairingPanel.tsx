@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button.tsx'
 import { Card } from '@/components/ui/card.tsx'
 import { ErrorState, Notice } from '@/components/ui/feedback.tsx'
 import { Skeleton } from '@/components/ui/skeleton.tsx'
+import { useTranslation } from '@/i18n/index.ts'
 import { PairingCode } from './PairingCode.tsx'
 import { PairingQr } from './PairingQr.tsx'
 import { usePairingToken, useTokenCountdown } from './usePairingToken.ts'
@@ -21,6 +22,7 @@ export function PairingPanel({
   patientId: string
   patientName: string
 }) {
+  const { t } = useTranslation()
   const pairing = usePairingToken(patientId)
   const countdown = useTokenCountdown(pairing.data?.expires_at)
 
@@ -34,11 +36,9 @@ export function PairingPanel({
           <Smartphone className="size-5" />
         </span>
         <div className="min-w-0">
-          <h3 className="text-lg">Connect {patientName}&rsquo;s tablet</h3>
+          <h3 className="text-lg">{t('pairing.title', { name: patientName })}</h3>
           <p className="mt-1.5 max-w-[52ch] text-[15px] leading-relaxed text-body">
-            Open Smriti on the tablet and choose <strong>Connect to my family</strong>. Then
-            either point its camera at this code, or read the letters out to whoever is
-            sitting with it.
+            {t('pairing.description')}
           </p>
         </div>
       </div>
@@ -51,7 +51,7 @@ export function PairingPanel({
             onClick={() => pairing.mutate()}
             disabled={pairing.isPending}
           >
-            {pairing.isPending ? 'Generating…' : 'Generate a pairing code'}
+            {pairing.isPending ? t('pairing.generating') : t('pairing.generate')}
           </Button>
           {pairing.isPending && (
             <div className="mt-6 flex flex-wrap items-center gap-6">
@@ -72,21 +72,18 @@ export function PairingPanel({
 
           <div className="min-w-0 flex-1">
             <p className="mb-2 text-[13px] font-semibold uppercase tracking-[0.12em] text-muted">
-              Or read this out
+              {t('pairing.readOut')}
             </p>
             <PairingCode token={token} />
 
             <div className="mt-5">
               {countdown.expired ? (
                 <Notice tone="warn">
-                  This code has expired. Codes last thirty minutes so a photograph of one
-                  cannot be used later — generate a fresh one and try again.
+                  {t('pairing.expired')}
                 </Notice>
               ) : (
                 <p className="text-sm text-muted">
-                  Expires in{' '}
-                  <span className="numeral text-ink">{countdown.display ?? '—'}</span>. Codes
-                  are single-use.
+                  {t('pairing.expiresIn', { time: countdown.display ?? '—' })} {t('pairing.singleUse')}
                 </p>
               )}
             </div>
@@ -99,7 +96,7 @@ export function PairingPanel({
               disabled={pairing.isPending}
             >
               <RefreshCw className="size-4" />
-              {pairing.isPending ? 'Generating…' : 'Generate a new code'}
+              {pairing.isPending ? t('pairing.generating') : t('pairing.generateNew')}
             </Button>
           </div>
         </div>

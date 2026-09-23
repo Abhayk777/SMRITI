@@ -9,6 +9,7 @@ import { ErrorState } from '@/components/ui/feedback.tsx'
 import * as db from '@/lib/db.ts'
 import { qk } from '@/lib/queryKeys.ts'
 import { FullPageLoading } from './FullPageLoading.tsx'
+import { useTranslation } from '@/i18n/index.ts'
 
 /**
  * A one-shot flag set by the sign-in screen. The splash plays after a fresh
@@ -29,6 +30,7 @@ export const FRESH_SIGNIN_KEY = 'smriti:fresh-signin'
  * elsewhere in the app is a bug waiting to disagree with this one.
  */
 export function RootRedirect() {
+  const { t } = useTranslation()
   const [splashDone, setSplashDone] = useState(
     () => sessionStorage.getItem(FRESH_SIGNIN_KEY) !== '1',
   )
@@ -68,7 +70,7 @@ export function RootRedirect() {
     )
   }
 
-  if (isPending) return <FullPageLoading label="Finding your family" />
+  if (isPending) return <FullPageLoading label={t('common.findingFamily')} />
 
   if (error) {
     return (

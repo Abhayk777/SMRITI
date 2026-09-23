@@ -23,12 +23,14 @@ import {
   type MedicineDraft,
 } from '@/features/medicines/MedicineForm.tsx'
 import { OcrReview } from '@/features/medicines/OcrReview.tsx'
+import { useTranslation } from '@/i18n/index.ts'
+import type { TranslationKey } from '@/i18n/keys.ts'
 import {
   useMedicines,
   useMedicineBatchMutation,
   useMedicineMutation,
 } from '@/features/medicines/useMedicines.ts'
-import { describeDays, formatMinutes, partOfDay } from '@/lib/utils.ts'
+import { partOfDay } from '@/lib/utils.ts'
 import { usePatientAccess } from '@/patients/usePatientAccess.ts'
 import type { Medication } from '@smriti/shared'
 
@@ -45,6 +47,7 @@ import type { Medication } from '@smriti/shared'
  */
 export default function Medicines() {
   const { patientId, canEdit } = usePatientAccess()
+  const { formatDaysOfWeek, formatTimeMinutes, t } = useTranslation()
   const medicines = useMedicines(patientId)
   const { save, remove } = useMedicineMutation<MedicineDraft>(patientId)
   const saveScanned = useMedicineBatchMutation(patientId)
@@ -64,20 +67,20 @@ export default function Medicines() {
   return (
     <>
       <PageHeader
-        eyebrow="Manage"
-        title="Medicines"
-        description="A gentle chime at their hour, in their language. If they do not respond, Smriti waits, chimes again, and only then calls you — one call covering everything due, never one per pill."
+        eyebrow={t('medicines.eyebrow')}
+        title={t('medicines.title')}
+        description={t('medicines.description')}
         actions={
           canEdit &&
           !draft && !scanning && (
             <>
               <Button variant="outline" onClick={() => setScanning(true)}>
                 <Camera className="size-4" />
-                Scan prescription
+                {t('medicines.scan')}
               </Button>
               <Button variant="accent" onClick={() => setDraft(emptyMedicine())}>
                 <Plus className="size-4" />
-                Add a medicine
+                {t('medicines.add')}
               </Button>
             </>
           )
@@ -86,14 +89,13 @@ export default function Medicines() {
 
       {!canEdit && (
         <Notice className="mb-6">
-          You have view-only access to this profile, so medicines cannot be changed here.
+          {t('medicines.viewOnly')}
         </Notice>
       )}
 
       {canEdit && !draft && !scanning && (
         <Notice className="mb-6">
-          Scan a printed or handwritten prescription photo or PDF, then check every medicine
-          before it reaches the tablet.
+          {t('medicines.scanHint')}
         </Notice>
       )}
 
@@ -102,14 +104,14 @@ export default function Medicines() {
       {draft && (
         <Card padding="lg" className="mb-6">
           <h2 className="mb-5 text-[19px]">
-            {draft.id ? `Edit ${draft.name || 'this medicine'}` : 'Add a medicine'}
+            {draft.id ? t('medicines.editThis', { name: draft.name || t('medicines.title').toLowerCase() }) : t('medicines.add')}
           </h2>
           <MedicineForm
             patientId={patientId}
             value={draft}
             onChange={setDraft}
             saving={save.isPending}
-            submitLabel={draft.id ? 'Save changes' : 'Add this medicine'}
+            submitLabel={draft.id ? t('common.save') : t('medicines.add')}
             onCancel={() => setDraft(null)}
             onSubmit={() => save.mutate(draft, { onSuccess: () => setDraft(null) })}
           />
@@ -142,18 +144,18 @@ export default function Medicines() {
       {!medicines.isPending && rows.length === 0 && !draft && !scanning && (
         <EmptyState
           icon={<Pill className="size-5" />}
-          title="No medicines yet"
-          description="Add the ones that matter most first, one at a time."
+          title={t('medicines.noMedicines')}
+          description={t('medicines.noMedicinesDescription')}
           action={
             canEdit && (
               <div className="flex flex-wrap justify-center gap-2">
                 <Button onClick={() => setDraft(emptyMedicine())}>
                   <Plus className="size-4" />
-                  Add by hand
+                  {t('medicines.addByHand')}
                 </Button>
                 <Button variant="outline" onClick={() => setScanning(true)}>
                   <Camera className="size-4" />
-                  Scan prescription
+                  {t('medicines.scan')}
                 </Button>
               </div>
             )
@@ -165,7 +167,7 @@ export default function Medicines() {
         grouped[slot]?.length ? (
           <section key={slot} className="mb-6">
             <h2 className="mb-3 text-[13px] font-semibold uppercase tracking-[0.12em] text-muted">
-              {slot}
+              {t(`format.${slot.toLowerCase()}` as TranslationKey)}
             </h2>
             <div className="space-y-3">
               {grouped[slot]
@@ -175,7 +177,7 @@ export default function Medicines() {
                     <StoredPatientPhoto
                       patientId={patientId}
                       path={med.pill_photo_path}
-                      alt={`Photo of ${med.name}`}
+                      alt={t('common.photoOf', { name: med.name })}
                       className="size-11 bg-terracotta/12 text-terracotta"
                       fallback={<Pill className="size-5" />}
                     />
@@ -186,20 +188,19 @@ export default function Medicines() {
                       <div className="mt-2 flex flex-wrap gap-2">
                         <Badge tone="warm" size="sm">
                           <Clock className="size-3" />
-                          {formatMinutes(med.chosen_time_min)}
+                          {formatTimeMinutes(med.chosen_time_min)}
                         </Badge>
                         <Badge tone="neutral" size="sm">
-                          {describeDays(med.days_of_week)}
+                          {formatDaysOfWeek(med.days_of_week)}
                         </Badge>
                         <Badge tone="outline" size="sm">
-                          Any time {formatMinutes(med.window_start_min)}–
-                          {formatMinutes(med.window_end_min)}
+                          {t('medicines.anyTime', { start: formatTimeMinutes(med.window_start_min), end: formatTimeMinutes(med.window_end_min) })}
                         </Badge>
                       </div>
                       <StoredPatientVoice
                         patientId={patientId}
                         path={med.voice_path}
-                        label={`Voice recording for ${med.name}`}
+                        label={t('medicines.voiceRecordingFor', { name: med.name })}
                       />
                     </div>
 
@@ -208,7 +209,7 @@ export default function Medicines() {
                         <Button
                           variant="ghost"
                           size="icon-sm"
-                          aria-label={`Edit ${med.name}`}
+                          aria-label={t('medicines.edit', { name: med.name })}
                           onClick={() => setDraft(toDraft(med))}
                         >
                           <Pencil className="size-4" />
@@ -216,7 +217,7 @@ export default function Medicines() {
                         <Button
                           variant="ghost"
                           size="icon-sm"
-                          aria-label={`Stop ${med.name}`}
+                          aria-label={t('medicines.stopTitle', { name: med.name })}
                           onClick={() => setConfirmRemove(med)}
                         >
                           <Trash2 className="size-4" />
@@ -236,15 +237,14 @@ export default function Medicines() {
       >
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Stop reminding about {confirmRemove?.name}?</DialogTitle>
+            <DialogTitle>{t('medicines.stopTitle', { name: confirmRemove?.name ?? '' })}</DialogTitle>
             <DialogDescription>
-              The chime stops and no more calls will be placed about this one. The record of
-              doses already taken stays intact, so your reports do not change retrospectively.
+              {t('medicines.stopDescription')}
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
             <Button variant="ghost" onClick={() => setConfirmRemove(null)}>
-              Keep it
+              {t('medicines.keep')}
             </Button>
             <Button
               variant="danger"
@@ -254,7 +254,7 @@ export default function Medicines() {
                 remove.mutate(confirmRemove.id, { onSuccess: () => setConfirmRemove(null) })
               }}
             >
-              {remove.isPending ? 'Stopping…' : 'Stop reminders'}
+              {remove.isPending ? t('medicines.stopping') : t('medicines.stop')}
             </Button>
           </DialogFooter>
         </DialogContent>

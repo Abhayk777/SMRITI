@@ -8,8 +8,9 @@ import { EmptyState, ErrorState } from '@/components/ui/feedback.tsx'
 import { SkeletonRow } from '@/components/ui/skeleton.tsx'
 import { MEMO_TAG_COPY, useMarkMemoRead, useMemos } from '@/features/memos/useMemos.ts'
 import { useSignedUrl } from '@/hooks/useMediaUpload.ts'
+import { useTranslation } from '@/i18n/index.ts'
 import { BUCKET } from '@/lib/db.ts'
-import { cn, formatDuration, timeAgo } from '@/lib/utils.ts'
+import { cn } from '@/lib/utils.ts'
 import { usePatientAccess } from '@/patients/usePatientAccess.ts'
 import type { Memo } from '@smriti/shared'
 
@@ -36,6 +37,7 @@ function MemoRow({ memo, patientId, canEdit }: { memo: Memo; patientId: string; 
 
   const markRead = useMarkMemoRead(patientId)
   const signed = useSignedUrl(patientId, BUCKET.memos, memo.storage_path, wanted)
+  const { formatDuration, formatRelativeTime, t } = useTranslation()
 
   const toggle = () => {
     if (!wanted) {
@@ -72,7 +74,7 @@ function MemoRow({ memo, patientId, canEdit }: { memo: Memo; patientId: string; 
             type="button"
             onClick={toggle}
             disabled={signed.isPending && wanted}
-            aria-label={playing ? 'Pause' : 'Play this message'}
+            aria-label={playing ? t('messages.pause') : t('messages.play')}
             className="relative grid size-12 place-items-center rounded-full bg-terracotta text-ivory ring-4 ring-clay transition-[background-color,transform] duration-200 hover:scale-105 hover:bg-terracotta-deep disabled:opacity-60"
           >
             {playing ? <Pause className="size-5" /> : <Play className="size-5 translate-x-0.5" />}
@@ -83,16 +85,16 @@ function MemoRow({ memo, patientId, canEdit }: { memo: Memo; patientId: string; 
           <div className="flex flex-wrap items-center gap-2">
             {memo.context_tag && (
               <Badge tone={unread ? 'warm' : 'neutral'} size="sm">
-                {MEMO_TAG_COPY[memo.context_tag] ?? memo.context_tag}
+                {MEMO_TAG_COPY[memo.context_tag] ? t(MEMO_TAG_COPY[memo.context_tag] as 'messages.tags.memory') : memo.context_tag}
               </Badge>
             )}
             <span className="text-[12.5px] text-muted">
-              {timeAgo(new Date(memo.recorded_at).toISOString())} ·{' '}
+              {formatRelativeTime(new Date(memo.recorded_at).toISOString())} ·{' '}
               {formatDuration(memo.duration_ms)}
             </span>
             {unread && (
               <Badge tone="gold" size="sm">
-                New
+                {t('messages.new')}
               </Badge>
             )}
           </div>
@@ -101,31 +103,31 @@ function MemoRow({ memo, patientId, canEdit }: { memo: Memo; patientId: string; 
             <p className="mt-2 font-heading text-[17px] leading-snug">“{memo.transcript}”</p>
           ) : (
             <p className="mt-2 text-[14.5px] italic text-muted">
-              No transcript for this one — press play to hear it.
+              {t('messages.noTranscript')}
             </p>
           )}
 
           {wanted && signed.isPending && (
-            <p className="mt-2 text-[13px] text-muted">Fetching the audio…</p>
+            <p className="mt-2 text-[13px] text-muted">{t('messages.fetching')}</p>
           )}
           {wanted && signed.error && (
             <p role="alert" className="mt-2 text-[13px] font-medium text-alert">
-              That recording could not be loaded. It may have been removed.
+              {t('messages.loadFailed')}
             </p>
           )}
           {playbackError && (
             <p role="alert" className="mt-2 text-[13px] font-medium text-alert">
-              The recording loaded, but playback could not begin. It is still marked unread.
+              {t('messages.playbackFailed')}
             </p>
           )}
           {markRead.error && (
             <p role="alert" className="mt-2 text-[13px] font-medium text-alert">
-              The recording is playing, but Smriti could not mark it as read. Try again later.
+              {t('messages.markReadFailed')}
             </p>
           )}
           {!canEdit && unread && wanted && (
             <p className="mt-2 text-[12.5px] text-muted">
-              View-only access: listening will not change its unread status.
+              {t('messages.viewOnly')}
             </p>
           )}
           {signed.data && (
@@ -159,6 +161,7 @@ function MemoRow({ memo, patientId, canEdit }: { memo: Memo; patientId: string; 
 export default function Messages() {
   const { patientId, patient, canEdit } = usePatientAccess()
   const memos = useMemos(patientId)
+  const { t } = useTranslation()
 
   const rows = memos.data ?? []
   const unreadCount = rows.filter((memo) => !memo.read_at).length
@@ -167,12 +170,12 @@ export default function Messages() {
   return (
     <>
       <PageHeader
-        eyebrow="Messages"
-        title={`From ${firstName}`}
+        eyebrow={t('messages.eyebrow')}
+        title={t('messages.title', { name: firstName })}
         description={
           unreadCount > 0
-            ? `${unreadCount} you have not listened to yet.`
-            : 'Voice notes and memories recorded on the tablet. The newest are first.'
+            ? t('messages.unreadDescription', { count: unreadCount })
+            : t('messages.description')
         }
       />
 
@@ -184,8 +187,8 @@ export default function Messages() {
         {!memos.isPending && rows.length === 0 && (
           <EmptyState
             icon={<MessageSquareHeart className="size-5" />}
-            title="Nothing recorded yet"
-            description={`When ${firstName} answers a check-in or Smriti asks them about a photograph, what they say lands here. It usually takes a few days before the first one arrives.`}
+            title={t('messages.emptyTitle')}
+            description={t('messages.emptyDescription', { name: firstName })}
           />
         )}
 

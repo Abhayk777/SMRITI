@@ -18,6 +18,7 @@ import { Button } from '@/components/ui/button.tsx'
 import { Card } from '@/components/ui/card.tsx'
 import { Field, Input, Select } from '@/components/ui/field.tsx'
 import { EmptyState, ErrorState, Notice } from '@/components/ui/feedback.tsx'
+import { useTranslation } from '@/i18n/index.ts'
 import { PairingPanel } from '@/features/pairing/PairingPanel.tsx'
 import { useEscalationConfig } from '@/features/escalation/useEscalationConfig.ts'
 import {
@@ -43,7 +44,7 @@ import {
   SUPPORTED_LANGUAGES,
 } from '@/lib/languages.ts'
 import { qk } from '@/lib/queryKeys.ts'
-import { cn, describeDays, formatMinutes } from '@/lib/utils.ts'
+import { cn } from '@/lib/utils.ts'
 
 /**
  * Create Patient, plus the setup wizard (frontend.md §8, §16 step 3).
@@ -68,33 +69,28 @@ import { cn, describeDays, formatMinutes } from '@/lib/utils.ts'
  * content pull.
  */
 
-const basicsSchema = z.object({
-  display_name: z.string().trim().min(1, 'What do you call them?'),
-  age: z.coerce.number().int().min(30, 'Between 30 and 120').max(120, 'Between 30 and 120'),
+const createBasicsSchema = (messages: { name: string; age: string; schooling: string; contact: string; phone: string }) => z.object({
+  display_name: z.string().trim().min(1, messages.name),
+  age: z.coerce.number().int().min(30, messages.age).max(120, messages.age),
   education_years: z.coerce
     .number()
     .int()
-    .min(0, 'Between 0 and 25')
-    .max(25, 'Between 0 and 25'),
+    .min(0, messages.schooling)
+    .max(25, messages.schooling),
   lang_code: z.enum(SUPPORTED_LANGUAGE_CODES),
   timezone: z.string().min(1),
-  primary_name: z.string().trim().min(1, 'Who should Smriti call first?'),
+  primary_name: z.string().trim().min(1, messages.contact),
   primary_phone: z
     .string()
     .trim()
-    .regex(/^\+[1-9]\d{7,14}$/, 'Include the country code, like +91 98765 43210'),
+    .regex(/^\+[1-9]\d{7,14}$/, messages.phone),
 })
 
-type BasicsValues = z.input<typeof basicsSchema>
+type BasicsValues = z.input<ReturnType<typeof createBasicsSchema>>
 
 const STEPS = [
-  { key: 'basics', label: 'About them' },
-  { key: 'people', label: 'People' },
-  { key: 'voices', label: 'Voices' },
-  { key: 'medicines', label: 'Medicines' },
-  { key: 'routine', label: 'Routine' },
-  { key: 'alerts', label: 'If a dose is missed' },
-  { key: 'pairing', label: 'The tablet' },
+  { key: 'basics' }, { key: 'people' }, { key: 'voices' }, { key: 'medicines' },
+  { key: 'routine' }, { key: 'alerts' }, { key: 'pairing' },
 ] as const
 
 const setupStepKey = (patientId: string) => `smriti.setup-step.${patientId}`
@@ -109,6 +105,7 @@ function savedSetupStep(patientId: string): number | null {
 }
 
 export default function CreatePatient() {
+  const { t } = useTranslation()
   const [params, setParams] = useSearchParams()
   const navigate = useNavigate()
   const queryClient = useQueryClient()
@@ -138,7 +135,7 @@ export default function CreatePatient() {
       <AppBackdrop minutes={minutes} />
       {finishing && (
         <SetupCompleteLoader
-          caption={patientName ? `Getting ${patientName}’s tablet ready` : 'Getting their tablet ready'}
+          caption={patientName ? t('setup.pairing.loadingNamed', { name: patientName }) : t('setup.pairing.loading')}
           onDone={() => navigate(`/p/${patientId}/dashboard`, { replace: true })}
         />
       )}
@@ -150,7 +147,7 @@ export default function CreatePatient() {
             <Wordmark size={18} color="var(--color-ink)" />
           </Link>
           <span className="ml-auto text-[13px] text-muted">
-            Step {step + 1} of {STEPS.length}
+            {t('setup.step', { current: step + 1, total: STEPS.length })}
           </span>
         </div>
         <GamosaBand variant="rule" size={4} />
@@ -180,7 +177,7 @@ export default function CreatePatient() {
                     i === step ? 'text-ink' : 'text-muted',
                   )}
                 >
-                  {s.label}
+                  {t(`setup.steps.${s.key}` as const)}
                 </span>
               </button>
             </li>
@@ -207,9 +204,9 @@ export default function CreatePatient() {
 
         {step > 0 && !patientId && (
           <Notice tone="warn">
-            The profile has not been created yet.{' '}
+            {t('setup.profileNotCreated')}{' '}
             <button type="button" onClick={() => goTo(0)} className="font-semibold underline">
-              Go back to the first step
+              {t('setup.firstStep')}
             </button>
           </Notice>
         )}
@@ -233,11 +230,11 @@ export default function CreatePatient() {
           <div className="mt-8 flex items-center justify-between border-t border-ink/[0.08] pt-5">
             <Button variant="ghost" onClick={() => goTo(step - 1)}>
               <ArrowLeft className="size-4" />
-              Back
+              {t('setup.back')}
             </Button>
             {step < STEPS.length - 1 && (
               <Button variant="outline" onClick={() => goTo(step + 1)}>
-                Skip for now
+                {t('setup.skip')}
                 <ArrowRight className="size-4" />
               </Button>
             )}
@@ -255,6 +252,11 @@ export default function CreatePatient() {
    ──────────────────────────────────────────────────────────────────────── */
 
 function BasicsStep({ onCreated }: { onCreated: (id: string, name: string) => void }) {
+  const { t } = useTranslation()
+  const basicsSchema = createBasicsSchema({
+    name: t('setup.basics.nameError'), age: t('setup.basics.ageError'), schooling: t('setup.basics.schoolingError'),
+    contact: t('setup.basics.contactError'), phone: t('setup.basics.phoneError'),
+  })
   const form = useForm<BasicsValues>({
     resolver: zodResolver(basicsSchema),
     defaultValues: {
@@ -286,10 +288,9 @@ function BasicsStep({ onCreated }: { onCreated: (id: string, name: string) => vo
 
   return (
     <>
-      <h1 className="text-[clamp(26px,3.4vw,34px)]">Who are we looking after?</h1>
+      <h1 className="text-[clamp(26px,3.4vw,34px)]">{t('setup.basics.title')}</h1>
       <p className="mt-2 max-w-[54ch] text-[15.5px] leading-relaxed text-body">
-        Smriti uses their age and schooling to pitch the games right — not to judge anything.
-        Everything here can be changed later.
+        {t('setup.basics.description')}
       </p>
 
       <form
@@ -303,22 +304,22 @@ function BasicsStep({ onCreated }: { onCreated: (id: string, name: string) => vo
         })}
       >
         <Field
-          label="Their name"
+          label={t('setup.basics.name')}
           htmlFor="display_name"
           required
-          hint="What the tablet will call them."
+          hint={t('setup.basics.nameHint')}
           error={form.formState.errors.display_name?.message}
         >
-          <Input id="display_name" placeholder="Sunanda" {...form.register('display_name')} />
+          <Input id="display_name" placeholder={t('setup.basics.namePlaceholder')} {...form.register('display_name')} />
         </Field>
 
         <div className="grid gap-4 sm:grid-cols-3">
-          <Field label="Age" htmlFor="age" required error={form.formState.errors.age?.message}>
+          <Field label={t('setup.basics.age')} htmlFor="age" required error={form.formState.errors.age?.message}>
             <Input id="age" type="number" min={30} max={120} {...form.register('age')} />
           </Field>
 
           <Field
-            label="Years of schooling"
+            label={t('setup.basics.schooling')}
             htmlFor="education_years"
             required
             error={form.formState.errors.education_years?.message}
@@ -332,7 +333,7 @@ function BasicsStep({ onCreated }: { onCreated: (id: string, name: string) => vo
             />
           </Field>
 
-          <Field label="Their language" htmlFor="lang_code" required>
+          <Field label={t('setup.basics.language')} htmlFor="lang_code" required>
             <Select id="lang_code" {...form.register('lang_code')}>
               {SUPPORTED_LANGUAGES.map((lang) => (
                 <option key={lang.code} value={lang.code}>
@@ -347,9 +348,9 @@ function BasicsStep({ onCreated }: { onCreated: (id: string, name: string) => vo
         </div>
 
         <Field
-          label="Their timezone"
+          label={t('setup.basics.timezone')}
           htmlFor="timezone"
-          hint="Reminder times are theirs, not yours. This is why."
+          hint={t('setup.basics.timezoneHint')}
           error={form.formState.errors.timezone?.message}
         >
           <Input id="timezone" {...form.register('timezone')} />
@@ -357,23 +358,22 @@ function BasicsStep({ onCreated }: { onCreated: (id: string, name: string) => vo
 
         <div className="mt-2 rounded-card bg-sand/50 p-5">
           <p className="font-heading text-[17px] font-bold">
-            If a dose is missed, who should Smriti call?
+            {t('setup.basics.missedDoseTitle')}
           </p>
           <p className="mt-1 max-w-[52ch] text-[13.5px] leading-relaxed text-body">
-            Usually you. This is a real phone call, placed only after the tablet has already
-            chimed twice and they have not responded.
+            {t('setup.basics.missedDoseDescription')}
           </p>
           <div className="mt-4 grid gap-4 sm:grid-cols-2">
             <Field
-              label="Name"
+              label={t('setup.alerts.name')}
               htmlFor="primary_name"
               required
               error={form.formState.errors.primary_name?.message}
             >
-              <Input id="primary_name" placeholder="Divya" {...form.register('primary_name')} />
+              <Input id="primary_name" placeholder={t('setup.basics.contactPlaceholder')} {...form.register('primary_name')} />
             </Field>
             <Field
-              label="Phone"
+              label={t('setup.basics.phone')}
               htmlFor="primary_phone"
               required
               error={form.formState.errors.primary_phone?.message}
@@ -397,7 +397,7 @@ function BasicsStep({ onCreated }: { onCreated: (id: string, name: string) => vo
           className="mt-5"
           disabled={create.isPending}
         >
-          {create.isPending ? 'Creating…' : 'Create their profile'}
+          {create.isPending ? t('setup.basics.creating') : t('setup.basics.create')}
           <ArrowRight className="size-4" />
         </Button>
       </form>
@@ -408,6 +408,7 @@ function BasicsStep({ onCreated }: { onCreated: (id: string, name: string) => vo
 /* ── Step 2: people ───────────────────────────────────────────────────── */
 
 function PeopleStep({ patientId, onNext }: { patientId: string; onNext: () => void }) {
+  const { t } = useTranslation()
   const people = usePeople(patientId)
   const { save, remove } = useContentMutation<PersonDraft>('people', patientId)
   const [draft, setDraft] = useState<PersonDraft | null>(null)
@@ -416,10 +417,9 @@ function PeopleStep({ patientId, onNext }: { patientId: string; onNext: () => vo
 
   return (
     <>
-      <h1 className="text-[clamp(26px,3.4vw,34px)]">The people in their days</h1>
+      <h1 className="text-[clamp(26px,3.4vw,34px)]">{t('setup.people.title')}</h1>
       <p className="mt-2 max-w-[54ch] text-[15.5px] leading-relaxed text-body">
-        Faces they should keep seeing. Start with four or five — children, a spouse, a
-        neighbour, whoever visits. You can add more whenever you like.
+        {t('setup.people.description')}
       </p>
 
       <div className="mt-7 space-y-3">
@@ -433,7 +433,7 @@ function PeopleStep({ patientId, onNext }: { patientId: string; onNext: () => vo
                 {person.name}
                 {person.is_deceased && (
                   <Badge tone="neutral" size="sm" className="ml-2">
-                    Passed away
+                    {t('people.passedAway')}
                   </Badge>
                 )}
               </p>
@@ -442,7 +442,7 @@ function PeopleStep({ patientId, onNext }: { patientId: string; onNext: () => vo
             <Button
               variant="ghost"
               size="icon-sm"
-              aria-label={`Remove ${person.name}`}
+              aria-label={t('setup.people.remove', { name: person.name })}
               onClick={() => remove.mutate(person.id)}
             >
               <Trash2 className="size-4" />
@@ -452,8 +452,8 @@ function PeopleStep({ patientId, onNext }: { patientId: string; onNext: () => vo
 
         {rows.length === 0 && !draft && (
           <EmptyState
-            title="Nobody added yet"
-            description="The recognition games need at least one face. A photo and a first name is enough to start."
+            title={t('people.nobodyYet')}
+            description={t('people.emptyDescription', { name: 'them' })}
           />
         )}
       </div>
@@ -465,7 +465,7 @@ function PeopleStep({ patientId, onNext }: { patientId: string; onNext: () => vo
             value={draft}
             onChange={setDraft}
             saving={save.isPending}
-            submitLabel="Add this person"
+            submitLabel={t('people.addSomeone')}
             onCancel={() => setDraft(null)}
             onSubmit={() =>
               save.mutate(draft, {
@@ -477,12 +477,12 @@ function PeopleStep({ patientId, onNext }: { patientId: string; onNext: () => vo
       ) : (
         <Button variant="outline" className="mt-4" onClick={() => setDraft(emptyPerson(rows.length))}>
           <Plus className="size-4" />
-          Add {rows.length === 0 ? 'someone' : 'another person'}
+          {rows.length === 0 ? t('setup.people.add') : t('setup.people.addAnother')}
         </Button>
       )}
 
       <Button variant="accent" size="lg" className="mt-8 w-full sm:w-auto" onClick={onNext}>
-        {rows.length === 0 ? 'Skip for now' : 'Next — their voices'}
+        {rows.length === 0 ? t('setup.people.skip') : t('setup.people.next')}
         <ArrowRight className="size-4" />
       </Button>
     </>
@@ -492,23 +492,23 @@ function PeopleStep({ patientId, onNext }: { patientId: string; onNext: () => vo
 /* ── Step 3: voices ───────────────────────────────────────────────────── */
 
 function VoicesStep({ patientId, onNext }: { patientId: string; onNext: () => void }) {
+  const { t } = useTranslation()
   const people = usePeople(patientId)
   const { save } = useContentMutation<PersonDraft>('people', patientId)
   const rows = people.data ?? []
 
   return (
     <>
-      <h1 className="text-[clamp(26px,3.4vw,34px)]">Their voices</h1>
+      <h1 className="text-[clamp(26px,3.4vw,34px)]">{t('setup.voices.title')}</h1>
       <p className="mt-2 max-w-[54ch] text-[15.5px] leading-relaxed text-body">
-        Optional, and the single thing families tell us made the difference. A few seconds
-        of someone saying their own name, played beside their photograph.
+        {t('setup.voices.description')}
       </p>
 
       {rows.length === 0 ? (
         <EmptyState
           className="mt-7"
-          title="No people to record yet"
-          description="Go back a step and add someone first — a voice needs a face to belong to."
+          title={t('setup.voices.noneTitle')}
+          description={t('setup.voices.noneDescription')}
         />
       ) : (
         <div className="mt-7 space-y-3">
@@ -525,7 +525,7 @@ function VoicesStep({ patientId, onNext }: { patientId: string; onNext: () => vo
                 {person.voice_path && (
                   <Badge tone="sage" size="sm" className="ml-auto">
                     <Check className="size-3" />
-                    Recorded
+                    {t('recorder.saved')}
                   </Badge>
                 )}
               </div>
@@ -534,7 +534,7 @@ function VoicesStep({ patientId, onNext }: { patientId: string; onNext: () => vo
                 patientId={patientId}
                 value={person.voice_path}
                 onChange={(path) => save.mutate({ id: person.id, voice_path: path })}
-                prompt={`Have ${person.name} say: “${person.name}, your ${person.relationship.toLowerCase()}.”`}
+                prompt={t('setup.voices.prompt', { name: person.name, relationship: person.relationship.toLowerCase() })}
               />
             </Card>
           ))}
@@ -542,7 +542,7 @@ function VoicesStep({ patientId, onNext }: { patientId: string; onNext: () => vo
       )}
 
       <Button variant="accent" size="lg" className="mt-8 w-full sm:w-auto" onClick={onNext}>
-        Next — medicines
+        {t('setup.voices.next')}
         <ArrowRight className="size-4" />
       </Button>
     </>
@@ -552,6 +552,7 @@ function VoicesStep({ patientId, onNext }: { patientId: string; onNext: () => vo
 /* ── Step 4: medicines ────────────────────────────────────────────────── */
 
 function MedicinesStep({ patientId, onNext }: { patientId: string; onNext: () => void }) {
+  const { formatDaysOfWeek, formatTimeMinutes, t } = useTranslation()
   const medicines = useMedicines(patientId)
   const { save, remove } = useContentMutation<MedicineDraft>('medications', patientId)
   const saveScanned = useMedicineBatchMutation(patientId)
@@ -562,15 +563,13 @@ function MedicinesStep({ patientId, onNext }: { patientId: string; onNext: () =>
 
   return (
     <>
-      <h1 className="text-[clamp(26px,3.4vw,34px)]">Their medicines</h1>
+      <h1 className="text-[clamp(26px,3.4vw,34px)]">{t('setup.medicines.title')}</h1>
       <p className="mt-2 max-w-[54ch] text-[15.5px] leading-relaxed text-body">
-        A gentle chime at their hour, in their language. If they do not respond, Smriti waits,
-        chimes again, and only then calls you.
+        {t('setup.medicines.description')}
       </p>
 
       <Notice className="mt-5">
-        Scan a printed or handwritten prescription photo or PDF, then check every medicine
-        before it reaches the tablet.
+        {t('setup.medicines.scanHint')}
       </Notice>
 
       {scanning && (
@@ -593,13 +592,13 @@ function MedicinesStep({ patientId, onNext }: { patientId: string; onNext: () =>
             <div className="min-w-0 flex-1">
               <p className="truncate font-semibold">{med.name}</p>
               <p className="truncate text-[13px] text-muted">
-                {med.dose} · {formatMinutes(med.chosen_time_min)} · {describeDays(med.days_of_week)}
+                {med.dose} · {formatTimeMinutes(med.chosen_time_min)} · {formatDaysOfWeek(med.days_of_week)}
               </p>
             </div>
             <Button
               variant="ghost"
               size="icon-sm"
-              aria-label={`Remove ${med.name}`}
+              aria-label={t('setup.medicines.remove', { name: med.name })}
               onClick={() => remove.mutate(med.id)}
             >
               <Trash2 className="size-4" />
@@ -609,8 +608,8 @@ function MedicinesStep({ patientId, onNext }: { patientId: string; onNext: () =>
 
         {rows.length === 0 && !draft && !scanning && (
           <EmptyState
-            title="No medicines yet"
-            description="Add the ones that matter most. You do not have to enter everything tonight."
+            title={t('medicines.noMedicines')}
+            description={t('medicines.noMedicinesDescription')}
           />
         )}
       </div>
@@ -622,7 +621,7 @@ function MedicinesStep({ patientId, onNext }: { patientId: string; onNext: () =>
             value={draft}
             onChange={setDraft}
             saving={save.isPending}
-            submitLabel="Add this medicine"
+            submitLabel={t('medicines.add')}
             onCancel={() => setDraft(null)}
             onSubmit={() => save.mutate(draft, { onSuccess: () => setDraft(null) })}
           />
@@ -631,17 +630,17 @@ function MedicinesStep({ patientId, onNext }: { patientId: string; onNext: () =>
         <div className="mt-4 flex flex-wrap gap-2">
           <Button variant="outline" onClick={() => setScanning(true)}>
             <Camera className="size-4" />
-            Scan prescription
+            {t('medicines.scan')}
           </Button>
           <Button variant="outline" onClick={() => setDraft(emptyMedicine())}>
             <Plus className="size-4" />
-            Add {rows.length === 0 ? 'a medicine' : 'another medicine'} by hand
+            {rows.length === 0 ? t('setup.medicines.add') : t('setup.medicines.addAnother')}
           </Button>
         </div>
       )}
 
       <Button variant="accent" size="lg" className="mt-8 w-full sm:w-auto" onClick={onNext}>
-        Next — their routine
+        {t('setup.medicines.next')}
         <ArrowRight className="size-4" />
       </Button>
     </>
@@ -651,6 +650,7 @@ function MedicinesStep({ patientId, onNext }: { patientId: string; onNext: () =>
 /* ── Step 5: routine ──────────────────────────────────────────────────── */
 
 function RoutineStep({ patientId, onNext }: { patientId: string; onNext: () => void }) {
+  const { formatTimeMinutes, t } = useTranslation()
   const routine = useRoutine(patientId)
   const { save, remove } = useContentMutation<RoutineDraft>('routine_items', patientId)
   const [draft, setDraft] = useState<RoutineDraft | null>(null)
@@ -659,23 +659,22 @@ function RoutineStep({ patientId, onNext }: { patientId: string; onNext: () => v
 
   return (
     <>
-      <h1 className="text-[clamp(26px,3.4vw,34px)]">The shape of their day</h1>
+      <h1 className="text-[clamp(26px,3.4vw,34px)]">{t('setup.routine.title')}</h1>
       <p className="mt-2 max-w-[54ch] text-[15.5px] leading-relaxed text-body">
-        Tea at seven, a walk at half five. The tablet shows these back to them as a simple
-        picture of the day — it is the part most people say they like.
+        {t('setup.routine.description')}
       </p>
 
       <div className="mt-7 space-y-3">
         {rows.map((item) => (
           <Card key={item.id} padding="sm" className="flex items-center gap-4">
             <span className="numeral w-20 flex-none text-[15px] text-sage">
-              {formatMinutes(item.time_min)}
+              {formatTimeMinutes(item.time_min)}
             </span>
             <p className="min-w-0 flex-1 truncate font-semibold">{item.label_key}</p>
             <Button
               variant="ghost"
               size="icon-sm"
-              aria-label={`Remove ${item.label_key}`}
+              aria-label={t('setup.routine.remove', { name: item.label_key })}
               onClick={() => remove.mutate(item.id)}
             >
               <Trash2 className="size-4" />
@@ -685,8 +684,8 @@ function RoutineStep({ patientId, onNext }: { patientId: string; onNext: () => v
 
         {rows.length === 0 && !draft && (
           <EmptyState
-            title="Nothing in their day yet"
-            description="Three or four anchors is plenty. Morning tea, lunch, a walk, bedtime."
+            title={t('routine.emptyTitle')}
+            description={t('routine.emptyDescription')}
           />
         )}
       </div>
@@ -697,7 +696,7 @@ function RoutineStep({ patientId, onNext }: { patientId: string; onNext: () => v
             value={draft}
             onChange={setDraft}
             saving={save.isPending}
-            submitLabel="Add to their day"
+            submitLabel={t('routine.add')}
             onCancel={() => setDraft(null)}
             onSubmit={() => save.mutate(draft, { onSuccess: () => setDraft(null) })}
           />
@@ -705,12 +704,12 @@ function RoutineStep({ patientId, onNext }: { patientId: string; onNext: () => v
       ) : (
         <Button variant="outline" className="mt-4" onClick={() => setDraft(emptyRoutine())}>
           <Plus className="size-4" />
-          Add {rows.length === 0 ? 'something' : 'another'}
+          {rows.length === 0 ? t('setup.routine.add') : t('setup.routine.addAnother')}
         </Button>
       )}
 
       <Button variant="accent" size="lg" className="mt-8 w-full sm:w-auto" onClick={onNext}>
-        Next — if a dose is missed
+        {t('setup.routine.next')}
         <ArrowRight className="size-4" />
       </Button>
     </>
@@ -719,21 +718,23 @@ function RoutineStep({ patientId, onNext }: { patientId: string; onNext: () => v
 
 /* ── Step 6: escalation contacts ──────────────────────────────────────── */
 
-const contactsSchema = z.object({
-  primary_name: z.string().trim().min(1, 'Who should Smriti call first?'),
+const createContactsSchema = (messages: { primaryName: string; primaryPhone: string; secondaryPhone: string }) => z.object({
+  primary_name: z.string().trim().min(1, messages.primaryName),
   primary_phone: z
     .string()
     .trim()
-    .regex(/^\+[1-9]\d{7,14}$/, 'Include the country code'),
+    .regex(/^\+[1-9]\d{7,14}$/, messages.primaryPhone),
   secondary_name: z.string().trim().optional(),
   secondary_phone: z
     .string()
     .trim()
-    .regex(/^(\+[1-9]\d{7,14})?$/, 'Include the country code, or leave it empty')
+    .regex(/^(\+[1-9]\d{7,14})?$/, messages.secondaryPhone)
     .optional(),
 })
 
 function AlertsStep({ patientId, onNext }: { patientId: string; onNext: () => void }) {
+  const { t } = useTranslation()
+  const contactsSchema = createContactsSchema({ primaryName: t('setup.alerts.primaryNameError'), primaryPhone: t('setup.alerts.primaryPhoneError'), secondaryPhone: t('setup.alerts.secondaryPhoneError') })
   const { save } = useContentMutation<Record<string, unknown>>('escalation_config', patientId)
   const config = useEscalationConfig(patientId)
 
@@ -760,10 +761,9 @@ function AlertsStep({ patientId, onNext }: { patientId: string; onNext: () => vo
 
   return (
     <>
-      <h1 className="text-[clamp(26px,3.4vw,34px)]">If they do not respond</h1>
+      <h1 className="text-[clamp(26px,3.4vw,34px)]">{t('setup.alerts.title')}</h1>
       <p className="mt-2 max-w-[54ch] text-[15.5px] leading-relaxed text-body">
-        The tablet chimes, waits, and chimes again. Only after that does Smriti place a
-        phone call — one call covering everything due, never one per pill.
+        {t('setup.alerts.description')}
       </p>
 
       <form
@@ -783,10 +783,10 @@ function AlertsStep({ patientId, onNext }: { patientId: string; onNext: () => vo
       >
         {config.error && <ErrorState error={config.error} className="mb-4" />}
         <div className="rounded-card bg-clay p-5">
-          <p className="font-heading text-[17px] font-bold">First call</p>
+          <p className="font-heading text-[17px] font-bold">{t('setup.alerts.firstCall')}</p>
           <div className="mt-4 grid gap-4 sm:grid-cols-2">
             <Field
-              label="Name"
+              label={t('setup.alerts.name')}
               htmlFor="alert-p-name"
               required
               error={form.formState.errors.primary_name?.message}
@@ -794,7 +794,7 @@ function AlertsStep({ patientId, onNext }: { patientId: string; onNext: () => vo
               <Input id="alert-p-name" {...form.register('primary_name')} />
             </Field>
             <Field
-              label="Phone"
+              label={t('setup.alerts.phone')}
               htmlFor="alert-p-phone"
               required
               error={form.formState.errors.primary_phone?.message}
@@ -805,16 +805,16 @@ function AlertsStep({ patientId, onNext }: { patientId: string; onNext: () => vo
         </div>
 
         <div className="mt-3 rounded-card bg-sand/50 p-5">
-          <p className="font-heading text-[17px] font-bold">If that call is not answered</p>
+          <p className="font-heading text-[17px] font-bold">{t('setup.alerts.secondCall')}</p>
           <p className="mt-1 text-[13.5px] text-body">
-            Optional, but worth it — ideally someone who lives close by.
+            {t('setup.alerts.secondCallHint')}
           </p>
           <div className="mt-4 grid gap-4 sm:grid-cols-2">
-            <Field label="Name" htmlFor="alert-s-name">
+            <Field label={t('setup.alerts.name')} htmlFor="alert-s-name">
               <Input id="alert-s-name" {...form.register('secondary_name')} />
             </Field>
             <Field
-              label="Phone"
+              label={t('setup.alerts.phone')}
               htmlFor="alert-s-phone"
               error={form.formState.errors.secondary_phone?.message}
             >
@@ -832,7 +832,7 @@ function AlertsStep({ patientId, onNext }: { patientId: string; onNext: () => vo
           className="mt-5"
           disabled={save.isPending}
         >
-          {save.isPending ? 'Saving…' : 'Next — connect the tablet'}
+          {save.isPending ? t('common.saving') : t('setup.alerts.next')}
           <ArrowRight className="size-4" />
         </Button>
       </form>
@@ -851,26 +851,26 @@ function PairingStep({
   patientName: string
   onFinish: () => void
 }) {
+  const { t } = useTranslation()
   return (
     <>
-      <h1 className="text-[clamp(26px,3.4vw,34px)]">One last thing</h1>
+      <h1 className="text-[clamp(26px,3.4vw,34px)]">{t('setup.pairing.title')}</h1>
       <p className="mt-2 max-w-[54ch] text-[15.5px] leading-relaxed text-body">
-        Connect their tablet and Smriti will pull everything you have just set up — the
-        faces, the voices, the medicines, their routine.
+        {t('setup.pairing.description')}
       </p>
 
       <div className="mt-7">
-        <PairingPanel patientId={patientId} patientName={patientName || 'the patient'} />
+        <PairingPanel patientId={patientId} patientName={patientName || t('setup.pairing.fallbackName')} />
       </div>
 
       <Notice className="mt-5">
-        No tablet in front of you? That is fine — you can pair it any time from{' '}
-        <strong>Manage → Tablet</strong>. Everything else is already saved.
+        {t('setup.pairing.noTablet')}{' '}
+        <strong>{t('setup.pairing.manageTablet')}</strong>.
       </Notice>
 
       <Button variant="accent" size="lg" className="mt-8 w-full sm:w-auto" onClick={onFinish}>
         <Check className="size-4" />
-        Finish setup
+        {t('setup.pairing.finish')}
       </Button>
     </>
   )

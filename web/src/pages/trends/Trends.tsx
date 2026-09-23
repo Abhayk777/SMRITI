@@ -27,6 +27,7 @@ import {
   useDailyReport,
 } from '@/features/reports/useDailyReport.ts'
 import { formatDayShort } from '@/lib/utils.ts'
+import { useTranslation } from '@/i18n/index.ts'
 import { usePatientAccess } from '@/patients/usePatientAccess.ts'
 
 /**
@@ -66,6 +67,7 @@ function DomainSpark({
   rows: Array<{ day: string; accuracy: number | null }>
   changepoint: string | null
 }) {
+  const { t } = useTranslation()
   const first = rows.find((r) => r.accuracy !== null)?.accuracy ?? null
   const last = [...rows].reverse().find((r) => r.accuracy !== null)?.accuracy ?? null
   const delta = first !== null && last !== null ? last - first : null
@@ -73,7 +75,7 @@ function DomainSpark({
   return (
     <div className="stitched rounded-card border-[#E7D9C2] bg-ivory p-4 [--stitch:var(--color-sage)]">
       <div className="flex items-baseline justify-between gap-2">
-        <p className="text-[14px] font-semibold">{DOMAIN_LABEL[domain] ?? domain}</p>
+        <p className="text-[14px] font-semibold">{DOMAIN_LABEL[domain] ? t(DOMAIN_LABEL[domain] as 'domains.memory') : domain}</p>
         <span
           className={`numeral text-[13px] ${
             delta === null ? 'text-muted' : delta < -0.05 ? 'text-alert' : 'text-sage'
@@ -81,7 +83,7 @@ function DomainSpark({
         >
           {delta === null
             ? '—'
-            : `${delta >= 0 ? '+' : ''}${Math.round(delta * 100)} pts`}
+            : t('trends.points', { count: `${delta >= 0 ? '+' : ''}${Math.round(delta * 100)}` })}
         </span>
       </div>
       <div className="mt-2 h-20">
@@ -96,7 +98,7 @@ function DomainSpark({
               content={
                 <ChartTooltip
                   formatter={(value) =>
-                    typeof value === 'number' ? `${Math.round(value * 100)}% correct` : '—'
+                    typeof value === 'number' ? t('trends.percentCorrect', { percent: Math.round(value * 100) }) : '—'
                   }
                 />
               }
@@ -119,6 +121,7 @@ function DomainSpark({
 }
 
 function ComingSoon({ title, description }: { title: string; description: string }) {
+  const { t } = useTranslation()
   return (
     <Card padding="md" className="border-dashed">
       <CardTitle className="text-[16px] text-muted">{title}</CardTitle>
@@ -126,13 +129,14 @@ function ComingSoon({ title, description }: { title: string; description: string
         {description}
       </p>
       <p className="mt-3 text-[12px] font-semibold uppercase tracking-[0.12em] text-muted">
-        Not available yet
+        {t('trends.unavailable')}
       </p>
     </Card>
   )
 }
 
 export default function Trends() {
+  const { t } = useTranslation()
   const { patientId, patient } = usePatientAccess()
   const [days, setDays] = useState<number>(90)
 
@@ -159,15 +163,15 @@ export default function Trends() {
   return (
     <>
       <PageHeader
-        eyebrow="Trends"
-        title="How things are moving"
-        description="Smriti compares them against their own past, never against anyone else. Everything below is a change in a pattern — it is not a diagnosis, and there are many ordinary reasons for one."
+        eyebrow={t('trends.eyebrow')}
+        title={t('trends.title')}
+        description={t('trends.description')}
         actions={
           <Tabs value={String(days)} onValueChange={(value) => setDays(Number(value))}>
             <TabsList>
               {RANGES.map((range) => (
                 <TabsTrigger key={range.days} value={String(range.days)}>
-                  {range.label}
+                  {t('trends.rangeDays', { count: range.days })}
                 </TabsTrigger>
               ))}
             </TabsList>
@@ -176,7 +180,7 @@ export default function Trends() {
       />
 
       {activeFlags.length > 0 && (
-        <section className="mb-8 space-y-3" aria-label="Things Smriti has noticed">
+        <section className="mb-8 space-y-3" aria-label={t('trends.notices')}>
           {activeFlags.map((flag) => (
             <FlagCard key={flag.id} flag={flag} patientId={patientId} />
           ))}
@@ -189,25 +193,25 @@ export default function Trends() {
         <SkeletonChart />
       ) : !hasPlay ? (
         <EmptyState
-          title="Nothing to chart yet"
-          description="Trends need a couple of weeks of sessions before they mean anything. Once they have been playing for a while, this page fills in on its own."
+          title={t('trends.noData')}
+          description={t('trends.noDataDescription')}
         />
       ) : (
         <>
           <ChartFrame
-            title="How often they get it right"
-            reading="Each point is a day; the darker line is a seven-day average, which is the one worth reading. Single days bounce around for reasons that have nothing to do with anything."
+            title={t('trends.accuracyTitle')}
+            reading={t('trends.accuracyReading')}
             legend={
               <>
-                <LegendItem color={SERIES.primarySoft} label="That day" />
-                <LegendItem color={SERIES.trend} label="Seven-day average" />
+                <LegendItem color={SERIES.primarySoft} label={t('trends.thatDay')} />
+                <LegendItem color={SERIES.trend} label={t('trends.sevenDay')} />
                 {changepoint && (
-                  <LegendItem color={CHART.axis} label="Where Smriti sees a change" />
+                  <LegendItem color={CHART.axis} label={t('trends.change')} />
                 )}
               </>
             }
             table={{
-              head: ['Day', 'Correct', '7-day average'],
+              head: [t('trends.day'), t('trends.correct'), t('trends.sevenDay')],
               rows: accuracyData
                 .filter((row) => row.accuracy !== null)
                 .slice(-40)
@@ -240,7 +244,7 @@ export default function Trends() {
                       stroke={CHART.axis}
                       strokeDasharray="4 4"
                       label={{
-                        value: 'change',
+                        value: t('trends.changeLabel'),
                         position: 'insideTopRight',
                         fill: CHART.tick,
                         fontSize: 11,
@@ -257,7 +261,7 @@ export default function Trends() {
                     }
                   />
                   <Line
-                    name="That day"
+                    name={t('trends.thatDay')}
                     type="monotone"
                     dataKey="accuracy"
                     stroke={SERIES.primarySoft}
@@ -268,7 +272,7 @@ export default function Trends() {
                     isAnimationActive={false}
                   />
                   <Line
-                    name="Seven-day average"
+                    name={t('trends.sevenDay')}
                     type="monotone"
                     dataKey="mean"
                     stroke={SERIES.trend}
@@ -284,18 +288,17 @@ export default function Trends() {
           </ChartFrame>
 
           <section className="mt-6">
-            <h2 className="text-[19px]">By area of thinking</h2>
+            <h2 className="text-[19px]">{t('trends.domainTitle')}</h2>
             <p className="mt-1.5 max-w-[62ch] text-[14px] leading-relaxed text-body">
-              Five separate small charts rather than five lines on one, because the question
-              is whether any single one is drifting — not which is highest.
+              {t('trends.domainDescription')}
             </p>
             {domains.isPending ? (
               <SkeletonChart className="mt-4" />
             ) : Object.keys(domainRows).length === 0 ? (
               <EmptyState
                 className="mt-4"
-                title="No per-area data yet"
-                description="These fill in once they have played a few sessions across the different games."
+                title={t('trends.noDomain')}
+                description={t('trends.noDomainDescription')}
               />
             ) : (
               <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -314,23 +317,22 @@ export default function Trends() {
       )}
 
       <section className="mt-10">
-        <h2 className="text-[19px]">Coming to this page</h2>
+        <h2 className="text-[19px]">{t('trends.comingSoon')}</h2>
         <Notice className="mt-3">
-          These need analysis views that are still being built. They are laid out here so
-          you can see the shape of the finished page — nothing is being hidden from you.
+          {t('trends.comingSoonNotice')}
         </Notice>
         <div className="mt-4 grid gap-3 lg:grid-cols-3">
           <ComingSoon
-            title="Who they recognise, over time"
-            description="A line per person in their circle, showing how readily they place each face. The most human signal Smriti has, and the one families ask for first."
+            title={t('trends.recognitionTitle')}
+            description={t('trends.recognitionDescription')}
           />
           <ComingSoon
-            title="How much they keep between sessions"
-            description="Whether something learned on Monday is still there on Thursday. A better early signal than a single day's score."
+            title={t('trends.retentionTitle')}
+            description={t('trends.retentionDescription')}
           />
           <ComingSoon
-            title="Time of day"
-            description="Whether their afternoons and evenings run differently from their mornings — the pattern behind what families call sundowning."
+            title={t('trends.timeOfDay')}
+            description={t('trends.afternoonsDescription')}
           />
         </div>
       </section>

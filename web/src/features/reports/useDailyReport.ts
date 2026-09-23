@@ -167,9 +167,6 @@ export function byDomain(rows: DailyDomainRow[]): Record<string, DailyDomainRow[
 }
 
 export const DOMAIN_LABEL: Record<string, string> = {
-  memory: 'Memory',
-  attention: 'Attention',
-  executive: 'Planning',
-  visuospatial: 'Space & shapes',
-  language: 'Words',
+  memory: 'domains.memory', attention: 'domains.attention', executive: 'domains.executive',
+  visuospatial: 'domains.visuospatial', language: 'domains.language',
 }

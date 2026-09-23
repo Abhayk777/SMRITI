@@ -6,6 +6,7 @@ import { TwinStar } from '@/components/ner/TwinStar.tsx'
 import { Eyebrow } from '@/components/ui/card.tsx'
 import { cn } from '@/lib/utils.ts'
 import { Reveal } from './Reveal.tsx'
+import { useTranslation } from '@/i18n/index.ts'
 
 type Slide = {
   index: string
@@ -17,36 +18,24 @@ type Slide = {
   art: 'morning' | 'pills' | 'siblings' | 'photograph'
 }
 
-const SLIDES: Slide[] = [
+const SLIDE_STYLES: Array<Pick<Slide, 'index' | 'accent' | 'art'>> = [
   {
     index: '01',
-    kicker: 'Daily check-ins',
-    title: 'A quiet “good morning” that tells you a lot.',
-    body: 'Sleep, appetite, mood — three taps at their own pace, and a note in your day by nine.',
     accent: 'gold',
     art: 'morning',
   },
   {
     index: '02',
-    kicker: 'Gentle reminders',
-    title: 'Medicine, remembered — without the nagging.',
-    body: 'A soft chime at their hour, in their language. If a dose is missed twice, you are the one who hears about it.',
     accent: 'sage',
     art: 'pills',
   },
   {
     index: '03',
-    kicker: 'The weekly report',
-    title: 'The week, gathered for everyone who cares.',
-    body: 'One page every Sunday: routines kept, what changed, what to ask their doctor. Shared with the siblings, so nobody is guessing.',
     accent: 'coral',
     art: 'siblings',
   },
   {
     index: '04',
-    kicker: 'A memory a day',
-    title: 'One small story, shared with the family.',
-    body: 'Smriti asks them about a photo, a place, a song. What they say becomes something your children will still have.',
     accent: 'bark',
     art: 'photograph',
   },
@@ -211,6 +200,14 @@ function SlideArt({ art, accent }: { art: Slide['art']; accent: Slide['accent'] 
  * a rail some people never discover.
  */
 export function FeatureSlider() {
+  const { t } = useTranslation()
+  const slideKeys = [
+    ['marketing.slide1Kicker', 'marketing.slide1Title', 'marketing.slide1Body'],
+    ['marketing.slide2Kicker', 'marketing.slide2Title', 'marketing.slide2Body'],
+    ['marketing.slide3Kicker', 'marketing.slide3Title', 'marketing.slide3Body'],
+    ['marketing.slide4Kicker', 'marketing.slide4Title', 'marketing.slide4Body'],
+  ] as const
+  const SLIDES: Slide[] = SLIDE_STYLES.map((slide, i) => ({ ...slide, kicker: t(slideKeys[i][0]), title: t(slideKeys[i][1]), body: t(slideKeys[i][2]) }))
   const trackRef = useRef<HTMLDivElement>(null)
   const [active, setActive] = useState(0)
   const drag = useRef<{ startX: number; startScroll: number; moved: boolean } | null>(null)
@@ -273,17 +270,17 @@ export function FeatureSlider() {
         <Reveal>
           <Eyebrow className="mb-3 flex items-center gap-2">
             <TwinStar size={7} className="text-lac" />
-            Inside Smriti
+            {t('marketing.featureEyebrow')}
           </Eyebrow>
           <h2 className="max-w-[24ch] text-[clamp(26px,3.4vw,40px)]">
-            Four things you&rsquo;ll actually use
+            {t('marketing.featureTitle')}
           </h2>
         </Reveal>
         <Reveal delay={0.1} className="flex gap-2.5">
           <button
             type="button"
             onClick={() => scrollToSlide(Math.max(0, active - 1))}
-            aria-label="Previous"
+            aria-label={t('marketing.previous')}
             className="grid size-11 place-items-center rounded-pill border border-ink/20 text-ink transition-colors hover:bg-ink/[0.05] disabled:opacity-35"
             disabled={active === 0}
           >
@@ -292,7 +289,7 @@ export function FeatureSlider() {
           <button
             type="button"
             onClick={() => scrollToSlide(Math.min(SLIDES.length - 1, active + 1))}
-            aria-label="Next"
+            aria-label={t('marketing.next')}
             className="grid size-11 place-items-center rounded-pill border border-ink/20 text-ink transition-colors hover:bg-ink/[0.05] disabled:opacity-35"
             disabled={active === SLIDES.length - 1}
           >
@@ -339,7 +336,7 @@ export function FeatureSlider() {
           <button
             key={slide.index}
             type="button"
-            aria-label={`Go to ${slide.kicker}`}
+            aria-label={t('common.selectName', { name: slide.kicker })}
             aria-current={i === active}
             onClick={() => scrollToSlide(i)}
             className={cn(

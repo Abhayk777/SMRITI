@@ -15,7 +15,7 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/controls.tsx'
 import { EmptyState, ErrorState } from '@/components/ui/feedback.tsx'
 import { SkeletonChart, SkeletonStat } from '@/components/ui/skeleton.tsx'
 import { ChartFrame, ChartTooltip, LegendItem } from '@/features/reports/ChartFrame.tsx'
-import { axisProps, CHART, SEQUENTIAL, SERIES, STATUS, STATUS_LABEL } from '@/features/reports/chartTheme.ts'
+import { axisProps, CHART, SEQUENTIAL, SERIES, STATUS } from '@/features/reports/chartTheme.ts'
 import {
   summariseAdherence,
   summarisePlay,
@@ -24,6 +24,7 @@ import {
 import type { DailyReportRow } from '@/lib/database.types.ts'
 import { groupDailyReportWeeks } from '@/lib/reporting.ts'
 import { cn, formatDayShort, isoWeekdayIndex } from '@/lib/utils.ts'
+import { useTranslation } from '@/i18n/index.ts'
 import { usePatientAccess } from '@/patients/usePatientAccess.ts'
 
 /**
@@ -47,6 +48,7 @@ const RANGES = [
  * Those two states mean different things and must not blend into each other.
  */
 function PlayCalendar({ rows }: { rows: DailyReportRow[] }) {
+  const { t } = useTranslation()
   const maxMinutes = Math.max(1, ...rows.map((row) => row.minutes_played ?? 0))
 
   const stepFor = (row: DailyReportRow) => {
@@ -69,7 +71,7 @@ function PlayCalendar({ rows }: { rows: DailyReportRow[] }) {
           className="grid grid-flow-col gap-[3px]"
           style={{ gridTemplateRows: 'repeat(7, 14px)', gridAutoColumns: '14px' }}
           role="img"
-          aria-label={`Sessions over the last ${rows.length} days`}
+          aria-label={t('engagement.sessionsAria', { count: rows.length })}
         >
           {Array.from({ length: firstWeekday }, (_, i) => (
             <span key={`pad-${i}`} aria-hidden="true" />
@@ -80,7 +82,7 @@ function PlayCalendar({ rows }: { rows: DailyReportRow[] }) {
               <span
                 key={row.day}
                 title={`${formatDayShort(row.day)} — ${
-                  row.played ? `${Math.round(row.minutes_played ?? 0)} min` : 'no session'
+                  row.played ? t('engagement.minutes', { count: Math.round(row.minutes_played ?? 0) }) : t('engagement.noSession')
                 }`}
                 className={cn(
                   'size-[14px] rounded-[3px]',
@@ -96,10 +98,10 @@ function PlayCalendar({ rows }: { rows: DailyReportRow[] }) {
       <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-[12.5px] text-body">
         <span className="inline-flex items-center gap-1.5">
           <span className="size-2.5 rounded-[3px] border border-ink/[0.12] bg-ivory" />
-          No session
+          {t('engagement.noSession')}
         </span>
         <span className="inline-flex items-center gap-1.5">
-          Less
+          {t('engagement.less')}
           {SEQUENTIAL.slice(1).map((color) => (
             <span
               key={color}
@@ -107,7 +109,7 @@ function PlayCalendar({ rows }: { rows: DailyReportRow[] }) {
               style={{ backgroundColor: color }}
             />
           ))}
-          More
+          {t('engagement.more')}
         </span>
       </div>
     </div>
@@ -135,6 +137,7 @@ function Stat({
 }
 
 export default function Engagement() {
+  const { t } = useTranslation()
   const { patientId, patient } = usePatientAccess()
   const [days, setDays] = useState<number>(90)
 
@@ -166,15 +169,15 @@ export default function Engagement() {
   return (
     <>
       <PageHeader
-        eyebrow="Engagement"
-        title="Is Smriti actually being used?"
-        description="Whether they are opening the tablet, and whether the medicines are getting taken. Two different questions — a bad week at one does not mean a bad week at the other."
+        eyebrow={t('engagement.eyebrow')}
+        title={t('engagement.title')}
+        description={t('engagement.description')}
         actions={
           <Tabs value={String(days)} onValueChange={(value) => setDays(Number(value))}>
             <TabsList>
               {RANGES.map((range) => (
                 <TabsTrigger key={range.days} value={String(range.days)}>
-                  {range.label}
+                  {t('engagement.rangeDays', { count: range.days })}
                 </TabsTrigger>
               ))}
             </TabsList>
@@ -190,35 +193,35 @@ export default function Engagement() {
         ) : (
           <>
             <Stat
-              label="Days with a session"
+              label={t('engagement.daysSession')}
               value={`${play.daysPlayed}/${play.daysTotal}`}
               detail={
                 play.daysTotal > 0
-                  ? `${Math.round((play.daysPlayed / play.daysTotal) * 100)}% of days in this period.`
-                  : 'No days in range.'
+                  ? t('engagement.daysPeriod', { percent: Math.round((play.daysPlayed / play.daysTotal) * 100) })
+                  : t('engagement.noDays')
               }
             />
             <Stat
-              label="Time on the tablet"
-              value={`${play.minutes} min`}
-              detail={`Across ${play.sessions} session${play.sessions === 1 ? '' : 's'}.`}
+              label={t('engagement.tabletTime')}
+              value={t('engagement.minutes', { count: play.minutes })}
+              detail={t('engagement.sessions', { count: play.sessions })}
             />
             <Stat
-              label="Left partway through"
+              label={t('engagement.leftEarly')}
               value={String(play.abandoned)}
               detail={
                 play.abandoned === 0
-                  ? 'They finished everything they started.'
-                  : 'Sessions they started and did not finish.'
+                  ? t('engagement.finished')
+                  : t('engagement.unfinished')
               }
             />
             <Stat
-              label="Medicines confirmed"
+              label={t('engagement.confirmed')}
               value={adherence.rate === null ? '—' : `${Math.round(adherence.rate * 100)}%`}
               detail={
                 adherence.rate === null
-                  ? 'Nothing has been scheduled in this period.'
-                  : `${adherence.confirmed} of ${adherence.scheduled} doses.`
+                  ? t('engagement.noScheduled')
+                  : t('engagement.doses', { confirmed: adherence.confirmed, scheduled: adherence.scheduled })
               }
             />
           </>
@@ -230,23 +233,23 @@ export default function Engagement() {
       ) : rows.length === 0 ? (
         <EmptyState
           className="mt-6"
-          title="Nothing here yet"
-          description="Once the tablet has been in use for a few days, this page fills in on its own."
+          title={t('engagement.noData')}
+          description={t('engagement.noDataDescription')}
         />
       ) : (
         <div className="mt-6 space-y-6">
           <ChartFrame
-            title="How each dose was confirmed"
-            reading="Confirmed on the tablet is the quiet path. Confirmed after a call means Smriti had to reach someone — a few is normal, a rising run is worth a conversation about the reminder time."
+            title={t('engagement.dosesTitle')}
+            reading={t('engagement.dosesReading')}
             legend={
               <>
-                <LegendItem color={STATUS.onTablet} label={STATUS_LABEL.onTablet} />
-                <LegendItem color={STATUS.byCall} label={STATUS_LABEL.byCall} />
-                <LegendItem color={STATUS.missed} label={STATUS_LABEL.missed} />
+                <LegendItem color={STATUS.onTablet} label={t('engagement.onTablet')} />
+                <LegendItem color={STATUS.byCall} label={t('engagement.afterCall')} />
+                <LegendItem color={STATUS.missed} label={t('engagement.notConfirmed')} />
               </>
             }
             table={{
-              head: ['Week of', 'On tablet', 'After a call', 'Not confirmed'],
+              head: [t('engagement.weekOf'), t('engagement.onTablet'), t('engagement.afterCall'), t('engagement.notConfirmed')],
               rows: [...weeks]
                 .reverse()
                 .map((week) => [
@@ -272,7 +275,7 @@ export default function Engagement() {
                   {/* 2px surface gap between stacked segments, per the mark spec —
                       it is also the secondary encoding the status trio needs. */}
                   <Bar
-                    name={STATUS_LABEL.onTablet}
+                    name={t('engagement.onTablet')}
                     dataKey="onTablet"
                     stackId="doses"
                     fill={STATUS.onTablet}
@@ -281,7 +284,7 @@ export default function Engagement() {
                     isAnimationActive={false}
                   />
                   <Bar
-                    name={STATUS_LABEL.byCall}
+                    name={t('engagement.afterCall')}
                     dataKey="byCall"
                     stackId="doses"
                     fill={STATUS.byCall}
@@ -290,7 +293,7 @@ export default function Engagement() {
                     isAnimationActive={false}
                   />
                   <Bar
-                    name={STATUS_LABEL.missed}
+                    name={t('engagement.notConfirmed')}
                     dataKey="missed"
                     stackId="doses"
                     fill={STATUS.missed}
@@ -305,10 +308,10 @@ export default function Engagement() {
           </ChartFrame>
 
           <ChartFrame
-            title="Minutes on the tablet, by week"
-            reading="Total time each week. Steady matters more than high — twenty minutes most days beats an hour on a Sunday."
+            title={t('engagement.minutesTitle')}
+            reading={t('engagement.minutesReading')}
             table={{
-              head: ['Week of', 'Minutes'],
+              head: [t('engagement.weekOf'), t('engagement.minutesTitle')],
               rows: [...weeks]
                 .reverse()
                 .map((week) => [formatDayShort(week.week), String(week.minutes)]),
@@ -327,10 +330,10 @@ export default function Engagement() {
                   <YAxis {...axisProps} />
                   <Tooltip
                     cursor={{ fill: 'rgba(32,30,29,0.04)' }}
-                    content={<ChartTooltip formatter={(value) => `${value} min`} />}
+                    content={<ChartTooltip formatter={(value) => t('engagement.minutes', { count: value })} />}
                   />
                   <Bar
-                    name="Minutes"
+                    name={t('engagement.minutesTitle')}
                     dataKey="minutes"
                     fill={SERIES.primary}
                     radius={[4, 4, 0, 0]}
@@ -342,8 +345,8 @@ export default function Engagement() {
           </ChartFrame>
 
           <ChartFrame
-            title="Every day at a glance"
-            reading="One square per day, darker for a longer session. The gaps are as informative as the colour."
+            title={t('engagement.calendarTitle')}
+            reading={t('engagement.calendarReading')}
           >
             <PlayCalendar rows={rows} />
           </ChartFrame>

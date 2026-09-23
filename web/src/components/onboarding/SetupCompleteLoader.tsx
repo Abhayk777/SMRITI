@@ -3,6 +3,7 @@ import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 
 import { SkylineArtwork, SKYLINE_VIEWBOX } from './SkylineArtwork.tsx'
 import { cn } from '@/lib/utils.ts'
+import { useTranslation } from '@/i18n/index.ts'
 
 /**
  * The full-screen transition shown once the Create Patient wizard is finished,
@@ -68,6 +69,7 @@ export function SetupCompleteLoader({
   caption,
   className,
 }: SetupCompleteLoaderProps) {
+  const { t } = useTranslation()
   const reduceMotion = useReducedMotion()
   const [value, setValue] = useState(reduceMotion ? 1 : 0)
   const [visible, setVisible] = useState(true)
@@ -137,7 +139,7 @@ export function SetupCompleteLoader({
           transition={{ duration: reduceMotion ? 0.01 : 0.45, ease: 'easeInOut' }}
           role="status"
           aria-live="polite"
-          aria-label={caption ?? 'Loading'}
+          aria-label={caption ?? t('common.loadingLabel')}
         >
           <div className="w-full max-w-[1180px]">
             <svg

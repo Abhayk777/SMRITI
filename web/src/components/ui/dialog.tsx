@@ -3,6 +3,7 @@ import * as DialogPrimitive from '@radix-ui/react-dialog'
 import { X } from 'lucide-react'
 
 import { cn } from '@/lib/utils.ts'
+import { useTranslation } from '@/i18n/index.ts'
 
 export const Dialog = DialogPrimitive.Root
 export const DialogTrigger = DialogPrimitive.Trigger
@@ -13,6 +14,7 @@ export function DialogContent({
   children,
   ...props
 }: React.ComponentProps<typeof DialogPrimitive.Content>) {
+  const { t } = useTranslation()
   return (
     <DialogPrimitive.Portal>
       {/* A plain scrim, not a blur: the page behind is simply set aside. */}
@@ -32,7 +34,7 @@ export function DialogContent({
         {children}
         <DialogPrimitive.Close
           className="absolute right-5 top-5 grid size-9 place-items-center rounded-full text-muted transition-colors hover:bg-ink/[0.06] hover:text-ink"
-          aria-label="Close"
+          aria-label={t('common.close')}
         >
           <X className="size-4" />
         </DialogPrimitive.Close>

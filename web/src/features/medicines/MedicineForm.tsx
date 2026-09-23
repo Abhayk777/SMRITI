@@ -4,10 +4,10 @@ import { PhotoPicker } from '@/components/media/PhotoPicker.tsx'
 import { VoiceRecorder } from '@/components/media/VoiceRecorder.tsx'
 import { Button } from '@/components/ui/button.tsx'
 import { Field, Input, Label } from '@/components/ui/field.tsx'
+import { useTranslation } from '@/i18n/index.ts'
 import {
   cn,
   DAY_LABELS,
-  describeDays,
   EVERY_DAY,
   isDayOn,
   normaliseDaysOfWeek,
@@ -67,7 +67,7 @@ export function MedicineForm({
   onSubmit,
   onCancel,
   saving,
-  submitLabel = 'Save medicine',
+  submitLabel,
   disabled,
 }: {
   patientId: string
@@ -79,12 +79,13 @@ export function MedicineForm({
   submitLabel?: string
   disabled?: boolean
 }) {
+  const { formatDaysOfWeek, t } = useTranslation()
   const [touched, setTouched] = useState(false)
 
-  const nameError = touched && !value.name.trim() ? 'What is it called?' : undefined
-  const doseError = touched && !value.dose.trim() ? 'How much, and how?' : undefined
+  const nameError = touched && !value.name.trim() ? t('medicines.form.nameError') : undefined
+  const doseError = touched && !value.dose.trim() ? t('medicines.form.doseError') : undefined
   const daysError = touched && parseDaysOfWeek(value.days_of_week).length === 0
-    ? 'Pick at least one day'
+    ? t('medicines.form.daysError')
     : undefined
 
   const valid = Boolean(
@@ -102,29 +103,29 @@ export function MedicineForm({
       noValidate
     >
       <div className="grid gap-4 sm:grid-cols-2">
-        <Field label="Medicine" htmlFor="med-name" required error={nameError}>
+        <Field label={t('medicines.form.name')} htmlFor="med-name" required error={nameError}>
           <Input
             id="med-name"
             value={value.name}
             onChange={(e) => onChange({ ...value, name: e.target.value })}
-            placeholder="Amlodipine"
+            placeholder={t('medicines.form.namePlaceholder')}
             disabled={disabled}
             aria-invalid={Boolean(nameError)}
           />
         </Field>
 
         <Field
-          label="Dose"
+          label={t('medicines.form.dose')}
           htmlFor="med-dose"
           required
-          hint="In the words you would use with them."
+          hint={t('medicines.form.doseHint')}
           error={doseError}
         >
           <Input
             id="med-dose"
             value={value.dose}
             onChange={(e) => onChange({ ...value, dose: e.target.value })}
-            placeholder="One white tablet, after breakfast"
+            placeholder={t('medicines.form.dosePlaceholder')}
             disabled={disabled}
             aria-invalid={Boolean(doseError)}
           />
@@ -147,7 +148,7 @@ export function MedicineForm({
       />
 
       <div>
-        <Label>Which days</Label>
+        <Label>{t('medicines.form.days')}</Label>
         <div className="mt-2 flex flex-wrap gap-2">
           {DAY_LABELS.map((day, index) => {
             const on = isDayOn(value.days_of_week, index)
@@ -172,7 +173,7 @@ export function MedicineForm({
             )
           })}
         </div>
-        <p className="mt-2 text-[13px] text-muted">{describeDays(value.days_of_week)}</p>
+        <p className="mt-2 text-[13px] text-muted">{formatDaysOfWeek(value.days_of_week)}</p>
         {daysError && (
           <p role="alert" className="mt-1 text-[13px] font-medium text-alert">
             {daysError}
@@ -182,13 +183,13 @@ export function MedicineForm({
 
       <details className="rounded-card border border-ink/[0.08] p-4">
         <summary className="cursor-pointer text-[14.5px] font-semibold">
-          Add a photo of the pill, or say the name out loud
+          {t('medicines.form.media')}
         </summary>
         <div className="mt-4 space-y-5">
           <PhotoPicker
             patientId={patientId}
-            label="Pill photo"
-            hint="A clear photo of the pill. We shrink it before sending, so the tablet loads it fast."
+            label={t('medicines.form.photo')}
+            hint={t('medicines.form.photoHint')}
             value={value.pill_photo_path}
             onChange={(path) => onChange({ ...value, pill_photo_path: path })}
           />
@@ -196,18 +197,18 @@ export function MedicineForm({
             patientId={patientId}
             value={value.voice_path}
             onChange={(path) => onChange({ ...value, voice_path: path })}
-            prompt="Say the medicine's name and what it is for, in their language. The tablet plays this with the reminder."
+            prompt={t('medicines.form.voicePrompt')}
           />
         </div>
       </details>
 
       <div className="flex flex-wrap gap-2">
         <Button type="submit" variant="accent" disabled={saving || disabled}>
-          {saving ? 'Saving…' : submitLabel}
+          {saving ? t('common.saving') : submitLabel ?? t('common.save')}
         </Button>
         {onCancel && (
           <Button type="button" variant="ghost" onClick={onCancel} disabled={saving}>
-            Cancel
+            {t('common.cancel')}
           </Button>
         )}
       </div>

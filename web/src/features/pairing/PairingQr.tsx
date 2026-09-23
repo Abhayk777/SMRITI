@@ -2,6 +2,7 @@ import { QRCodeSVG } from 'qrcode.react'
 
 import { Logomark } from '@/components/brand/Logomark.tsx'
 import { color } from '@/styles/tokens.ts'
+import { useTranslation } from '@/i18n/index.ts'
 
 /**
  * The pairing QR.
@@ -16,6 +17,7 @@ import { color } from '@/styles/tokens.ts'
  * still reads it first time.
  */
 export function PairingQr({ token, size = 220 }: { token: string; size?: number }) {
+  const { t } = useTranslation()
   const markSize = Math.round(size * 0.17)
 
   return (
@@ -27,7 +29,7 @@ export function PairingQr({ token, size = 220 }: { token: string; size?: number 
         bgColor="#F9F4ED"
         fgColor={color.ink}
         marginSize={0}
-        aria-label="Pairing QR code"
+        aria-label={t('pairing.codeAria', { code: token })}
       />
       <span
         className="pointer-events-none absolute inset-0 grid place-items-center"

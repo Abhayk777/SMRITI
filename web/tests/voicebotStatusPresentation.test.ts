@@ -2,15 +2,16 @@ import assert from 'node:assert/strict'
 import test from 'node:test'
 
 import {
-  voicebotStatusCopy,
+  voicebotStatusKeys,
   voicebotStatusPollInterval,
 } from '../src/features/voicebot/voicebotStatusPresentation.ts'
+import { en } from '../src/i18n/locales/en.ts'
 
 test('Voice Assistant copy remains honest when sync is unavailable or fails', () => {
-  assert.equal(voicebotStatusCopy('ready').title, 'Ready on the tablet')
-  assert.match(voicebotStatusCopy('error').body, /still saved normally/i)
-  assert.match(voicebotStatusCopy('unavailable').body, /reminders.*continue/i)
-  assert.match(voicebotStatusCopy('disabled').body, /Turn this on/i)
+  assert.equal(voicebotStatusKeys('ready').title, 'voicebot.status.ready.title')
+  assert.match(en.voicebot.status.error.body, /still saved normally/i)
+  assert.match(en.voicebot.status.unavailable.body, /reminders.*continue/i)
+  assert.match(en.voicebot.status.off.body, /Turn this on/i)
 })
 
 test('Voice Assistant polling stops at terminal states', () => {

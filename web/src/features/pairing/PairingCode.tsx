@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Check, Copy } from 'lucide-react'
 
 import { formatPairingToken } from '@/lib/utils.ts'
+import { useTranslation } from '@/i18n/index.ts'
 
 /**
  * The token as readable text: `SMRT-K4PQ`.
@@ -14,6 +15,7 @@ import { formatPairingToken } from '@/lib/utils.ts'
  * short groups rather than one eight-character run.
  */
 export function PairingCode({ token }: { token: string }) {
+  const { t } = useTranslation()
   const [copied, setCopied] = useState(false)
 
   const copy = async () => {
@@ -31,7 +33,7 @@ export function PairingCode({ token }: { token: string }) {
     <div className="flex flex-wrap items-center gap-3">
       <p
         className="numeral rounded-2xl bg-sand px-5 py-3 text-[clamp(26px,4vw,34px)] tracking-[0.12em]"
-        aria-label={`Pairing code ${token.split('').join(' ')}`}
+        aria-label={t('pairing.codeAria', { code: token.split('').join(' ') })}
       >
         {formatPairingToken(token)}
       </p>
@@ -41,7 +43,7 @@ export function PairingCode({ token }: { token: string }) {
         className="inline-flex items-center gap-2 rounded-pill border border-ink/15 px-4 py-2.5 text-sm font-semibold text-body transition-colors hover:bg-ink/[0.05]"
       >
         {copied ? <Check className="size-4 text-sage" /> : <Copy className="size-4" />}
-        {copied ? 'Copied' : 'Copy'}
+        {copied ? t('pairing.copied') : t('pairing.copy')}
       </button>
     </div>
   )

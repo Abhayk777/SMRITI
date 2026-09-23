@@ -3,7 +3,8 @@ import { Check, Mic, Square, Trash2 } from 'lucide-react'
 
 import { Button } from '@/components/ui/button.tsx'
 import { useMediaUpload } from '@/hooks/useMediaUpload.ts'
-import { cn, formatDuration } from '@/lib/utils.ts'
+import { useTranslation } from '@/i18n/index.ts'
+import { cn } from '@/lib/utils.ts'
 
 /** Recording longer than this is almost always a forgotten stop button. */
 const MAX_MS = 20_000
@@ -33,6 +34,7 @@ export function VoiceRecorder({
   prompt?: string
   className?: string
 }) {
+  const { formatDuration, t } = useTranslation()
   const [recording, setRecording] = useState(false)
   const [elapsed, setElapsed] = useState(0)
   const [localUrl, setLocalUrl] = useState<string | null>(null)
@@ -100,7 +102,7 @@ export function VoiceRecorder({
       }, 200)
     } catch {
       setDeviceError(
-        'Smriti could not reach your microphone. Check the browser has permission, then try again.',
+        t('recorder.microphoneError'),
       )
     }
   }
@@ -123,12 +125,12 @@ export function VoiceRecorder({
         {!recording ? (
           <Button type="button" variant={hasClip ? 'outline' : 'solid'} size="sm" onClick={() => void start()}>
             <Mic className="size-4" />
-            {hasClip ? 'Record again' : 'Record'}
+            {hasClip ? t('recorder.recordAgain') : t('recorder.record')}
           </Button>
         ) : (
           <Button type="button" variant="danger" size="sm" onClick={stop}>
             <Square className="size-3.5" />
-            Stop · {formatDuration(elapsed)}
+            {t('recorder.stop', { duration: formatDuration(elapsed) })}
           </Button>
         )}
 
@@ -138,17 +140,17 @@ export function VoiceRecorder({
             {!localUrl && value && (
               <span className="inline-flex items-center gap-1.5 text-[13.5px] font-semibold text-sage">
                 <Check className="size-4" />
-                Saved
+                {t('recorder.saved')}
               </span>
             )}
             <Button type="button" variant="ghost" size="sm" onClick={clear}>
               <Trash2 className="size-4" />
-              Remove
+              {t('recorder.remove')}
             </Button>
           </>
         )}
 
-        {uploading && <span className="text-[13px] text-muted">Uploading…</span>}
+        {uploading && <span className="text-[13px] text-muted">{t('recorder.uploading')}</span>}
       </div>
 
       {recording && (
@@ -162,7 +164,7 @@ export function VoiceRecorder({
 
       {(deviceError || error) && (
         <p role="alert" className="text-[13px] font-medium text-alert">
-          {deviceError ?? `That clip did not upload: ${error?.message}`}
+          {deviceError ?? t('recorder.uploadFailed')}
         </p>
       )}
     </div>

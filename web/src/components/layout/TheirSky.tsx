@@ -1,8 +1,8 @@
 import { motion } from 'framer-motion'
 
-import { formatMinutes } from '@/lib/utils.ts'
+import { useTranslation } from '@/i18n/index.ts'
 import { color } from '@/styles/tokens.ts'
-import { arcProgress, SKY_LABEL, skyPhase, type SkyPhase } from './sky.ts'
+import { arcProgress, skyPhase, type SkyPhase } from './sky.ts'
 
 /**
  * "Their sky" — a small window onto the time where the patient is.
@@ -21,12 +21,13 @@ const GROUND: Record<SkyPhase, [string, string]> = {
 }
 
 export function TheirSky({ minutes, name }: { minutes: number; name: string }) {
+  const { t, formatTimeMinutes } = useTranslation()
   const phase = skyPhase(minutes)
-  const { body, t } = arcProgress(minutes)
+  const { body, t: arc } = arcProgress(minutes)
   const [top, bottom] = GROUND[phase]
 
-  const cx = 14 + t * 172
-  const cy = 64 - Math.sin(Math.PI * t) * 44
+  const cx = 14 + arc * 172
+  const cy = 64 - Math.sin(Math.PI * arc) * 44
 
   return (
     <div className="stitched rounded-card border-[#E7D9C2] bg-ivory p-3 [--knot-ground:var(--color-ivory)] [--stitch:var(--color-bark)]">
@@ -61,9 +62,9 @@ export function TheirSky({ minutes, name }: { minutes: number; name: string }) {
         </svg>
       </div>
       <div className="px-1.5 pb-1 pt-2.5">
-        <p className="numeral text-[22px] leading-none text-ink">{formatMinutes(minutes)}</p>
+        <p className="numeral text-[22px] leading-none text-ink">{formatTimeMinutes(minutes)}</p>
         <p className="mt-1 text-[12.5px] leading-snug text-muted">
-          {SKY_LABEL[phase]} where {name} is
+          {t('sky.where', { phase: t(`sky.${phase}` as const), name })}
         </p>
       </div>
     </div>

@@ -5,6 +5,7 @@ import { VoiceRecorder } from '@/components/media/VoiceRecorder.tsx'
 import { Button } from '@/components/ui/button.tsx'
 import { Switch } from '@/components/ui/controls.tsx'
 import { Field, Input, Label, Textarea } from '@/components/ui/field.tsx'
+import { useTranslation } from '@/i18n/index.ts'
 import type { Person } from '@smriti/shared'
 
 export type PersonDraft = {
@@ -58,7 +59,7 @@ export function PersonForm({
   onSubmit,
   onCancel,
   saving,
-  submitLabel = 'Save',
+  submitLabel,
   disabled,
 }: {
   patientId: string
@@ -70,12 +71,13 @@ export function PersonForm({
   submitLabel?: string
   disabled?: boolean
 }) {
+  const { t } = useTranslation()
   const [touched, setTouched] = useState(false)
 
-  const nameError = touched && !value.name.trim() ? 'A first name is enough' : undefined
-  const relError = touched && !value.relationship.trim() ? 'What is their relationship to the patient?' : undefined
+  const nameError = touched && !value.name.trim() ? t('people.form.nameRequired') : undefined
+  const relError = touched && !value.relationship.trim() ? t('people.form.relationshipRequired') : undefined
   const photoError =
-    touched && !value.photo_path ? 'A photo is needed — the tablet shows the face' : undefined
+    touched && !value.photo_path ? t('people.form.photoRequired') : undefined
 
   const valid = Boolean(value.name.trim() && value.relationship.trim() && value.photo_path)
 
@@ -90,7 +92,7 @@ export function PersonForm({
       noValidate
     >
       <div>
-        <Label className="mb-2">Photo *</Label>
+        <Label className="mb-2">{t('people.form.photo')} *</Label>
         <PhotoPicker
           patientId={patientId}
           value={value.photo_path}
@@ -104,29 +106,29 @@ export function PersonForm({
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2">
-        <Field label="Name" htmlFor="person-name" required error={nameError}>
+        <Field label={t('people.form.name')} htmlFor="person-name" required error={nameError}>
           <Input
             id="person-name"
             value={value.name}
             onChange={(e) => onChange({ ...value, name: e.target.value })}
-            placeholder="Divya"
+            placeholder={t('people.form.namePlaceholder')}
             disabled={disabled}
             aria-invalid={Boolean(nameError)}
           />
         </Field>
 
         <Field
-          label="Relationship"
+          label={t('people.form.relationship')}
           htmlFor="person-rel"
           required
-          hint="As they would say it."
+          hint={t('people.form.relationshipHint')}
           error={relError}
         >
           <Input
             id="person-rel"
             value={value.relationship}
             onChange={(e) => onChange({ ...value, relationship: e.target.value })}
-            placeholder="Daughter"
+            placeholder={t('people.form.relationshipPlaceholder')}
             disabled={disabled}
             aria-invalid={Boolean(relError)}
           />
@@ -134,27 +136,27 @@ export function PersonForm({
       </div>
 
       <Field
-        label="One thing to remember them by"
+        label={t('people.form.memoryPrompt')}
         htmlFor="person-prompt"
-        hint="Smriti uses this to start a conversation about them. A detail, not a biography."
+        hint={t('people.form.memoryHint')}
       >
         <Textarea
           id="person-prompt"
           value={value.memory_prompt}
           onChange={(e) => onChange({ ...value, memory_prompt: e.target.value })}
-          placeholder="Divya calls every Sunday evening from Seattle."
+          placeholder={t('people.form.memoryPlaceholder')}
           disabled={disabled}
           maxLength={280}
         />
       </Field>
 
       <div>
-        <Label className="mb-2">Their voice</Label>
+        <Label className="mb-2">{t('people.form.voice')}</Label>
         <VoiceRecorder
           patientId={patientId}
           value={value.voice_path}
           onChange={(path) => onChange({ ...value, voice_path: path })}
-          prompt="If they are nearby, have them say their own name and how they are related — “Divya, your daughter”. A familiar voice does something a caption cannot."
+          prompt={t('people.form.voicePrompt')}
         />
       </div>
 
@@ -167,23 +169,21 @@ export function PersonForm({
         />
         <div className="min-w-0">
           <Label htmlFor="person-deceased" className="normal-case tracking-normal">
-            This person has passed away
+            {t('people.form.deceased')}
           </Label>
           <p className="mt-1 text-[13px] leading-relaxed text-body">
-            Please set this if it applies. Smriti will still show their photograph and talk
-            about them warmly, but it will never ask them where they are or when they are
-            coming.
+            {t('people.form.deceasedHint')}
           </p>
         </div>
       </div>
 
       <div className="flex flex-wrap gap-2">
         <Button type="submit" variant="accent" disabled={saving || disabled}>
-          {saving ? 'Saving…' : submitLabel}
+          {saving ? t('common.saving') : submitLabel ?? t('common.save')}
         </Button>
         {onCancel && (
           <Button type="button" variant="ghost" onClick={onCancel} disabled={saving}>
-            Cancel
+            {t('common.cancel')}
           </Button>
         )}
       </div>

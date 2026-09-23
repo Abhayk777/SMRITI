@@ -3,6 +3,7 @@ import { AlertTriangle, Info, ShieldOff } from 'lucide-react'
 
 import { Logomark } from '@/components/brand/Logomark.tsx'
 import { JapiRosette } from '@/components/ner/JapiRosette.tsx'
+import { useTranslation } from '@/i18n/index.ts'
 import { cn } from '@/lib/utils.ts'
 
 /**
@@ -68,6 +69,7 @@ export function ErrorState({
   onRetry?: () => void
   className?: string
 }) {
+  const { t } = useTranslation()
   const message =
     error instanceof Error
       ? error.message
@@ -92,11 +94,11 @@ export function ErrorState({
         </span>
         <div className="min-w-0">
           <p className="font-heading font-bold">
-            {isPermission ? "You don't have access to this" : "This didn't load"}
+            {isPermission ? t('error.permissionTitle') : t('error.genericTitle')}
           </p>
           <p className="mt-1 text-sm leading-relaxed text-body">
             {isPermission
-              ? 'Ask whoever set up this profile to add you, or check you are signed in with the right number.'
+              ? t('error.permissionDetail')
               : message}
           </p>
           {onRetry && !isPermission && (
@@ -105,7 +107,7 @@ export function ErrorState({
               onClick={onRetry}
               className="mt-3 text-sm font-semibold text-bark underline-offset-4 hover:underline"
             >
-              Try again
+              {t('common.tryAgain')}
             </button>
           )}
         </div>
@@ -113,6 +115,7 @@ export function ErrorState({
     </div>
   )
 }
+
 
 /** A quiet in-page notice. Used for "coming soon" and read-only explanations. */
 export function Notice({

@@ -315,23 +315,3 @@ export function deviceHealth(
   if (hours > 24) return 'stale'
   return 'ok'
 }
-
-export const DEVICE_HEALTH_COPY: Record<DeviceHealth, { label: string; detail: string }> = {
-  ok: { label: 'Connected', detail: 'The tablet is syncing normally.' },
-  stale: {
-    label: 'Not synced today',
-    detail: "Nothing has come through for over a day. What you're seeing may be out of date.",
-  },
-  offline: {
-    label: 'Offline',
-    detail: 'Nothing has come through for more than three days. Someone should check the tablet.',
-  },
-  paired: {
-    label: 'Paired',
-    detail: 'The tablet is connected and waiting for its first sync.',
-  },
-  never: {
-    label: 'Not paired yet',
-    detail: 'No tablet has connected to this profile.',
-  },
-}

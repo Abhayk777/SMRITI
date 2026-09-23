@@ -19,13 +19,6 @@ export function skyPhase(minutes: number): SkyPhase {
   return 'night'
 }
 
-export const SKY_LABEL: Record<SkyPhase, string> = {
-  dawn: 'Early morning',
-  day: 'Daytime',
-  dusk: 'Evening',
-  night: 'Night',
-}
-
 /**
  * Where the sun (5:00–19:30) or moon (19:30–5:00) sits on its arc, 0 to 1.
  * The Northeast's day starts early — sunrise over Shillong is before five in

@@ -1,6 +1,6 @@
 export const REPORT_RANGES = [
-  { months: 1, label: 'Last month' },
-  { months: 3, label: 'Last 3 months' },
-  { months: 6, label: 'Last 6 months' },
-  { months: 12, label: 'Last year' },
+  { months: 1, key: 'report.range1' },
+  { months: 3, key: 'report.range3' },
+  { months: 6, key: 'report.range6' },
+  { months: 12, key: 'report.range12' },
 ] as const

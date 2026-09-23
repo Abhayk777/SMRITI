@@ -3,9 +3,10 @@ import { Check, ChevronDown } from 'lucide-react'
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu'
 
 import { Avatar, AvatarFallback } from '@/components/ui/controls.tsx'
+import { useTranslation } from '@/i18n/index.ts'
 import * as db from '@/lib/db.ts'
 import { qk } from '@/lib/queryKeys.ts'
-import { cn, DEVICE_HEALTH_COPY, deviceHealth, initialsOf, timeAgo } from '@/lib/utils.ts'
+import { cn, deviceHealth, initialsOf } from '@/lib/utils.ts'
 import { usePatientAccess, useSwitchPatient } from '@/patients/usePatientAccess.ts'
 
 /**
@@ -22,6 +23,7 @@ import { usePatientAccess, useSwitchPatient } from '@/patients/usePatientAccess.
 export function PatientIdentity({ compact = false }: { compact?: boolean }) {
   const { patient, patientId, role } = usePatientAccess()
   const switchPatient = useSwitchPatient()
+  const { t, formatRelativeTime } = useTranslation()
 
   const overview = useQuery({
     queryKey: qk.overview(),
@@ -50,7 +52,7 @@ export function PatientIdentity({ compact = false }: { compact?: boolean }) {
           </span>
           {role !== 'caregiver' && (
             <span className="rounded-pill bg-ink/[0.06] px-2 py-0.5 text-[11px] font-semibold text-muted">
-              View only
+              {t('identity.viewOnly')}
             </span>
           )}
         </span>
@@ -61,8 +63,8 @@ export function PatientIdentity({ compact = false }: { compact?: boolean }) {
           )}
         >
           {health === 'never'
-            ? DEVICE_HEALTH_COPY.never.label
-            : `Synced ${timeAgo(patient?.device_last_seen_at)}`}
+            ? t('device.health.never.label')
+            : t('device.lastHeard', { time: formatRelativeTime(patient?.device_last_seen_at) })}
         </span>
       </span>
     </span>
@@ -77,7 +79,7 @@ export function PatientIdentity({ compact = false }: { compact?: boolean }) {
     <DropdownMenu.Root modal={false}>
       <DropdownMenu.Trigger
         className="flex min-w-0 items-center gap-2 rounded-2xl px-1 py-1 transition-colors hover:bg-ink/[0.05]"
-        aria-label={`${name} — switch patient`}
+        aria-label={t('identity.switchAria', { name })}
       >
         {identity}
         <ChevronDown className="size-4 flex-none text-muted" />
@@ -89,7 +91,7 @@ export function PatientIdentity({ compact = false }: { compact?: boolean }) {
           className="z-50 min-w-64 rounded-card border border-ink/[0.08] bg-ivory p-1.5 shadow-panel"
         >
           <DropdownMenu.Label className="px-3 py-2 text-[11.5px] font-semibold uppercase tracking-[0.12em] text-muted">
-            Switch patient
+            {t('identity.switchPatient')}
           </DropdownMenu.Label>
           {(overview.data ?? []).map((p) => (
             <DropdownMenu.Item
@@ -108,10 +110,10 @@ export function PatientIdentity({ compact = false }: { compact?: boolean }) {
                 <span className="block truncate font-semibold">{p.display_name}</span>
                 <span className="block truncate text-[12px] text-muted">
                   {p.active_flags > 0
-                    ? `${p.active_flags} thing${p.active_flags === 1 ? '' : 's'} to look at`
+                    ? t('identity.flags', { count: p.active_flags })
                     : p.played_today
-                      ? 'Played today'
-                      : 'No activity today'}
+                      ? t('identity.playedToday')
+                      : t('identity.noActivity')}
                 </span>
               </span>
               {p.patient_id === patientId && <Check className="size-4 text-sage" />}
