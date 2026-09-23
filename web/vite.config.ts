@@ -46,4 +46,15 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
   },
+  build: {
+    rollupOptions: {
+      output: {
+        // The reviewed static catalogues are deliberately bundled for offline
+        // use, but do not need to inflate an unrelated route chunk.
+        manualChunks(id) {
+          if (id.includes('/src/i18n/locales/')) return 'locale-catalogues'
+        },
+      },
+    },
+  },
 })

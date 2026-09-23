@@ -1,6 +1,6 @@
 import { Slider } from '@/components/ui/controls.tsx'
 import { Label } from '@/components/ui/field.tsx'
-import { formatMinutes } from '@/lib/utils.ts'
+import { useTranslation } from '@/i18n/index.ts'
 import { clampToWindow } from './useMedicines.ts'
 
 /** Quarter-hour steps. Finer than that is false precision for a pill reminder. */
@@ -45,6 +45,7 @@ export function MedicineWindow({
   onChange: (next: { windowStart: number; windowEnd: number; chosenTime: number }) => void
   disabled?: boolean
 }) {
+  const { t, formatTimeMinutes } = useTranslation()
   const setWindow = ([start, end]: number[]) => {
     // Keep at least one step of width, or the chosen slider has nowhere to go.
     const safeEnd = Math.max(end, start + STEP)
@@ -59,14 +60,13 @@ export function MedicineWindow({
     <div className="space-y-6 rounded-card bg-sand/50 p-5">
       <div>
         <div className="flex flex-wrap items-baseline justify-between gap-2">
-          <Label>When would this be alright?</Label>
+          <Label>{t('medicineWindow.acceptableTime')}</Label>
           <span className="numeral text-[15px]">
-            {formatMinutes(windowStart)} – {formatMinutes(windowEnd)}
+            {formatTimeMinutes(windowStart)} – {formatTimeMinutes(windowEnd)}
           </span>
         </div>
         <p className="mt-1 text-[13px] leading-snug text-muted">
-          The span the dose can be taken in. If they miss the chime, Smriti can still
-          count it inside this window.
+          {t('medicineWindow.acceptableHint')}
         </p>
         <Slider
           value={[windowStart, windowEnd]}
@@ -76,19 +76,18 @@ export function MedicineWindow({
           step={STEP}
           minStepsBetweenThumbs={1}
           disabled={disabled}
-          aria-label="Medicine window"
+          aria-label={t('medicineWindow.windowAriaLabel')}
           className="mt-2"
         />
       </div>
 
       <div>
         <div className="flex flex-wrap items-baseline justify-between gap-2">
-          <Label>When should Smriti chime?</Label>
-          <span className="numeral text-[15px]">{formatMinutes(chosenTime)}</span>
+          <Label>{t('medicineWindow.reminderTime')}</Label>
+          <span className="numeral text-[15px]">{formatTimeMinutes(chosenTime)}</span>
         </div>
         <p className="mt-1 text-[13px] leading-snug text-muted">
-          Pick the moment in their day this fits — after tea, before the walk. It can only
-          sit inside the window above.
+          {t('medicineWindow.reminderHint')}
         </p>
         <Slider
           value={[chosenTime]}
@@ -99,12 +98,12 @@ export function MedicineWindow({
           max={windowEnd}
           step={STEP}
           disabled={disabled}
-          aria-label="Reminder time"
+          aria-label={t('medicineWindow.reminderAriaLabel')}
           className="mt-2"
         />
         <div className="mt-1 flex justify-between text-[12px] text-muted">
-          <span>{formatMinutes(windowStart)}</span>
-          <span>{formatMinutes(windowEnd)}</span>
+          <span>{formatTimeMinutes(windowStart)}</span>
+          <span>{formatTimeMinutes(windowEnd)}</span>
         </div>
       </div>
     </div>

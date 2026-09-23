@@ -1,5 +1,6 @@
 import { Logomark } from '@/components/brand/Logomark.tsx'
 import { JapiRosette } from '@/components/ner/JapiRosette.tsx'
+import { useTranslation } from '@/i18n/index.ts'
 
 /**
  * The full-page waiting state used while a route decides what to render.
@@ -12,6 +13,7 @@ import { JapiRosette } from '@/components/ner/JapiRosette.tsx'
  * more than a moment, something upstream is wrong.
  */
 export function FullPageLoading({ label }: { label?: string }) {
+  const { t } = useTranslation()
   return (
     <div
       className="flex min-h-dvh flex-col items-center justify-center gap-5 bg-ivory"
@@ -24,7 +26,7 @@ export function FullPageLoading({ label }: { label?: string }) {
         </div>
         <Logomark size={40} color="var(--color-terracotta)" className="animate-pulse" decorative />
       </div>
-      <p className="text-sm text-muted">{label ?? 'Loading'}</p>
+      <p className="text-sm text-muted">{label ?? t('common.loading')}</p>
     </div>
   )
 }

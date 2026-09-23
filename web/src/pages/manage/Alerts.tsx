@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { PhoneCall } from 'lucide-react'
 import { useForm } from 'react-hook-form'
@@ -17,6 +17,7 @@ import {
   useEscalationMutation,
 } from '@/features/escalation/useEscalationConfig.ts'
 import { usePatientAccess } from '@/patients/usePatientAccess.ts'
+import { useTranslation } from '@/i18n/index.ts'
 
 /**
  * Manage → Alerts (frontend.md §8).
@@ -36,26 +37,19 @@ import { usePatientAccess } from '@/patients/usePatientAccess.ts'
  * will do and when, even where they cannot change it.
  */
 
-const schema = z.object({
-  primary_name: z.string().trim().min(1, 'Who should Smriti call first?'),
-  primary_phone: z
-    .string()
-    .trim()
-    .regex(/^\+[1-9]\d{7,14}$/, 'Include the country code, like +91 98765 43210'),
-  secondary_name: z.string().trim().optional(),
-  secondary_phone: z
-    .string()
-    .trim()
-    .regex(/^(\+[1-9]\d{7,14})?$/, 'Include the country code, or leave it empty')
-    .optional(),
-})
-
-type Values = z.input<typeof schema>
+type Values = { primary_name: string; primary_phone: string; secondary_name?: string; secondary_phone?: string }
 
 export default function Alerts() {
+  const { t } = useTranslation()
   const { patientId, canEdit, patient } = usePatientAccess()
   const config = useEscalationConfig(patientId)
   const { save } = useEscalationMutation(patientId)
+  const schema = useMemo(() => z.object({
+    primary_name: z.string().trim().min(1, t('alerts.primaryNameError')),
+    primary_phone: z.string().trim().regex(/^\+[1-9]\d{7,14}$/, t('alerts.primaryPhoneError')),
+    secondary_name: z.string().trim().optional(),
+    secondary_phone: z.string().trim().regex(/^(\+[1-9]\d{7,14})?$/, t('alerts.secondaryPhoneError')).optional(),
+  }), [t])
 
   const form = useForm<Values>({
     resolver: zodResolver(schema),
@@ -84,16 +78,16 @@ export default function Alerts() {
   return (
     <>
       <PageHeader
-        eyebrow="Manage"
-        title="If a dose is missed"
-        description={`What Smriti does when ${firstName} does not respond to a reminder. It waits before it escalates, and one call covers everything due — never one call per pill.`}
+        eyebrow={t('nav.manage')}
+        title={t('alerts.title')}
+        description={t('alerts.description', { name: firstName })}
       />
 
       {config.error && <ErrorState error={config.error} className="mb-6" />}
 
       {/* The ladder, read-only. */}
       <Card tone="sand" padding="lg" className="mb-6">
-        <h2 className="text-[19px]">What happens, in order</h2>
+        <h2 className="text-[19px]">{t('alerts.orderTitle')}</h2>
         {config.isPending ? (
           <div className="mt-4 space-y-2">
             {[0, 1, 2].map((i) => (
@@ -102,22 +96,19 @@ export default function Alerts() {
           </div>
         ) : steps.length === 0 ? (
           <p className="mt-3 text-[14.5px] leading-relaxed text-body">
-            No ladder is configured for this profile yet. Smriti will still chime on the
-            tablet; it will not place calls until one is set up.
+            {t('alerts.noLadder')}
           </p>
         ) : (
           <ol className="mt-4 space-y-3">
             {steps.map((step) => (
               <li key={step.step} className="flex items-start gap-3 text-[15px] leading-relaxed">
                 <span className="numeral w-16 flex-none text-muted">
-                  {step.minutes === 0 ? 'On time' : `+${step.minutes} min`}
+                  {step.minutes === 0 ? t('alerts.onTime') : t('alerts.minutesAfter', { minutes: step.minutes })}
                 </span>
                 <span>
                   {step.minutes === 0
-                    ? 'The tablet chimes, in their language.'
-                    : `If there is still no response, Smriti sends ${
-                        CHANNEL_COPY[step.channel] ?? step.channel
-                      }.`}
+                    ? t('alerts.tabletChimes')
+                    : t('alerts.noResponse', { channel: CHANNEL_COPY[step.channel] ?? step.channel })}
                 </span>
               </li>
             ))}
@@ -125,10 +116,7 @@ export default function Alerts() {
         )}
 
         <Notice className="mt-5">
-          These timings are set by Smriti and cannot be changed here. They are what the
-          missed-dose safety net is built on — stretching them out would quietly switch it
-          off. If they genuinely do not suit them, get in touch and we will look at it with
-          you.
+          {t('alerts.timingsNotice')}
         </Notice>
       </Card>
 
@@ -139,17 +127,16 @@ export default function Alerts() {
             <PhoneCall className="size-5" />
           </span>
           <div>
-            <h2 className="text-[19px]">Who Smriti calls</h2>
+            <h2 className="text-[19px]">{t('alerts.contactsTitle')}</h2>
             <p className="mt-1 max-w-[54ch] text-[14.5px] leading-relaxed text-body">
-              Real phone calls, placed only after the tablet has already tried twice. Keep
-              these current — an unanswered number is the same as no safety net.
+              {t('alerts.contactsDescription')}
             </p>
           </div>
         </div>
 
         {!canEdit && (
           <Notice className="mt-5">
-            You have view-only access, so these contacts cannot be changed here.
+            {t('alerts.viewOnly')}
           </Notice>
         )}
 
@@ -166,10 +153,10 @@ export default function Alerts() {
           )}
         >
           <div className="rounded-card bg-clay p-5">
-            <p className="font-heading text-[16px] font-bold">First call</p>
+            <p className="font-heading text-[16px] font-bold">{t('alerts.firstCall')}</p>
             <div className="mt-4 grid gap-4 sm:grid-cols-2">
               <Field
-                label="Name"
+                label={t('alerts.name')}
                 htmlFor="p-name"
                 required
                 error={form.formState.errors.primary_name?.message}
@@ -177,7 +164,7 @@ export default function Alerts() {
                 <Input id="p-name" disabled={!canEdit} {...form.register('primary_name')} />
               </Field>
               <Field
-                label="Phone"
+                label={t('alerts.phone')}
                 htmlFor="p-phone"
                 required
                 error={form.formState.errors.primary_phone?.message}
@@ -193,16 +180,16 @@ export default function Alerts() {
           </div>
 
           <div className="mt-3 rounded-card bg-sand/50 p-5">
-            <p className="font-heading text-[16px] font-bold">If that call is not answered</p>
+            <p className="font-heading text-[16px] font-bold">{t('alerts.secondCall')}</p>
             <p className="mt-1 text-[13.5px] text-body">
-              Ideally someone who lives close enough to walk over.
+              {t('alerts.secondCallHint')}
             </p>
             <div className="mt-4 grid gap-4 sm:grid-cols-2">
-              <Field label="Name" htmlFor="s-name">
+              <Field label={t('alerts.name')} htmlFor="s-name">
                 <Input id="s-name" disabled={!canEdit} {...form.register('secondary_name')} />
               </Field>
               <Field
-                label="Phone"
+                label={t('alerts.phone')}
                 htmlFor="s-phone"
                 error={form.formState.errors.secondary_phone?.message}
               >
@@ -221,10 +208,10 @@ export default function Alerts() {
           {canEdit && (
             <div className="mt-5 flex flex-wrap items-center gap-3">
               <Button type="submit" variant="accent" disabled={save.isPending}>
-                {save.isPending ? 'Saving…' : 'Save contacts'}
+                {save.isPending ? t('common.saving') : t('alerts.saveContacts')}
               </Button>
               {save.isSuccess && !form.formState.isDirty && (
-                <span className="text-[13.5px] font-semibold text-sage">Saved.</span>
+                <span className="text-[13.5px] font-semibold text-sage">{t('common.saved')}</span>
               )}
             </div>
           )}

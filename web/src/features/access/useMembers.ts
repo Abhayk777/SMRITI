@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 import * as db from '@/lib/db.ts'
 import { qk } from '@/lib/queryKeys.ts'
-import type { InviteMemberArgs, PatientRole } from '@smriti/shared'
+import type { InviteMemberArgs } from '@smriti/shared'
 
 export function useMembers(patientId: string) {
   return useQuery({
@@ -31,19 +31,4 @@ export function useInviteMember(patientId: string) {
       void queryClient.invalidateQueries({ queryKey: qk.members(patientId) })
     },
   })
-}
-
-export const ROLE_COPY: Record<PatientRole, { label: string; body: string }> = {
-  caregiver: {
-    label: 'Caregiver',
-    body: 'Can change medicines, people, routine and alerts, and can invite others.',
-  },
-  family_viewer: {
-    label: 'Family',
-    body: 'Can see everything — today, trends, reports, messages — and change nothing.',
-  },
-  health_worker: {
-    label: 'Health worker',
-    body: 'Can see the reports and trends shared with them for clinical review.',
-  },
 }

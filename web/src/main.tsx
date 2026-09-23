@@ -6,6 +6,7 @@ import { RouterProvider } from 'react-router-dom'
 
 import { AuthProvider } from '@/auth/AuthProvider.tsx'
 import { SmoothScroll } from '@/components/motion/SmoothScroll.tsx'
+import { LocaleProvider } from '@/i18n/index.ts'
 import { queryClient } from '@/lib/queryClient.ts'
 import { router } from '@/routes/router.tsx'
 import './index.css'
@@ -13,6 +14,9 @@ import './index.css'
 /**
  * Provider order matters: `AuthProvider` clears the query cache on sign-out, so
  * it has to sit inside `QueryClientProvider` to reach the client.
+ *
+ * `LocaleProvider` sits inside `AuthProvider` and wraps `RouterProvider` so the
+ * caregiver's UI locale is accessible everywhere across the router tree.
  *
  * `MotionConfig reducedMotion="user"` is the app-wide backstop for Framer
  * Motion: under the OS "reduce motion" setting, every transform and layout
@@ -24,7 +28,9 @@ createRoot(document.getElementById('root')!).render(
       <SmoothScroll router={router}>
         <QueryClientProvider client={queryClient}>
           <AuthProvider>
-            <RouterProvider router={router} />
+            <LocaleProvider>
+              <RouterProvider router={router} />
+            </LocaleProvider>
           </AuthProvider>
         </QueryClientProvider>
       </SmoothScroll>

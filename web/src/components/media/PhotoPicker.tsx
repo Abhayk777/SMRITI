@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button.tsx'
 import { BUCKET } from '@/lib/db.ts'
 import { useMediaUpload, useSignedUrl } from '@/hooks/useMediaUpload.ts'
 import { cn } from '@/lib/utils.ts'
+import { useTranslation } from '@/i18n/index.ts'
 
 /**
  * Choosing a photo.
@@ -22,7 +23,7 @@ export function PhotoPicker({
   patientId,
   value,
   onChange,
-  label = 'Photo',
+  label,
   hint,
   className,
 }: {
@@ -34,6 +35,8 @@ export function PhotoPicker({
   hint?: string
   className?: string
 }) {
+  const { t } = useTranslation()
+  const displayLabel = label ?? t('photo.label')
   const inputRef = useRef<HTMLInputElement>(null)
   const [preview, setPreview] = useState<string | null>(null)
   const { upload, uploading, error } = useMediaUpload(patientId)
@@ -83,13 +86,13 @@ export function PhotoPicker({
               ? 'bg-sand'
               : 'border-2 border-dashed border-ink/20 bg-sand/40 text-muted hover:border-terracotta/50 hover:text-terracotta',
           )}
-          aria-label={hasImage ? `Change ${label.toLowerCase()}` : `Add a ${label.toLowerCase()}`}
+          aria-label={hasImage ? t('photo.change', { label: displayLabel.toLowerCase() }) : t('photo.add', { label: displayLabel.toLowerCase() })}
         >
           {imageSrc ? (
             <img src={imageSrc} alt="" className="size-full object-cover" />
           ) : value ? (
             <span className="text-[11px] font-semibold uppercase tracking-wider text-sage">
-              Saved
+              {t('photo.saved')}
             </span>
           ) : (
             <Camera className="size-6" />
@@ -98,26 +101,26 @@ export function PhotoPicker({
 
         <div className="min-w-0">
           <Button type="button" variant="outline" size="sm" onClick={() => inputRef.current?.click()}>
-            {hasImage ? `Change ${label.toLowerCase()}` : `Choose a ${label.toLowerCase()}`}
+            {hasImage ? t('photo.change', { label: displayLabel.toLowerCase() }) : t('photo.choose', { label: displayLabel.toLowerCase() })}
           </Button>
           {hasImage && (
             <Button type="button" variant="ghost" size="sm" onClick={clear} className="ml-1">
               <Trash2 className="size-4" />
-              Remove
+              {t('photo.remove')}
             </Button>
           )}
           <p className="mt-1.5 text-[12.5px] leading-snug text-muted">
             {uploading
-              ? 'Uploading…'
+              ? t('photo.uploading')
               : hint ??
-                'A clear photo of their face. We shrink it before sending, so the tablet loads it fast.'}
+                t('photo.hint')}
           </p>
         </div>
       </div>
 
       {error && (
         <p role="alert" className="text-[13px] font-medium text-alert">
-          That photo did not upload: {error.message}
+          {t('photo.uploadFailed')} {error.message}
         </p>
       )}
 

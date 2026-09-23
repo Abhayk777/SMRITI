@@ -26,21 +26,18 @@ export function confidenceBand(confidence: number): OcrConfidenceBand {
 
 export const CONFIDENCE_COPY: Record<
   OcrConfidenceBand,
-  { label: string; help: string; tone: 'sage' | 'gold' | 'alert' }
+  { label: 'ocr.confidence.high' | 'ocr.confidence.low' | 'ocr.confidence.unrecognized'; help: 'ocr.confidence.highHelp' | 'ocr.confidence.lowHelp' | 'ocr.confidence.unrecognizedHelp'; tone: 'sage' | 'gold' | 'alert' }
 > = {
   high: {
-    label: 'Clear',
-    help: 'Read cleanly. Check it against the printed line anyway.',
+    label: 'ocr.confidence.high', help: 'ocr.confidence.highHelp',
     tone: 'sage',
   },
   low: {
-    label: 'Unclear',
-    help: 'Some of this was hard to read. Compare every word with the prescription.',
+    label: 'ocr.confidence.low', help: 'ocr.confidence.lowHelp',
     tone: 'gold',
   },
   unrecognized: {
-    label: 'Could not read',
-    help: 'Almost none of this line was legible. Type it in yourself.',
+    label: 'ocr.confidence.unrecognized', help: 'ocr.confidence.unrecognizedHelp',
     tone: 'alert',
   },
 }

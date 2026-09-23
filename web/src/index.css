@@ -400,6 +400,12 @@
     -webkit-text-size-adjust: 100%;
   }
 
+  html[lang='mni'] {
+    --font-heading: 'Noto Sans Meetei Mayek', 'Baloo 2', system-ui, sans-serif;
+    --font-body: 'Noto Sans Meetei Mayek', 'Figtree', system-ui, sans-serif;
+    --font-sans: 'Noto Sans Meetei Mayek', 'Figtree', system-ui, sans-serif;
+  }
+
   body {
     margin: 0;
     background: var(--color-ivory);

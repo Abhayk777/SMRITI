@@ -12,8 +12,10 @@ import {
   toRoutineDraft,
   type RoutineDraft,
 } from '@/features/routine/RoutineForm.tsx'
-import { ROUTINE_ICON_LABEL, useRoutine, useRoutineMutation } from '@/features/routine/useRoutine.ts'
-import { formatMinutes, partOfDay } from '@/lib/utils.ts'
+import { ROUTINE_ICONS, useRoutine, useRoutineMutation } from '@/features/routine/useRoutine.ts'
+import { useTranslation } from '@/i18n/index.ts'
+import type { TranslationKey } from '@/i18n/keys.ts'
+import { partOfDay } from '@/lib/utils.ts'
 import { usePatientAccess } from '@/patients/usePatientAccess.ts'
 
 /**
@@ -27,6 +29,7 @@ import { usePatientAccess } from '@/patients/usePatientAccess.ts'
  */
 export default function Routine() {
   const { patientId, canEdit, patient } = usePatientAccess()
+  const { formatTimeMinutes, t } = useTranslation()
   const routine = useRoutine(patientId)
   const { save, remove } = useRoutineMutation<RoutineDraft>(patientId)
 
@@ -38,24 +41,22 @@ export default function Routine() {
   return (
     <>
       <PageHeader
-        eyebrow="Manage"
-        title="Their routine"
-        description={`The small anchors of ${firstName}'s day. The tablet shows these back to them as a picture of what is coming — most families say it is the part they like best.`}
+        eyebrow={t('routine.eyebrow')}
+        title={t('routine.title')}
+        description={t('routine.description', { name: firstName })}
         actions={
           canEdit &&
           !draft && (
             <Button variant="accent" onClick={() => setDraft(emptyRoutine())}>
               <Plus className="size-4" />
-              Add to their day
+              {t('routine.add')}
             </Button>
           )
         }
       />
 
       <Notice className="mb-6">
-        Routine items are for orientation, not reminders. They do not chime and they never
-        trigger a phone call — anything that must not be missed belongs on the{' '}
-        <strong>Medicines</strong> page.
+        {t('routine.orientationNotice')}
       </Notice>
 
       {routine.error && <ErrorState error={routine.error} className="mb-6" />}
@@ -63,13 +64,13 @@ export default function Routine() {
       {draft && (
         <Card padding="lg" className="mb-6">
           <h2 className="mb-5 text-[19px]">
-            {draft.id ? 'Edit this' : 'Add something to their day'}
+            {draft.id ? t('routine.edit') : t('routine.add')}
           </h2>
           <RoutineForm
             value={draft}
             onChange={setDraft}
             saving={save.isPending}
-            submitLabel={draft.id ? 'Save changes' : 'Add to their day'}
+            submitLabel={draft.id ? t('common.save') : t('routine.add')}
             onCancel={() => setDraft(null)}
             onSubmit={() => save.mutate(draft, { onSuccess: () => setDraft(null) })}
           />
@@ -88,13 +89,13 @@ export default function Routine() {
       {!routine.isPending && rows.length === 0 && !draft && (
         <EmptyState
           icon={<CalendarHeart className="size-5" />}
-          title="Their day is empty"
-          description="Three or four anchors is plenty — morning tea, lunch, a walk, bedtime. Enough that the day has a shape."
+          title={t('routine.emptyTitle')}
+          description={t('routine.emptyDescription')}
           action={
             canEdit && (
               <Button onClick={() => setDraft(emptyRoutine())}>
                 <Plus className="size-4" />
-                Add the first one
+                {t('routine.addFirst')}
               </Button>
             )
           }
@@ -113,15 +114,15 @@ export default function Routine() {
               />
               <Card tone="sage" padding="md" className="flex items-center gap-4">
                 <span className="numeral w-20 flex-none text-[15px] text-sage">
-                  {formatMinutes(item.time_min)}
+                  {formatTimeMinutes(item.time_min)}
                 </span>
                 <div className="min-w-0 flex-1">
                   <p className="truncate font-heading text-[17px] font-bold">
                     {item.label_key}
                   </p>
                   <p className="truncate text-[13px] text-muted">
-                    {partOfDay(item.time_min)} ·{' '}
-                    {ROUTINE_ICON_LABEL[item.icon_asset] ?? item.icon_asset}
+                    {t(`format.${partOfDay(item.time_min).toLowerCase()}` as TranslationKey)} ·{' '}
+                    {ROUTINE_ICONS.find((icon) => icon.value === item.icon_asset) ? t(ROUTINE_ICONS.find((icon) => icon.value === item.icon_asset)!.key) : item.icon_asset}
                   </p>
                 </div>
                 {canEdit && (
@@ -129,7 +130,7 @@ export default function Routine() {
                     <Button
                       variant="ghost"
                       size="icon-sm"
-                      aria-label={`Edit ${item.label_key}`}
+                      aria-label={t('common.editName', { name: item.label_key })}
                       onClick={() => setDraft(toRoutineDraft(item))}
                     >
                       <Pencil className="size-4" />
@@ -137,7 +138,7 @@ export default function Routine() {
                     <Button
                       variant="ghost"
                       size="icon-sm"
-                      aria-label={`Remove ${item.label_key}`}
+                      aria-label={t('common.removeName', { name: item.label_key })}
                       onClick={() => remove.mutate(item.id)}
                     >
                       <Trash2 className="size-4" />

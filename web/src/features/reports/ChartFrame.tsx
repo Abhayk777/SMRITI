@@ -3,6 +3,7 @@ import { Table2 } from 'lucide-react'
 
 import { Card } from '@/components/ui/card.tsx'
 import { cn, formatDayShort } from '@/lib/utils.ts'
+import { useTranslation } from '@/i18n/index.ts'
 
 /**
  * The frame every chart in the app sits in: a title, an optional plain-language
@@ -31,6 +32,7 @@ export function ChartFrame({
   children: ReactNode
   className?: string
 }) {
+  const { t } = useTranslation()
   const [showTable, setShowTable] = useState(false)
 
   return (
@@ -55,7 +57,7 @@ export function ChartFrame({
             )}
           >
             <Table2 className="size-3.5" />
-            {showTable ? 'Chart' : 'Numbers'}
+            {showTable ? t('common.chart') : t('common.numbers')}
           </button>
         )}
       </div>

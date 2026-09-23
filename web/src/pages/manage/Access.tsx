@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Eye, ShieldCheck, UserPlus } from 'lucide-react'
 import { useForm } from 'react-hook-form'
@@ -12,8 +12,8 @@ import { Card } from '@/components/ui/card.tsx'
 import { Field, Input, Label, Select } from '@/components/ui/field.tsx'
 import { ErrorState, Notice } from '@/components/ui/feedback.tsx'
 import { SkeletonRow } from '@/components/ui/skeleton.tsx'
-import { ROLE_COPY, useInviteMember, useMembers } from '@/features/access/useMembers.ts'
-import { formatDayShort } from '@/lib/utils.ts'
+import { useInviteMember, useMembers } from '@/features/access/useMembers.ts'
+import { useTranslation } from '@/i18n/index.ts'
 import { usePatientAccess } from '@/patients/usePatientAccess.ts'
 import type { InviteMemberArgs } from '@smriti/shared'
 
@@ -34,22 +34,20 @@ import type { InviteMemberArgs } from '@smriti/shared'
  * what it can rather than inventing what it cannot.
  */
 
-const schema = z.object({
-  phone: z
-    .string()
-    .trim()
-    .regex(/^\+[1-9]\d{7,14}$/, 'Include the country code, like +91 98765 43210'),
-  role: z.enum(['family_viewer', 'caregiver']),
-})
-
-type Values = z.infer<typeof schema>
+type Values = { phone: string; role: 'family_viewer' | 'caregiver' }
 
 export default function Access() {
   const { patientId, canEdit, patient } = usePatientAccess()
+  const { t, formatDate } = useTranslation()
   const { userId } = useAuth()
   const members = useMembers(patientId)
   const invite = useInviteMember(patientId)
   const [pendingNote, setPendingNote] = useState<string | null>(null)
+
+  const schema = useMemo(() => z.object({
+    phone: z.string().trim().regex(/^\+[1-9]\d{7,14}$/, t('access.phoneError')),
+    role: z.enum(['family_viewer', 'caregiver']),
+  }), [t])
 
   const form = useForm<Values>({
     resolver: zodResolver(schema),
@@ -62,9 +60,9 @@ export default function Access() {
   return (
     <>
       <PageHeader
-        eyebrow="Manage"
-        title="Who can access this"
-        description={`Everyone here can see ${firstName}'s day, their trends and their messages. Only caregivers can change their medicines, people and routine.`}
+        eyebrow={t('access.eyebrow')}
+        title={t('access.title')}
+        description={t('access.description', { name: firstName })}
       />
 
       {members.error && <ErrorState error={members.error} className="mb-6" />}
@@ -73,7 +71,11 @@ export default function Access() {
         {members.isPending && [0, 1].map((i) => <SkeletonRow key={i} />)}
 
         {rows.map((member) => {
-          const copy = ROLE_COPY[member.role]
+          const copy = member.role === 'caregiver'
+            ? { label: t('access.caregiver.label'), body: t('access.caregiver.body') }
+            : member.role === 'family_viewer'
+              ? { label: t('access.family.label'), body: t('access.family.body') }
+              : { label: t('access.healthWorker.label'), body: t('access.healthWorker.body') }
           const isYou = member.user_id === userId
           return (
             <Card
@@ -101,7 +103,7 @@ export default function Access() {
                   <p className="font-heading text-[17px] font-bold">{copy.label}</p>
                   {isYou && (
                     <Badge tone="neutral" size="sm">
-                      You
+                      {t('access.you')}
                     </Badge>
                   )}
                 </div>
@@ -109,7 +111,7 @@ export default function Access() {
                   {copy.body}
                 </p>
                 <p className="mt-1.5 text-[12.5px] text-muted">
-                  Added {formatDayShort(member.created_at.slice(0, 10))}
+                  {t('access.added', { date: formatDate(member.created_at, { day: 'numeric', month: 'short', year: 'numeric' }) })}
                 </p>
               </div>
             </Card>
@@ -124,10 +126,9 @@ export default function Access() {
               <UserPlus className="size-5" />
             </span>
             <div>
-              <h2 className="text-[19px]">Add an existing Smriti user</h2>
+              <h2 className="text-[19px]">{t('access.addUser')}</h2>
               <p className="mt-1 max-w-[54ch] text-[14.5px] leading-relaxed text-body">
-                This does not send a text or email. Use the number they already used to sign
-                in to Smriti; access is added only to that existing account.
+                {t('access.addUserDescription')}
               </p>
             </div>
           </div>
@@ -144,7 +145,7 @@ export default function Access() {
                     form.reset({ phone: '', role: values.role })
                     setPendingNote(
                       result.status === 'pending'
-                        ? `Nobody has signed up with ${values.phone} yet. Ask them to sign in to Smriti with that number once, then invite them again — they have not been given access yet.`
+                        ? t('access.pending', { phone: values.phone })
                         : null,
                     )
                   },
@@ -154,7 +155,7 @@ export default function Access() {
           >
             <div className="grid gap-4 sm:grid-cols-[1fr_auto]">
               <Field
-                label="Their mobile number"
+                label={t('access.phone')}
                 htmlFor="invite-phone"
                 required
                 error={form.formState.errors.phone?.message}
@@ -168,10 +169,10 @@ export default function Access() {
               </Field>
 
               <div>
-                <Label htmlFor="invite-role">What they can do</Label>
+                <Label htmlFor="invite-role">{t('access.role')}</Label>
                 <Select id="invite-role" className="mt-2 w-56" {...form.register('role')}>
-                  <option value="family_viewer">Family — can see everything</option>
-                  <option value="caregiver">Caregiver — can also make changes</option>
+                  <option value="family_viewer">{t('access.familyOption')}</option>
+                  <option value="caregiver">{t('access.caregiverOption')}</option>
                 </Select>
               </div>
             </div>
@@ -184,20 +185,20 @@ export default function Access() {
 
             {invite.isSuccess && !pendingNote && (
               <Notice className="mt-1">
-                Added. They will see {firstName} the next time they open Smriti.
+                {t('access.addedNotice', { name: firstName })}
               </Notice>
             )}
 
             {invite.error && <ErrorState error={invite.error} className="mt-3" />}
 
             <Button type="submit" variant="accent" className="mt-4" disabled={invite.isPending}>
-              {invite.isPending ? 'Adding…' : 'Add access'}
+              {invite.isPending ? t('access.adding') : t('access.addAccess')}
             </Button>
           </form>
         </Card>
       ) : (
         <Notice className="mt-6">
-          Only a caregiver can add people to this profile. Ask whoever set it up.
+          {t('access.caregiverOnly')}
         </Notice>
       )}
     </>

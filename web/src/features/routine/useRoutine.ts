@@ -32,18 +32,9 @@ export function useRoutineMutation<T extends object = RoutineItem>(patientId: st
  * bundle; `app-spec.md` is its owner, and this array is the web-side mirror.
  */
 export const ROUTINE_ICONS = [
-  { value: 'tea', label: 'Tea or coffee' },
-  { value: 'meal', label: 'A meal' },
-  { value: 'walk', label: 'A walk' },
-  { value: 'phone', label: 'A phone call' },
-  { value: 'bath', label: 'Bath' },
-  { value: 'prayer', label: 'Prayer' },
-  { value: 'rest', label: 'Rest' },
-  { value: 'exercise', label: 'Exercise' },
-  { value: 'visitor', label: 'A visitor' },
-  { value: 'sleep', label: 'Bedtime' },
+  { value: 'tea', key: 'routine.icons.tea' }, { value: 'meal', key: 'routine.icons.meal' },
+  { value: 'walk', key: 'routine.icons.walk' }, { value: 'phone', key: 'routine.icons.phone' },
+  { value: 'bath', key: 'routine.icons.bath' }, { value: 'prayer', key: 'routine.icons.prayer' },
+  { value: 'rest', key: 'routine.icons.rest' }, { value: 'exercise', key: 'routine.icons.exercise' },
+  { value: 'visitor', key: 'routine.icons.visitor' }, { value: 'sleep', key: 'routine.icons.sleep' },
 ] as const
-
-export const ROUTINE_ICON_LABEL: Record<string, string> = Object.fromEntries(
-  ROUTINE_ICONS.map((icon) => [icon.value, icon.label]),
-)

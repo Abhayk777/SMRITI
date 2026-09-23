@@ -32,8 +32,6 @@ export function useMarkMemoRead(patientId: string) {
 }
 
 export const MEMO_TAG_COPY: Record<string, string> = {
-  memory: 'A memory',
-  check_in: 'Check-in',
-  message: 'A message for you',
-  prompt: 'Answering a prompt',
+  memory: 'messages.tags.memory', check_in: 'messages.tags.checkIn',
+  message: 'messages.tags.message', prompt: 'messages.tags.prompt',
 }

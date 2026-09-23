@@ -23,10 +23,11 @@ import {
 } from '@/components/ui/dialog.tsx'
 import { ErrorState } from '@/components/ui/feedback.tsx'
 import { SkeletonRow } from '@/components/ui/skeleton.tsx'
+import { useTranslation } from '@/i18n/index.ts'
 import { useCaregiverFeedRealtime } from '@/hooks/usePatientRealtime.ts'
 import * as db from '@/lib/db.ts'
 import { qk } from '@/lib/queryKeys.ts'
-import { DEVICE_HEALTH_COPY, initialsOf, timeAgo } from '@/lib/utils.ts'
+import { initialsOf } from '@/lib/utils.ts'
 import type { PatientOverview } from '@smriti/shared'
 
 /**
@@ -64,6 +65,7 @@ function PatientRow({
   onToggleSelect: (id: string) => void
   onDelete: (id: string, name: string) => void
 }) {
+  const { t, formatRelativeTime } = useTranslation()
   const missed = Math.max(0, row.meds_scheduled - row.meds_confirmed)
 
   return (
@@ -72,7 +74,7 @@ function PatientRow({
         <Checkbox
           checked={isSelected}
           onCheckedChange={() => onToggleSelect(row.patient_id)}
-          aria-label={`Select ${row.display_name}`}
+          aria-label={t('common.selectName', { name: row.display_name })}
         />
       </div>
 
@@ -93,26 +95,26 @@ function PatientRow({
             </p>
             {row.active_flags > 0 && (
               <Badge tone="alert" size="sm">
-                {row.active_flags} to look at
+                {t('overview.flags', { count: row.active_flags })}
               </Badge>
             )}
             {row.unread_memos > 0 && (
               <Badge tone="gold" size="sm">
-                {row.unread_memos} new message{row.unread_memos === 1 ? '' : 's'}
+                {t('overview.newMessages', { count: row.unread_memos })}
               </Badge>
             )}
           </div>
 
           <p className="mt-1 text-[13.5px] leading-snug text-body sm:text-[14px]">
             {row.played_today
-              ? `Played today · ${Math.round(row.session_minutes)} min`
-              : 'No session today'}
+              ? t('overview.playedToday', { minutes: Math.round(row.session_minutes) })
+              : t('overview.noSession')}
             {row.meds_scheduled > 0 && (
               <>
                 {' · '}
                 {missed === 0
-                  ? 'All medicines confirmed'
-                  : `${missed} of ${row.meds_scheduled} medicines not confirmed`}
+                  ? t('overview.allMedicines')
+                  : t('overview.medicinesMissed', { missed, scheduled: row.meds_scheduled })}
               </>
             )}
           </p>
@@ -124,8 +126,8 @@ function PatientRow({
           >
             {row.device_status !== 'ok' && <WifiOff className="size-3.5" />}
             {row.device_status === 'never'
-              ? DEVICE_HEALTH_COPY.never.label
-              : `Tablet synced ${timeAgo(row.device_last_seen_at)}`}
+              ? t('device.health.never.label')
+              : t('device.lastHeard', { time: formatRelativeTime(row.device_last_seen_at) })}
           </p>
         </div>
 
@@ -141,20 +143,14 @@ function PatientRow({
             e.stopPropagation()
             onDelete(row.patient_id, row.display_name)
           }}
-          aria-label={`Delete ${row.display_name}`}
-          title="Delete patient completely"
+          aria-label={t('overview.deleteAria', { name: row.display_name })}
+          title={t('overview.deleteTitle')}
         >
           <Trash2 className="size-4" />
         </Button>
       </div>
     </div>
   )
-}
-
-function greetingFor(minutes: number): string {
-  if (minutes >= 300 && minutes < 720) return 'Good morning'
-  if (minutes >= 720 && minutes < 1020) return 'Good afternoon'
-  return 'Good evening'
 }
 
 function CareOverview({
@@ -170,38 +166,39 @@ function CareOverview({
   newMessageCount: number
   playedTodayCount: number
 }) {
+  const { t } = useTranslation()
   return (
     <div className="rounded-panel border border-[#E7D9C2] bg-ivory p-6">
       <p className="text-[12px] font-semibold uppercase tracking-[0.16em] text-bark">
-        Care overview
+        {t('overview.careOverview')}
       </p>
-      <h2 className="mt-2.5 font-heading text-[24px] leading-tight">A quick read</h2>
+      <h2 className="mt-2.5 font-heading text-[24px] leading-tight">{t('overview.quickRead')}</h2>
       <p className="mt-3 max-w-[25ch] text-[15px] leading-relaxed text-body">
-        Everyone in your care is sorted by what needs you first.
+        {t('overview.overviewDescription')}
       </p>
 
       <div className="mt-5 grid grid-cols-2 gap-2.5">
         <div className="min-h-[82px] rounded-[18px] bg-sand/75 p-3">
-          <p className="text-[13px] text-body">Offline devices</p>
+          <p className="text-[13px] text-body">{t('overview.offlineDevices')}</p>
           <p className="numeral mt-1.5 text-[26px] leading-none text-terracotta">
             {offlineDeviceCount}
           </p>
         </div>
         <div className="min-h-[82px] rounded-[18px] bg-clay/75 p-3">
-          <p className="text-[13px] text-body">New messages</p>
+          <p className="text-[13px] text-body">{t('overview.newMessagesTitle')}</p>
           <p className="numeral mt-1.5 text-[26px] leading-none text-terracotta">
             {newMessageCount}
           </p>
         </div>
         <div className="min-h-[82px] rounded-[18px] bg-ivory p-3 ring-1 ring-ink/[0.04]">
-          <p className="text-[13px] text-body">Needs attention</p>
+          <p className="text-[13px] text-body">{t('overview.needsAttention')}</p>
           <p className="numeral mt-1.5 text-[26px] leading-none text-terracotta">
             {needAttentionCount}
             <span className="ml-1 text-[16px] text-muted">/{patientCount}</span>
           </p>
         </div>
         <div className="min-h-[82px] rounded-[18px] bg-sage-soft p-3">
-          <p className="text-[13px] text-body">Played today</p>
+          <p className="text-[13px] text-body">{t('overview.playedTodayTitle')}</p>
           <p className="numeral mt-1.5 text-[26px] leading-none text-sage">{playedTodayCount}</p>
         </div>
       </div>
@@ -209,7 +206,7 @@ function CareOverview({
       <Button asChild variant="outline" size="md" className="mt-5 w-full border-ink/20 bg-transparent">
         <Link to="/patients/new">
           <Plus className="size-4" />
-          Add another patient
+          {t('overview.addPatient')}
         </Link>
       </Button>
     </div>
@@ -217,6 +214,7 @@ function CareOverview({
 }
 
 export default function Overview() {
+  const { t } = useTranslation()
   const { session, signOut } = useAuth()
   const queryClient = useQueryClient()
   const [searchQuery, setSearchQuery] = useState('')
@@ -272,7 +270,7 @@ export default function Overview() {
         ? session.user.user_metadata.name
         : ''
   const firstName = caregiverName.trim().split(/\s+/)[0] || 'Sunanda'
-  const greeting = greetingFor(minutes)
+  const greeting = minutes >= 300 && minutes < 720 ? t('overview.morning') : minutes >= 720 && minutes < 1020 ? t('overview.afternoon') : t('overview.evening')
 
   const handleToggleSelect = (id: string) => {
     setSelectedIds((prev) => {
@@ -311,7 +309,7 @@ export default function Overview() {
           <Logomark size={24} color="var(--color-terracotta)" decorative />
           <Wordmark size={18} />
           <Button variant="ghost" size="sm" className="ml-auto" onClick={() => void signOut()}>
-            Sign out
+            {t('account.signOut')}
           </Button>
         </div>
         <GamosaBand variant="rule" size={4} />
@@ -321,21 +319,21 @@ export default function Overview() {
         <section aria-labelledby="family-heading" className="min-w-0">
           <p className="mb-2 flex items-center gap-2 text-[12px] font-medium uppercase tracking-[0.14em] text-bark">
             <TwinStar size={7} className="text-lac" />
-            Everyone you look after
+            {t('overview.everyone')}
           </p>
           <h1 id="family-heading" className="text-[clamp(26px,3.4vw,34px)]">
             {greeting}{firstName ? `, ${firstName}` : ''}
           </h1>
           <p className="mt-2 max-w-[52ch] text-[15.5px] leading-relaxed text-body">
             {isPending
-              ? 'Loading…'
+              ? t('overview.loading')
               : needAttention.length > 0
-                ? `${needAttention.length} of ${rows.length} could use a look. They are at the top.`
-                : 'Everyone is on track today. Nothing needs you right now.'}
+                ? t('overview.attentionSummary', { attention: needAttention.length, total: rows.length })
+                : t('overview.allOnTrack')}
           </p>
 
           <label className="relative mt-6 block">
-            <span className="sr-only">Search family members by name</span>
+            <span className="sr-only">{t('overview.searchAria')}</span>
             <Search
               aria-hidden="true"
               className="pointer-events-none absolute left-4 top-1/2 size-[18px] -translate-y-1/2 text-terracotta"
@@ -344,7 +342,7 @@ export default function Overview() {
               type="search"
               value={searchQuery}
               onChange={(event) => setSearchQuery(event.target.value)}
-              placeholder="Search by name"
+              placeholder={t('overview.searchPlaceholder')}
               className="h-11 w-full rounded-card border-[1.5px] border-[#E7D9C2] bg-ivory pl-11 pr-4 text-[15px] text-ink placeholder:text-muted/75 focus:border-terracotta focus:outline-none focus:ring-2 focus:ring-terracotta/15"
             />
           </label>
@@ -362,7 +360,7 @@ export default function Overview() {
                   }
                   onCheckedChange={handleToggleSelectAll}
                 />
-                <span>Select all ({filteredRows.length})</span>
+                <span>{t('overview.selectAll', { count: filteredRows.length })}</span>
               </label>
 
               {selectedIds.size > 0 && (
@@ -373,7 +371,7 @@ export default function Overview() {
                   className="shadow-xs"
                 >
                   <Trash2 className="size-3.5" />
-                  Delete chosen ({selectedIds.size})
+                  {t('overview.deleteChosen', { count: selectedIds.size })}
                 </Button>
               )}
             </div>
@@ -384,7 +382,7 @@ export default function Overview() {
             {error && <ErrorState error={error} onRetry={() => void refetch()} />}
             {!isPending && !error && filteredRows.length === 0 && (
               <div className="rounded-card border-[1.5px] border-[#E7D9C2] bg-ivory px-5 py-6 text-center text-sm text-body">
-                No family members match “{searchQuery}”.
+                {t('overview.noMatches', { query: searchQuery })}
               </div>
             )}
             {filteredRows.map((row) => (
@@ -424,28 +422,16 @@ export default function Overview() {
             <DialogTitle className="flex items-center gap-2 text-alert">
               <Trash2 className="size-5" />
               {targetToDelete && targetToDelete.ids.length === 1
-                ? `Delete ${targetToDelete.names[0]}`
-                : `Delete ${targetToDelete?.ids.length ?? 0} patients`}
+                ? t('overview.deleteOneTitle', { name: targetToDelete.names[0] })
+                : t('overview.deleteManyTitle', { count: targetToDelete?.ids.length ?? 0 })}
             </DialogTitle>
             <DialogDescription className="text-[14.5px] leading-relaxed">
-              {targetToDelete && targetToDelete.ids.length === 1 ? (
-                <>
-                  Are you sure you want to permanently delete{' '}
-                  <strong className="text-ink">{targetToDelete.names[0]}</strong>? All associated
-                  records — including medications, routine schedules, people contacts, audio memos,
-                  and activity logs — will be wiped completely.
-                </>
-              ) : (
-                <>
-                  Are you sure you want to permanently delete the following {targetToDelete?.ids.length}{' '}
-                  patients: <strong className="text-ink">{targetToDelete?.names.join(', ')}</strong>?
-                  All associated records, medications, routines, and audio files will be wiped
-                  completely from the database and storage.
-                </>
-              )}
+              {targetToDelete && targetToDelete.ids.length === 1
+                ? t('overview.deleteOneDescription', { name: targetToDelete.names[0] })
+                : t('overview.deleteManyDescription', { count: targetToDelete?.ids.length ?? 0, names: targetToDelete?.names.join(', ') ?? '' })}
             </DialogDescription>
             <p className="mt-3 text-[13px] font-semibold text-alert">
-              This action is immediate and cannot be undone.
+              {t('overview.cannotUndo')}
             </p>
           </DialogHeader>
 
@@ -457,7 +443,7 @@ export default function Overview() {
               onClick={() => setTargetToDelete(null)}
               disabled={deleteMutation.isPending}
             >
-              Cancel
+              {t('common.cancel')}
             </Button>
             <Button
               variant="danger"
@@ -468,7 +454,7 @@ export default function Overview() {
               }}
               disabled={deleteMutation.isPending}
             >
-              {deleteMutation.isPending ? 'Deleting…' : 'Delete completely'}
+              {deleteMutation.isPending ? t('overview.deleting') : t('overview.deleteCompletely')}
             </Button>
           </DialogFooter>
         </DialogContent>

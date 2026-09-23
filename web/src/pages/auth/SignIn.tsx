@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { ArrowLeft } from 'lucide-react'
 import { useForm } from 'react-hook-form'
@@ -8,6 +8,7 @@ import { z } from 'zod'
 import { useAuth } from '@/auth/useAuth.ts'
 import { Logomark } from '@/components/brand/Logomark.tsx'
 import { Wordmark } from '@/components/brand/Wordmark.tsx'
+import { LocaleSelector } from '@/components/i18n/LocaleSelector.tsx'
 import { GamosaBand, JapiRosette, TempleHem } from '@/components/ner/index.ts'
 import { Button } from '@/components/ui/button.tsx'
 import { Field, Input } from '@/components/ui/field.tsx'
@@ -16,6 +17,7 @@ import { isMockMode } from '@/lib/supabase.ts'
 import { cn } from '@/lib/utils.ts'
 import { FRESH_SIGNIN_KEY } from '@/routes/RootRedirect.tsx'
 import { color } from '@/styles/tokens.ts'
+import { useTranslation } from '@/i18n/index.ts'
 
 /**
  * Phone + OTP, Supabase Auth's native flow (frontend.md §3). There is nothing
@@ -31,23 +33,8 @@ import { color } from '@/styles/tokens.ts'
  * screen has no business guessing.
  */
 
-const phoneSchema = z.object({
-  phone: z
-    .string()
-    .trim()
-    .min(1, 'Enter the mobile number you signed up with')
-    .regex(/^\+[1-9]\d{7,14}$/, 'Include the country code, like +91 98765 43210'),
-})
-
-const otpSchema = z.object({
-  token: z
-    .string()
-    .trim()
-    .regex(/^\d{6}$/, 'The code is six digits'),
-})
-
-type PhoneValues = z.infer<typeof phoneSchema>
-type OtpValues = z.infer<typeof otpSchema>
+type PhoneValues = { phone: string }
+type OtpValues = { token: string }
 
 const RESEND_SECONDS = 45
 
@@ -83,12 +70,20 @@ function GoogleMark() {
 }
 
 export default function SignIn() {
+  const { t } = useTranslation()
   const { sendOtp, verifyOtp, signInWithGoogle, session } = useAuth()
   const navigate = useNavigate()
   const [phone, setPhone] = useState<string | null>(null)
   const [serverError, setServerError] = useState<string | null>(null)
   const [cooldown, setCooldown] = useState(0)
   const [googlePending, setGooglePending] = useState(false)
+
+  const phoneSchema = useMemo(() => z.object({
+    phone: z.string().trim().min(1, t('auth.phoneRequired')).regex(/^\+[1-9]\d{7,14}$/, t('auth.phoneInvalid')),
+  }), [t])
+  const otpSchema = useMemo(() => z.object({
+    token: z.string().trim().regex(/^\d{6}$/, t('auth.otpInvalid')),
+  }), [t])
 
   useEffect(() => {
     if (session) navigate('/', { replace: true })
@@ -126,7 +121,7 @@ export default function SignIn() {
       setPhone(values.phone)
       setCooldown(RESEND_SECONDS)
     } catch (error) {
-      setServerError(error instanceof Error ? error.message : 'Could not send the code')
+      setServerError(error instanceof Error ? error.message : t('auth.sendFailed'))
     }
   }
 
@@ -140,7 +135,7 @@ export default function SignIn() {
       navigate('/', { replace: true })
     } catch (error) {
       setServerError(
-        error instanceof Error ? error.message : 'That code did not work. Try again.',
+        error instanceof Error ? error.message : t('auth.verifyFailed'),
       )
     }
   }
@@ -157,7 +152,7 @@ export default function SignIn() {
     } catch (error) {
       setGooglePending(false)
       setServerError(
-        error instanceof Error ? error.message : 'Could not start Google sign-in. Try again.',
+        error instanceof Error ? error.message : t('auth.googleFailed'),
       )
     }
   }
@@ -174,10 +169,10 @@ export default function SignIn() {
 
         <div className="max-w-[26ch]">
           <h2 className="text-[clamp(28px,2.8vw,40px)] leading-[1.1] text-ivory">
-            Be close to their day, from wherever you are.
+            {t('auth.welcomeTitle')}
           </h2>
           <p className="mt-4 text-[15.5px] leading-relaxed text-ivory/80">
-            Sign in with the mobile number your family uses. We will send a six-digit code.
+            {t('auth.welcomeDescription')}
           </p>
         </div>
 
@@ -194,30 +189,32 @@ export default function SignIn() {
         </div>
 
         <p className="text-[13px] text-ivory/55">
-          Smriti (स्मृति) is Sanskrit for memory — what is kept, and what is passed on.
+          {t('auth.brandMeaning')}
         </p>
       </aside>
 
       {/* Right: the form. */}
       <main className="flex items-center justify-center bg-ivory px-5 py-14 sm:px-10">
         <div className="w-full max-w-[400px]">
-          <Link to="/" className="mb-10 flex items-center gap-2.5 text-terracotta lg:hidden">
-            <Logomark size={24} decorative />
-            <Wordmark size={18} color="var(--color-ink)" />
-          </Link>
+          <div className="mb-10 flex items-center justify-between gap-4">
+            <Link to="/" className="flex items-center gap-2.5 text-terracotta lg:hidden">
+              <Logomark size={24} decorative />
+              <Wordmark size={18} color="var(--color-ink)" />
+            </Link>
+            <LocaleSelector className="ml-auto text-ink" />
+          </div>
 
           {isMockMode && (
             <Notice tone="warn" className="mb-6">
-              No Supabase credentials are configured, so this is a demo. Any number and any
-              six digits will sign you in, and nothing you save is real.
+              {t('auth.demoNotice')}
             </Notice>
           )}
 
           {!phone ? (
             <>
-              <h1 className="text-[28px]">Sign in</h1>
+              <h1 className="text-[28px]">{t('auth.signIn')}</h1>
               <p className="mb-7 mt-2 text-[15px] leading-relaxed text-body">
-                Use Google or your mobile number. No password to remember.
+                {t('auth.signInDescription')}
               </p>
 
               <Button
@@ -229,20 +226,20 @@ export default function SignIn() {
                 disabled={googlePending}
               >
                 <GoogleMark />
-                {googlePending ? 'Opening Google…' : 'Continue with Google'}
+                {googlePending ? t('auth.googleOpening') : t('auth.continueWithGoogle')}
               </Button>
 
               <div className="my-6 flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.14em] text-muted">
                 <span className="h-px flex-1 bg-ink/10" />
-                or use your mobile number
+                {t('auth.orMobile')}
                 <span className="h-px flex-1 bg-ink/10" />
               </div>
 
               <form onSubmit={phoneForm.handleSubmit(requestCode)} noValidate>
                 <Field
-                  label="Mobile number"
+                  label={t('auth.mobileNumber')}
                   htmlFor="phone"
-                  hint="Include the country code."
+                  hint={t('auth.countryCodeHint')}
                   error={phoneForm.formState.errors.phone?.message ?? serverError ?? undefined}
                 >
                   <Input
@@ -264,7 +261,7 @@ export default function SignIn() {
                   className="mt-2 w-full"
                   disabled={phoneForm.formState.isSubmitting}
                 >
-                  {phoneForm.formState.isSubmitting ? 'Sending…' : 'Send me a code'}
+                  {phoneForm.formState.isSubmitting ? t('auth.sending') : t('auth.sendCode')}
                 </Button>
               </form>
             </>
@@ -280,17 +277,17 @@ export default function SignIn() {
                 className="mb-5 flex items-center gap-1.5 text-sm font-semibold text-bark hover:underline"
               >
                 <ArrowLeft className="size-4" />
-                Use a different number
+                {t('auth.differentNumber')}
               </button>
 
-              <h1 className="text-[28px]">Enter your code</h1>
+              <h1 className="text-[28px]">{t('auth.enterCode')}</h1>
               <p className="mb-7 mt-2 text-[15px] leading-relaxed text-body">
-                We sent six digits to <span className="font-semibold text-ink">{phone}</span>.
+                {t('auth.codeSent', { phone })}
               </p>
 
               <form onSubmit={otpForm.handleSubmit(submitCode)} noValidate>
                 <Field
-                  label="Six-digit code"
+                  label={t('auth.sixDigitCode')}
                   htmlFor="token"
                   error={otpForm.formState.errors.token?.message ?? serverError ?? undefined}
                 >
@@ -313,7 +310,7 @@ export default function SignIn() {
                   className="mt-2 w-full"
                   disabled={otpForm.formState.isSubmitting}
                 >
-                  {otpForm.formState.isSubmitting ? 'Checking…' : 'Sign in'}
+                  {otpForm.formState.isSubmitting ? t('auth.checking') : t('auth.signIn')}
                 </Button>
 
                 <button
@@ -322,7 +319,7 @@ export default function SignIn() {
                   onClick={() => void requestCode({ phone })}
                   className="mt-4 w-full text-center text-sm text-muted disabled:opacity-60"
                 >
-                  {cooldown > 0 ? `Send again in ${cooldown}s` : 'Send the code again'}
+                  {cooldown > 0 ? t('auth.resendIn', { seconds: cooldown }) : t('auth.resend')}
                 </button>
               </form>
             </>

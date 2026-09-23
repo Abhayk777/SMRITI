@@ -16,6 +16,7 @@ import {
 } from '@/components/ui/dialog.tsx'
 import { EmptyState, ErrorState, Notice } from '@/components/ui/feedback.tsx'
 import { SkeletonRow } from '@/components/ui/skeleton.tsx'
+import { useTranslation } from '@/i18n/index.ts'
 import {
   PersonForm,
   emptyPerson,
@@ -41,6 +42,7 @@ import type { Person } from '@smriti/shared'
  */
 export default function People() {
   const { patientId, canEdit, patient } = usePatientAccess()
+  const { t } = useTranslation()
   const people = usePeople(patientId)
   const { save, remove } = usePeopleMutation<PersonDraft>(patientId)
 
@@ -53,15 +55,15 @@ export default function People() {
   return (
     <>
       <PageHeader
-        eyebrow="Manage"
-        title="People"
-        description={`The faces and voices ${firstName} sees on the tablet. These are what the recognition games are built from, so it is worth keeping them current.`}
+        eyebrow={t('people.eyebrow')}
+        title={t('people.title')}
+        description={t('people.description', { name: firstName })}
         actions={
           canEdit &&
           !draft && (
             <Button variant="accent" onClick={() => setDraft(emptyPerson(rows.length))}>
               <Plus className="size-4" />
-              Add someone
+              {t('people.addSomeone')}
             </Button>
           )
         }
@@ -69,8 +71,7 @@ export default function People() {
 
       {!canEdit && (
         <Notice className="mb-6">
-          You have view-only access to this profile. Ask whoever set it up if you need to
-          change anything here.
+          {t('people.viewOnly')}
         </Notice>
       )}
 
@@ -79,14 +80,14 @@ export default function People() {
       {draft && (
         <Card padding="lg" className="mb-6">
           <h2 className="mb-5 text-[19px]">
-            {draft.id ? `Edit ${draft.name || 'this person'}` : 'Add someone'}
+            {draft.id ? t('people.editThisPerson', { name: draft.name || t('people.title').toLowerCase() }) : t('people.addSomeone')}
           </h2>
           <PersonForm
             patientId={patientId}
             value={draft}
             onChange={setDraft}
             saving={save.isPending}
-            submitLabel={draft.id ? 'Save changes' : 'Add this person'}
+            submitLabel={draft.id ? t('common.save') : t('people.addSomeone')}
             onCancel={() => setDraft(null)}
             onSubmit={() => save.mutate(draft, { onSuccess: () => setDraft(null) })}
           />
@@ -100,13 +101,13 @@ export default function People() {
         {!people.isPending && rows.length === 0 && !draft && (
           <EmptyState
             icon={<Users className="size-5" />}
-            title="Nobody added yet"
-            description={`The tablet needs at least one familiar face before it can ask ${firstName} about anyone.`}
+            title={t('people.nobodyYet')}
+            description={t('people.emptyDescription', { name: firstName })}
             action={
               canEdit && (
                 <Button onClick={() => setDraft(emptyPerson(0))}>
                   <Plus className="size-4" />
-                  Add the first person
+                  {t('people.addFirstPerson')}
                 </Button>
               )
             }
@@ -128,12 +129,12 @@ export default function People() {
                 <p className="truncate font-heading text-[17px] font-bold">{person.name}</p>
                 {person.is_deceased && (
                   <Badge tone="neutral" size="sm">
-                    Passed away
+                    {t('people.passedAway')}
                   </Badge>
                 )}
                 {person.voice_path && (
                   <Badge tone="sage" size="sm">
-                    Voice recorded
+                    {t('people.voiceRecorded')}
                   </Badge>
                 )}
               </div>
@@ -146,7 +147,7 @@ export default function People() {
               <StoredPatientVoice
                 patientId={patientId}
                 path={person.voice_path}
-                label={`Voice recording for ${person.name}`}
+                label={t('people.voiceRecordingFor', { name: person.name })}
               />
             </div>
 
@@ -155,7 +156,7 @@ export default function People() {
                 <Button
                   variant="ghost"
                   size="icon-sm"
-                  aria-label={`Edit ${person.name}`}
+                  aria-label={t('people.editPerson', { name: person.name })}
                   onClick={() => setDraft(toPersonDraft(person))}
                 >
                   <Pencil className="size-4" />
@@ -163,7 +164,7 @@ export default function People() {
                 <Button
                   variant="ghost"
                   size="icon-sm"
-                  aria-label={`Remove ${person.name}`}
+                  aria-label={t('people.removeTitle', { name: person.name })}
                   onClick={() => setConfirmRemove(person)}
                 >
                   <Trash2 className="size-4" />
@@ -180,16 +181,14 @@ export default function People() {
       >
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Remove {confirmRemove?.name}?</DialogTitle>
+            <DialogTitle>{t('people.removeTitle', { name: confirmRemove?.name ?? '' })}</DialogTitle>
             <DialogDescription>
-              Their photograph and voice will stop appearing on the tablet, and{' '}
-              {firstName} will not be asked about them again. Sessions they have already played
-              are unaffected.
+              {t('people.removeDescription', { patient: firstName })}
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
             <Button variant="ghost" onClick={() => setConfirmRemove(null)}>
-              Keep them
+              {t('people.keep')}
             </Button>
             <Button
               variant="danger"
@@ -199,7 +198,7 @@ export default function People() {
                 remove.mutate(confirmRemove.id, { onSuccess: () => setConfirmRemove(null) })
               }}
             >
-              {remove.isPending ? 'Removing…' : 'Remove'}
+              {remove.isPending ? t('people.removing') : t('people.remove')}
             </Button>
           </DialogFooter>
         </DialogContent>

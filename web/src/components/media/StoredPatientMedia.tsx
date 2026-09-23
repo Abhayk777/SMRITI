@@ -5,6 +5,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { BUCKET } from '@/lib/db.ts'
 import { cn } from '@/lib/utils.ts'
 import { useSignedUrl } from '@/hooks/useMediaUpload.ts'
+import { useTranslation } from '@/i18n/index.ts'
 
 /**
  * Media rows store a Storage path, never a URL. These small renderers resolve
@@ -23,6 +24,7 @@ export function StoredPatientPhoto({
   fallback: ReactNode
   className?: string
 }) {
+  const { t } = useTranslation()
   const signed = useSignedUrl(patientId, BUCKET.media, path)
   const [open, setOpen] = useState(false)
 
@@ -38,7 +40,7 @@ export function StoredPatientPhoto({
         type="button"
         disabled={!signed.data}
         onClick={() => setOpen(true)}
-        aria-label={`View ${alt}`}
+        aria-label={t('common.viewName', { name: alt })}
         className={cn(
           'grid flex-none place-items-center overflow-hidden rounded-full bg-sand text-muted',
           signed.data && 'cursor-zoom-in transition-opacity hover:opacity-85 focus:outline-none focus:ring-2 focus:ring-terracotta focus:ring-offset-2',
@@ -71,6 +73,7 @@ export function StoredPatientVoice({
   label: string
   className?: string
 }) {
+  const { t } = useTranslation()
   const [wanted, setWanted] = useState(false)
   const signed = useSignedUrl(patientId, BUCKET.media, path, wanted)
 
@@ -80,16 +83,16 @@ export function StoredPatientVoice({
     <div className={cn('mt-2 flex flex-wrap items-center gap-2', className)}>
       {!wanted && (
         <Button type="button" variant="outline" size="sm" onClick={() => setWanted(true)}>
-          Play voice
+          {t('common.playVoice')}
         </Button>
       )}
-      {wanted && signed.isPending && <span className="text-[13px] text-muted">Loading voice…</span>}
+      {wanted && signed.isPending && <span className="text-[13px] text-muted">{t('common.loadingVoice')}</span>}
       {wanted && signed.data && (
         <audio controls autoPlay aria-label={label} className="h-9 max-w-[220px]" src={signed.data} />
       )}
       {wanted && signed.error && (
         <span role="alert" className="text-[13px] font-medium text-alert">
-          The saved voice could not be loaded. Please try again.
+          {t('common.voiceLoadFailed')}
         </span>
       )}
     </div>

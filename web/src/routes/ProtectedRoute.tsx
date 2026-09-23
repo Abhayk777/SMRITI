@@ -2,6 +2,7 @@ import { Navigate, Outlet, useLocation } from 'react-router-dom'
 
 import { useAuth } from '@/auth/useAuth.ts'
 import { FullPageLoading } from './FullPageLoading.tsx'
+import { useTranslation } from '@/i18n/index.ts'
 
 /**
  * No session → `/auth` (frontend.md §2).
@@ -12,10 +13,11 @@ import { FullPageLoading } from './FullPageLoading.tsx'
  * to do.
  */
 export function ProtectedRoute() {
+  const { t } = useTranslation()
   const { session, loading } = useAuth()
   const location = useLocation()
 
-  if (loading) return <FullPageLoading label="Signing you in" />
+  if (loading) return <FullPageLoading label={t('common.signingIn')} />
   if (!session) return <Navigate to="/auth" replace state={{ from: location }} />
 
   return <Outlet />

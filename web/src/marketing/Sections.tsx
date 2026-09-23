@@ -21,6 +21,7 @@ import { Eyebrow } from '@/components/ui/card.tsx'
 import { cn } from '@/lib/utils.ts'
 import { color } from '@/styles/tokens.ts'
 import { Reveal } from './Reveal.tsx'
+import { useTranslation } from '@/i18n/index.ts'
 
 /* ══════════════════════════════════════════════════════════════════════════
    How it works — cream.
@@ -32,28 +33,25 @@ import { Reveal } from './Reveal.tsx'
 const STEPS = [
   {
     n: 1,
-    title: 'They answer a gentle check-in',
-    body: 'One card, one tap. “Did you sleep well?” — never a form, never an alarm.',
     chip: 'bg-clay text-bark',
     card: 'bg-sand',
   },
   {
     n: 2,
-    title: 'Smriti notices the pattern',
-    body: 'Routines kept, medicine taken, the days that felt heavier than usual.',
     chip: 'bg-sage-soft text-sage',
     card: 'bg-sage-soft/60',
   },
   {
     n: 3,
-    title: 'You get the short version',
-    body: 'A calm daily line, a weekly report the whole family can see, and one memory they chose to share.',
     chip: 'bg-gold/25 text-[#8A6210]',
     card: 'bg-gold/[0.09]',
   },
 ]
 
 export function HowItWorks() {
+  const { t } = useTranslation()
+  const stepKeys = [['marketing.step1Title', 'marketing.step1Body'], ['marketing.step2Title', 'marketing.step2Body'], ['marketing.step3Title', 'marketing.step3Body']] as const
+  const steps = STEPS.map((step, i) => ({ ...step, title: t(stepKeys[i][0]), body: t(stepKeys[i][1]) }))
   return (
     <section id="how" className="bg-cream px-5 py-[clamp(64px,9vw,132px)] sm:px-12">
       <div className="mx-auto grid max-w-[1180px] items-start gap-[clamp(32px,5vw,72px)] md:grid-cols-2">
@@ -62,22 +60,20 @@ export function HowItWorks() {
           <div>
             <Eyebrow className="mb-3.5 flex items-center gap-2">
               <TwinStar size={7} className="text-lac" />
-              How it works
+              {t('marketing.how')}
             </Eyebrow>
             <h2 className="max-w-[22ch] text-[clamp(28px,3.6vw,44px)] leading-[1.1]">
-              Three small things a day. One quiet answer for you.
+              {t('marketing.howTitle')}
             </h2>
             <p className="mt-4.5 max-w-[44ch] text-[16.5px] leading-relaxed text-body">
-              Smriti sits in the background of your parent&rsquo;s home — a tablet or their
-              own phone — and asks for very little. What it gathers, it turns into something
-              you can read in half a minute.
+              {t('marketing.howBody')}
             </p>
           </div>
         </Reveal>
 
         <div className="relative flex flex-col gap-3.5">
           <ThreadLine className="absolute inset-y-6 -left-7 hidden w-5 md:block" />
-          {STEPS.map((step, i) => (
+          {steps.map((step, i) => (
             <WeaveIn key={step.n} delay={0.1 * i}>
               <div className={cn('flex items-start gap-4 rounded-card px-6 py-5.5', step.card)}>
                 <span
@@ -113,10 +109,10 @@ export function HowItWorks() {
    ══════════════════════════════════════════════════════════════════════════ */
 
 const STATS = [
-  { value: 42000, display: '42,000', label: 'families keeping watch together, in 14 countries' },
-  { value: 3.1, display: '3.1M', suffix: 'M', label: 'check-ins answered — 91% without a reminder' },
-  { value: 94, display: '94%', suffix: '%', label: 'of families are still using Smriti after a year' },
-  { value: 1, display: '1 evening', label: 'average setup, with a real person on the call if you want one' },
+  { value: 42000, display: '42,000' },
+  { value: 3.1, display: '3.1M', suffix: 'M' },
+  { value: 94, display: '94%', suffix: '%' },
+  { value: 1, display: '1 evening' },
 ]
 
 /** Counts up once, when the band scrolls into view. */
@@ -165,12 +161,15 @@ function CountUp({ stat }: { stat: (typeof STATS)[number] }) {
 }
 
 export function StatBand() {
+  const { t } = useTranslation()
+  const statKeys = ['marketing.stat1', 'marketing.stat2', 'marketing.stat3', 'marketing.stat4'] as const
+  const stats = STATS.map((stat, i) => ({ ...stat, label: t(statKeys[i]) }))
   return (
     <section className="relative bg-sage">
       <NagaBands size={20} drift={7} />
       <div className="px-5 py-[clamp(48px,6vw,80px)] sm:px-12">
         <div className="mx-auto grid max-w-[1180px] gap-[clamp(24px,4vw,40px)] sm:grid-cols-2 lg:grid-cols-4">
-          {STATS.map((stat, i) => (
+          {stats.map((stat, i) => (
             <Reveal key={stat.label} delay={i * 0.08} y={14}>
               <CountUp stat={stat} />
               <p className="mt-2.5 text-[14.5px] leading-snug text-cream/80">{stat.label}</p>
@@ -187,13 +186,8 @@ export function StatBand() {
    The product preview — sand.
    ══════════════════════════════════════════════════════════════════════════ */
 
-const PROMISES = [
-  'Mei decides what is shared, and can see everything you see.',
-  'Invite siblings, a carer or a neighbour with their own view.',
-  'Quiet hours by default. We only push when it matters.',
-]
-
 function PhonePreview() {
+  const { t } = useTranslation()
   // The phone rides a little slower than the page, so it sits "in front of"
   // the section rather than being printed on it.
   const ref = useRef<HTMLDivElement>(null)
@@ -219,12 +213,12 @@ function PhonePreview() {
           </div>
           <div className="px-4.5 pb-4.5 pt-3">
             <div className="flex items-baseline justify-between">
-              <p className="font-heading text-[19px] font-bold">Tuesday, 12 May</p>
+              <p className="font-heading text-[19px] font-bold">{t('marketingPreview.date')}</p>
               <Badge tone="sage" size="sm">
-                All well
+                {t('marketingPreview.status')}
               </Badge>
             </div>
-            <p className="mb-3.5 mt-0.5 text-[12.5px] text-muted">Mei · Shillong · 3 things today</p>
+            <p className="mb-3.5 mt-0.5 text-[12.5px] text-muted">{t('marketingPreview.summary')}</p>
 
             <div className="flex flex-col gap-2.5">
               <div className="flex items-center gap-3 rounded-[20px] bg-sage-soft px-3.5 py-3">
@@ -232,9 +226,9 @@ function PhonePreview() {
                   <Check className="size-3.5 text-ivory" strokeWidth={3.2} />
                 </span>
                 <div className="min-w-0">
-                  <p className="text-[13.5px] font-semibold leading-tight">Morning check-in</p>
+                  <p className="text-[13.5px] font-semibold leading-tight">{t('marketingPreview.checkIn')}</p>
                   <p className="text-[12px] leading-tight text-sage">
-                    8:12 · “Slept well, knee is better”
+                    {t('marketingPreview.checkInDetail')}
                   </p>
                 </div>
               </div>
@@ -244,9 +238,9 @@ function PhonePreview() {
                   <Check className="size-3.5 text-ivory" strokeWidth={3.2} />
                 </span>
                 <div className="min-w-0">
-                  <p className="text-[13.5px] font-semibold leading-tight">Blood pressure tablet</p>
+                  <p className="text-[13.5px] font-semibold leading-tight">{t('marketingPreview.medicine')}</p>
                   <p className="text-[12px] leading-tight text-bark">
-                    9:00 · taken, no reminder needed
+                    {t('marketingPreview.medicineDetail')}
                   </p>
                 </div>
               </div>
@@ -254,8 +248,8 @@ function PhonePreview() {
               <div className="flex items-center gap-3 rounded-[20px] bg-[#EEE7DB] px-3.5 py-3">
                 <span className="size-6.5 flex-none rounded-full border-2 border-dashed border-[#C0B6A5]" />
                 <div className="min-w-0">
-                  <p className="text-[13.5px] font-semibold leading-tight">Walk with Iba</p>
-                  <p className="text-[12px] leading-tight text-muted">5:30 pm · not yet</p>
+                  <p className="text-[13.5px] font-semibold leading-tight">{t('marketingPreview.walk')}</p>
+                  <p className="text-[12px] leading-tight text-muted">{t('marketingPreview.walkDetail')}</p>
                 </div>
               </div>
 
@@ -264,10 +258,8 @@ function PhonePreview() {
                   <ImageIcon className="size-4.5" strokeWidth={2.2} />
                 </span>
                 <div className="min-w-0">
-                  <p className="text-[11px] uppercase tracking-[0.1em] text-bark">Memory shared</p>
-                  <p className="text-[13px] leading-snug">
-                    “Your grandfather&rsquo;s first radio, from Iewduh, 1974.”
-                  </p>
+                  <p className="text-[11px] uppercase tracking-[0.1em] text-bark">{t('marketingPreview.memory')}</p>
+                  <p className="text-[13px] leading-snug">{t('marketingPreview.memoryDetail')}</p>
                 </div>
               </div>
             </div>
@@ -279,23 +271,24 @@ function PhonePreview() {
 }
 
 export function ProductPreview() {
+  const { t } = useTranslation()
+  const promises = [t('marketing.promise1'), t('marketing.promise2'), t('marketing.promise3')]
   return (
     <section className="overflow-hidden bg-sand bg-cane-twill px-5 py-[clamp(64px,9vw,130px)] sm:px-12">
       <div className="mx-auto grid max-w-[1180px] items-center gap-[clamp(40px,6vw,80px)] md:grid-cols-2">
         <Reveal>
           <Eyebrow className="mb-3 flex items-center gap-2 text-sage">
             <TwinStar size={7} />
-            Your side of it
+            {t('marketing.yourSide')}
           </Eyebrow>
           <h2 className="max-w-[20ch] text-[clamp(28px,3.8vw,46px)] leading-[1.08]">
-            Their whole day, in one calm view.
+            {t('marketing.previewTitle')}
           </h2>
           <p className="mb-6 mt-4.5 max-w-[42ch] text-[16.5px] leading-relaxed text-body">
-            Open Smriti at lunch and you know where the day stands. No dashboards, no charts
-            to interpret — just today, in plain words.
+            {t('marketing.previewBody')}
           </p>
           <ul className="flex max-w-[44ch] flex-col gap-3.5">
-            {PROMISES.map((promise) => (
+            {promises.map((promise) => (
               <li key={promise} className="flex items-baseline gap-3 text-[15.5px] leading-snug">
                 <TwinStar size={6} className="relative -top-px flex-none text-lac" />
                 {promise}
@@ -303,7 +296,7 @@ export function ProductPreview() {
             ))}
           </ul>
           <Button asChild className="mt-8" size="lg">
-            <Link to="/auth">Take a tour of the app</Link>
+            <Link to="/auth">{t('marketing.tour')}</Link>
           </Button>
         </Reveal>
 
@@ -326,28 +319,19 @@ export function ProductPreview() {
  */
 const STORIES = [
   {
-    quote:
-      'I used to call three times a day and still worry. Now I see at lunch that Maa had their tablets, and I can get on with my afternoon.',
     name: 'Ananya B.',
-    where: 'Bengaluru · their mother is in Jorhat',
     tone: 'bg-cream',
     ring: 'bg-terracotta/15 text-terracotta',
     edge: 'bg-risa',
   },
   {
-    quote:
-      'The weekly report ended a lot of arguments between my brother and me. We finally read the same week.',
     name: 'Lalrin T.',
-    where: 'Delhi · their father is in Aizawl',
     tone: 'bg-sage-soft',
     ring: 'bg-sage/15 text-sage',
     edge: 'bg-ryndia',
   },
   {
-    quote:
-      'Papa sends a memory every evening. Some days it is his old scooter on the Dimapur road. It has become the best message of my day.',
     name: 'Temsu A.',
-    where: 'Pune · their father is in Kohima',
     tone: 'bg-gold/12',
     ring: 'bg-gold/25 text-[#8A6210]',
     edge: 'bg-thara',
@@ -355,21 +339,24 @@ const STORIES = [
 ]
 
 export function Stories() {
+  const { t } = useTranslation()
+  const storyKeys = [['marketing.story1', 'marketing.story1Where'], ['marketing.story2', 'marketing.story2Where'], ['marketing.story3', 'marketing.story3Where']] as const
+  const stories = STORIES.map((story, i) => ({ ...story, quote: t(storyKeys[i][0]), where: t(storyKeys[i][1]) }))
   return (
     <section id="stories" className="bg-ivory px-5 py-[clamp(64px,9vw,130px)] sm:px-12">
       <div className="mx-auto max-w-[1180px]">
         <Reveal>
           <Eyebrow className="mb-3 flex items-center gap-2">
             <TwinStar size={7} className="text-lac" />
-            Stories
+            {t('marketing.storiesTitle')}
           </Eyebrow>
           <h2 className="mb-[clamp(32px,4vw,56px)] max-w-[24ch] text-[clamp(26px,3.4vw,42px)]">
-            From sons and daughters, mostly at a distance
+            {t('marketing.storiesHeading')}
           </h2>
         </Reveal>
 
         <div className="grid gap-[clamp(18px,2.5vw,28px)] md:grid-cols-3">
-          {STORIES.map((story, i) => (
+          {stories.map((story, i) => (
             <WeaveIn key={story.name} delay={i * 0.12} className="h-full">
               <figure
                 className={cn(
@@ -414,6 +401,7 @@ export function Stories() {
    ══════════════════════════════════════════════════════════════════════════ */
 
 export function FinalCta() {
+  const { t } = useTranslation()
   const reduceMotion = useReducedMotion()
 
   return (
@@ -443,26 +431,25 @@ export function FinalCta() {
 
       <Reveal className="relative mx-auto max-w-[760px] text-center">
         <h2 className="text-[clamp(28px,4.2vw,52px)] leading-[1.08] text-ivory">
-          Tonight, this takes about as long as brewing a cup of Assam tea.
+          {t('marketing.ctaTitle')}
         </h2>
         <p className="mx-auto mb-7.5 mt-4.5 max-w-[46ch] text-[17px] leading-relaxed text-ivory/86">
-          Set Smriti up on your parent&rsquo;s phone or tablet, invite your siblings, and see
-          the first check-in tomorrow morning.
+          {t('marketing.ctaBody')}
         </p>
         <div className="flex flex-wrap justify-center gap-3">
           <Button asChild variant="accent" size="lg">
-            <Link to="/auth">Start free for 30 days</Link>
+            <Link to="/auth">{t('marketing.startTrial')}</Link>
           </Button>
           <Button
             asChild
             size="lg"
             className="border border-ivory/45 bg-transparent text-ivory hover:bg-ivory/12"
           >
-            <a href="#how">Talk to a real person</a>
+            <a href="#how">{t('marketing.talk')}</a>
           </Button>
         </div>
         <p className="mt-5.5 text-[13.5px] text-ivory/62">
-          No card needed &middot; Works on iPhone, Android and iPad
+          {t('marketing.noCard')}
         </p>
       </Reveal>
     </section>
@@ -473,36 +460,13 @@ export function FinalCta() {
    Footer — cream.
    ══════════════════════════════════════════════════════════════════════════ */
 
-const FOOTER_COLUMNS = [
-  {
-    heading: 'Product',
-    links: [
-      { label: 'Features', href: '#features' },
-      { label: 'How it works', href: '#how' },
-      { label: 'Pricing', href: '#start' },
-      { label: 'Download', href: '#start' },
-    ],
-  },
-  {
-    heading: 'Care',
-    links: [
-      { label: 'Set up with us', href: '#start' },
-      { label: 'Help centre', href: '#start' },
-      { label: 'Our privacy promise', href: '#start' },
-      { label: 'Family stories', href: '#stories' },
-    ],
-  },
-  {
-    heading: 'Company',
-    links: [
-      { label: 'About Smriti', href: '#top' },
-      { label: 'Careers', href: '#top' },
-      { label: 'Contact', href: '#top' },
-    ],
-  },
-]
-
 export function MarketingFooter() {
+  const { t } = useTranslation()
+  const footerColumns = [
+    { heading: t('marketing.product'), links: [{ label: t('marketing.features'), href: '#features' }, { label: t('marketing.how'), href: '#how' }, { label: t('marketing.pricing'), href: '#start' }, { label: t('marketing.download'), href: '#start' }] },
+    { heading: t('marketing.care'), links: [{ label: t('marketing.setupWithUs'), href: '#start' }, { label: t('marketing.help'), href: '#start' }, { label: t('marketing.privacy'), href: '#start' }, { label: t('marketing.familyStories'), href: '#stories' }] },
+    { heading: t('marketing.company'), links: [{ label: t('marketing.about'), href: '#top' }, { label: t('marketing.careers'), href: '#top' }, { label: t('marketing.contact'), href: '#top' }] },
+  ]
   return (
     <footer className="bg-cream pb-8 text-body">
       <GamosaBand size={16} />
@@ -511,7 +475,7 @@ export function MarketingFooter() {
           page, named and credited to its state. */}
       <div className="mx-auto max-w-[1180px] px-5 pt-[clamp(40px,5vw,64px)] sm:px-12">
         <p className="mb-4 text-[11.5px] font-semibold uppercase tracking-[0.12em] text-muted">
-          Eight sisters, eight looms
+          {t('marketing.looms')}
         </p>
       </div>
       <EightLooms className="mx-auto max-w-[1280px] px-5 sm:px-12" />
@@ -523,11 +487,11 @@ export function MarketingFooter() {
             <Wordmark size={18} color="var(--color-ink)" />
           </div>
           <p className="mt-3.5 max-w-[26ch] text-[13.5px] leading-relaxed">
-            Smriti (स्मृति) is Sanskrit for memory — what is kept, and what is passed on.
+            {t('marketing.footerMeaning')}
           </p>
         </div>
 
-        {FOOTER_COLUMNS.map((column) => (
+        {footerColumns.map((column) => (
           <div key={column.heading}>
             <p className="mb-2.5 text-[11.5px] font-semibold uppercase tracking-[0.12em] text-muted">
               {column.heading}
@@ -545,11 +509,8 @@ export function MarketingFooter() {
 
       <div className="mx-auto mt-[clamp(36px,5vw,64px)] max-w-[1180px] px-5 sm:px-12">
         <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2 border-t border-ink/10 pt-5 text-[12.5px] text-muted">
-          <p>© {new Date().getFullYear()} Smriti Care · Made for the ones who worry.</p>
-          <p className="max-w-[62ch]">
-            Motifs drawn from the handloom traditions of Assam, Arunachal Pradesh, Manipur,
-            Meghalaya, Mizoram, Nagaland, Sikkim and Tripura.
-          </p>
+          <p>{t('marketingPreview.copyright', { year: new Date().getFullYear() })}</p>
+          <p className="max-w-[62ch]">{t('marketingPreview.motifs')}</p>
         </div>
       </div>
     </footer>

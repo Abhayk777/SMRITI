@@ -38,36 +38,16 @@ export function useAcknowledgeFlag(patientId: string) {
  * be both wrong and cruel. Every line below describes what changed and points
  * at the evidence.
  */
-export const FLAG_COPY: Record<FlagType, { title: string; body: string }> = {
-  decline: {
-    title: 'Scores have moved down over several weeks',
-    body: 'The games have been getting harder for them than they were. This is worth mentioning at their next appointment — it is not a diagnosis, and lots of ordinary things cause it.',
-  },
-  engagement_drop: {
-    title: 'They are playing less than they were',
-    body: 'Fewer sessions, or shorter ones, compared with their own usual pattern. Sometimes that is a bad week; sometimes it is worth a phone call.',
-  },
-  adherence_drop: {
-    title: 'More doses are being missed',
-    body: 'Medicines are being confirmed less often than they were. Check whether the reminder time still suits their day.',
-  },
-  device_offline: {
-    title: 'The tablet has stopped reporting in',
-    body: 'Nothing has synced for a while. Usually it is the charger or the wifi. Until it reconnects, this screen cannot tell you anything new.',
-  },
-  pattern_mismatch: {
-    title: 'Their days are running differently',
-    body: 'The timing of their routine has shifted away from its usual shape.',
-  },
+export const FLAG_COPY: Record<FlagType, { title: 'flags.decline.title' | 'flags.engagementDrop.title' | 'flags.adherenceDrop.title' | 'flags.deviceOffline.title' | 'flags.patternMismatch.title'; body: 'flags.decline.body' | 'flags.engagementDrop.body' | 'flags.adherenceDrop.body' | 'flags.deviceOffline.body' | 'flags.patternMismatch.body' }> = {
+  decline: { title: 'flags.decline.title', body: 'flags.decline.body' },
+  engagement_drop: { title: 'flags.engagementDrop.title', body: 'flags.engagementDrop.body' },
+  adherence_drop: { title: 'flags.adherenceDrop.title', body: 'flags.adherenceDrop.body' },
+  device_offline: { title: 'flags.deviceOffline.title', body: 'flags.deviceOffline.body' },
+  pattern_mismatch: { title: 'flags.patternMismatch.title', body: 'flags.patternMismatch.body' },
 }
 
-export const SEVERITY_COPY: Record<
-  FlagSeverity,
-  { label: string; tone: 'neutral' | 'gold' | 'alert' }
-> = {
-  info: { label: 'Worth knowing', tone: 'neutral' },
-  moderate: { label: 'Worth a look', tone: 'gold' },
-  high: { label: 'Worth acting on', tone: 'alert' },
+export const SEVERITY_COPY: Record<FlagSeverity, { label: 'flags.info' | 'flags.moderate' | 'flags.high'; tone: 'neutral' | 'gold' | 'alert' }> = {
+  info: { label: 'flags.info', tone: 'neutral' }, moderate: { label: 'flags.moderate', tone: 'gold' }, high: { label: 'flags.high', tone: 'alert' },
 }
 
 /** Attention first: a caregiver wants to know who needs them, not an ordered list. */

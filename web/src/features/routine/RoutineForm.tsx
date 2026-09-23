@@ -2,6 +2,7 @@ import { useState } from 'react'
 
 import { Button } from '@/components/ui/button.tsx'
 import { Field, Input, Select } from '@/components/ui/field.tsx'
+import { useTranslation } from '@/i18n/index.ts'
 import { minutesToTimeInput, timeInputToMinutes } from '@/lib/utils.ts'
 import { ROUTINE_ICONS } from './useRoutine.ts'
 import type { RoutineItem } from '@smriti/shared'
@@ -40,7 +41,7 @@ export function RoutineForm({
   onSubmit,
   onCancel,
   saving,
-  submitLabel = 'Save',
+  submitLabel,
   disabled,
 }: {
   value: RoutineDraft
@@ -51,8 +52,9 @@ export function RoutineForm({
   submitLabel?: string
   disabled?: boolean
 }) {
+  const { t } = useTranslation()
   const [touched, setTouched] = useState(false)
-  const labelError = touched && !value.label_key.trim() ? 'What happens at this time?' : undefined
+  const labelError = touched && !value.label_key.trim() ? t('routine.form.labelError') : undefined
   const valid = Boolean(value.label_key.trim())
 
   return (
@@ -66,18 +68,18 @@ export function RoutineForm({
       noValidate
     >
       <div className="grid gap-4 sm:grid-cols-[1fr_auto_auto]">
-        <Field label="What happens" htmlFor="routine-label" required error={labelError}>
+        <Field label={t('routine.form.label')} htmlFor="routine-label" required error={labelError}>
           <Input
             id="routine-label"
             value={value.label_key}
             onChange={(e) => onChange({ ...value, label_key: e.target.value })}
-            placeholder="Walk with Anita"
+            placeholder={t('routine.form.placeholder')}
             disabled={disabled}
             aria-invalid={Boolean(labelError)}
           />
         </Field>
 
-        <Field label="Time" htmlFor="routine-time">
+        <Field label={t('routine.form.time')} htmlFor="routine-time">
           <Input
             id="routine-time"
             type="time"
@@ -89,7 +91,7 @@ export function RoutineForm({
           />
         </Field>
 
-        <Field label="Picture" htmlFor="routine-icon">
+        <Field label={t('routine.form.picture')} htmlFor="routine-icon">
           <Select
             id="routine-icon"
             value={value.icon_asset}
@@ -99,7 +101,7 @@ export function RoutineForm({
           >
             {ROUTINE_ICONS.map((icon) => (
               <option key={icon.value} value={icon.value}>
-                {icon.label}
+                {t(icon.key)}
               </option>
             ))}
           </Select>
@@ -108,11 +110,11 @@ export function RoutineForm({
 
       <div className="flex flex-wrap gap-2">
         <Button type="submit" variant="accent" disabled={saving || disabled}>
-          {saving ? 'Saving…' : submitLabel}
+          {saving ? t('common.saving') : submitLabel ?? t('common.save')}
         </Button>
         {onCancel && (
           <Button type="button" variant="ghost" onClick={onCancel} disabled={saving}>
-            Cancel
+            {t('common.cancel')}
           </Button>
         )}
       </div>

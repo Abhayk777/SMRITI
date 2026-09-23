@@ -56,12 +56,6 @@ export const STATUS = {
   missed: '#B3402F',
 } as const
 
-export const STATUS_LABEL = {
-  onTablet: 'Confirmed on the tablet',
-  byCall: 'Confirmed after a call',
-  missed: 'Not confirmed',
-} as const
-
 /**
  * Sequential ramp for the calendar heatmap: one hue, light to dark.
  * Never a rainbow; index 0 is "nothing happened", not a colour on the ramp.

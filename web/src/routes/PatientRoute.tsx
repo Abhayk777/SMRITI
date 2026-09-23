@@ -10,6 +10,7 @@ import * as db from '@/lib/db.ts'
 import { qk } from '@/lib/queryKeys.ts'
 import { PatientProvider } from '@/patients/PatientContext.tsx'
 import { FullPageLoading } from './FullPageLoading.tsx'
+import { useTranslation } from '@/i18n/index.ts'
 
 /** A cheap shape check before any query runs, so a typo'd URL fails clearly. */
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
@@ -30,6 +31,7 @@ const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
  * affordances (§15 rule 8).
  */
 export function PatientRoute() {
+  const { t } = useTranslation()
   const { patientId } = useParams<{ patientId: string }>()
   const { userId } = useAuth()
 
@@ -57,7 +59,7 @@ export function PatientRoute() {
   )
 
   if (!valid) return <Navigate to="/" replace />
-  if (roleQuery.isPending) return <FullPageLoading label="Checking your access" />
+  if (roleQuery.isPending) return <FullPageLoading label={t('patientRoute.checkingAccess')} />
 
   if (roleQuery.error) {
     return (
@@ -72,11 +74,11 @@ export function PatientRoute() {
       <div className="mx-auto flex min-h-dvh max-w-xl items-center px-6">
         <EmptyState
           className="w-full"
-          title="You don't have access to this profile"
-          description="Whoever set it up needs to invite you from Manage → Access, using the phone number you signed in with. If you have more than one number, check you used the right one."
+          title={t('patientRoute.noAccessTitle')}
+          description={t('patientRoute.noAccessDescription')}
           action={
             <Button asChild variant="outline">
-              <a href="/">Back to your patients</a>
+              <a href="/">{t('patientRoute.backToPatients')}</a>
             </Button>
           }
         />
@@ -84,13 +86,13 @@ export function PatientRoute() {
     )
   }
 
-  if (patientQuery.isPending) return <FullPageLoading label="Loading this profile" />
+  if (patientQuery.isPending) return <FullPageLoading label={t('patientRoute.loadingProfile')} />
 
   if (patientQuery.error || !patientQuery.data) {
     return (
       <div className="mx-auto flex min-h-dvh max-w-lg items-center px-6">
         <ErrorState
-          error={patientQuery.error ?? new Error('This profile could not be loaded.')}
+          error={patientQuery.error ?? new Error(t('patientRoute.loadFailed'))}
           onRetry={() => void patientQuery.refetch()}
           className="w-full"
         />

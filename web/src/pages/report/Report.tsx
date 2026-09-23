@@ -13,6 +13,7 @@ import {
   useDailyReportMonths,
 } from '@/features/reports/useDailyReport.ts'
 import { usePatientAccess } from '@/patients/usePatientAccess.ts'
+import { useTranslation } from '@/i18n/index.ts'
 
 /**
  * Report (frontend.md §8, §10).
@@ -25,6 +26,7 @@ import { usePatientAccess } from '@/patients/usePatientAccess.ts'
  * today even without the PDF.
  */
 export default function Report() {
+  const { t } = useTranslation()
   const { patientId, patient } = usePatientAccess()
   const [months, setMonths] = useState<number>(3)
 
@@ -37,9 +39,9 @@ export default function Report() {
   return (
     <>
       <PageHeader
-        eyebrow="Report"
-        title="Something to take to the doctor"
-        description="A single page covering the period you choose — routines kept, medicines confirmed, what has changed, and the questions worth asking at the next appointment."
+        eyebrow={t('report.eyebrow')}
+        title={t('report.title')}
+        description={t('report.description')}
       />
 
       <Card padding="lg">
@@ -47,11 +49,10 @@ export default function Report() {
           <div className="min-w-0">
             <CardTitle className="flex items-center gap-2">
               <FileText className="size-4.5 text-terracotta" />
-              Generate a report
+              {t('report.generate')}
             </CardTitle>
             <p className="mt-1.5 max-w-[52ch] text-[14.5px] leading-relaxed text-body">
-              Covering {patient?.display_name ?? 'the patient'}. Shareable with siblings and with their
-              doctor — it contains no game scores out of context, only patterns and dates.
+              {t('report.covering', { name: patient?.display_name ?? 'the patient' })}
             </p>
           </div>
 
@@ -59,7 +60,7 @@ export default function Report() {
             <TabsList>
               {REPORT_RANGES.map((range) => (
                 <TabsTrigger key={range.months} value={String(range.months)}>
-                  {range.label}
+                  {t(range.key)}
                 </TabsTrigger>
               ))}
             </TabsList>
@@ -67,52 +68,50 @@ export default function Report() {
         </div>
 
         <div className="mt-6">
-          <Button variant="accent" size="lg" disabled title="PDF reports are not available yet">
+          <Button variant="accent" size="lg" disabled title={t('report.pdfUnavailableTitle')}>
             <FileText className="size-4" />
-            PDF report unavailable
+            {t('report.pdfUnavailable')}
           </Button>
           <Notice tone="warn" className="mt-4">
-            <strong>PDF report generation is not switched on yet.</strong> The figures below
-            are live and use the selected calendar period; no report request will be sent.
+            {t('report.pdfNotice')}
           </Notice>
         </div>
       </Card>
 
       {/* Live figures, so the page is useful before the PDF exists. */}
       <section className="mt-8">
-        <h2 className="text-[19px]">What the report will say</h2>
+        <h2 className="text-[19px]">{t('report.summaryTitle')}</h2>
         <p className="mt-1.5 max-w-[62ch] text-[14px] leading-relaxed text-body">
-          These come straight from the tablet, for the period selected above. You can read
-          them out at an appointment today.
+          {t('report.summaryDescription')}
         </p>
 
         <div className="mt-4 grid gap-3 sm:grid-cols-2">
           <Card tone="sand" padding="md">
             <p className="text-[12.5px] font-semibold uppercase tracking-[0.1em] text-muted">
-              Medicines
+              {t('report.medicines')}
             </p>
             <p className="numeral mt-2 text-[30px] leading-none">
               {adherence.rate === null ? '—' : `${Math.round(adherence.rate * 100)}%`}
             </p>
             <p className="mt-2 text-[14px] leading-relaxed text-body">
               {adherence.rate === null
-                ? 'Nothing scheduled in this period.'
-                : `${adherence.confirmed} of ${adherence.scheduled} doses confirmed. ${adherence.viaCall} needed a phone call.`}
+                ? t('report.nothingScheduled')
+                : t('report.dosesConfirmed', { confirmed: adherence.confirmed, scheduled: adherence.scheduled, viaCall: adherence.viaCall })}
             </p>
           </Card>
 
           <Card tone="sand" padding="md">
             <p className="text-[12.5px] font-semibold uppercase tracking-[0.1em] text-muted">
-              Sessions
+              {t('report.sessions')}
             </p>
             <p className="numeral mt-2 text-[30px] leading-none">
               {play.daysPlayed}
-              <span className="text-[18px] text-muted">/{play.daysTotal} days</span>
+              <span className="text-[18px] text-muted">/{play.daysTotal} {t('report.days')}</span>
             </p>
             <p className="mt-2 text-[14px] leading-relaxed text-body">
-              {play.minutes} minutes in total.
+              {t('report.minutesTotal', { minutes: play.minutes })}
               {play.accuracy !== null &&
-                ` Answers correct ${Math.round(play.accuracy * 100)}% of the time on average.`}
+                ` ${t('report.answersCorrect', { percent: Math.round(play.accuracy * 100) })}`}
             </p>
           </Card>
         </div>

@@ -10,6 +10,7 @@ import { TwinStar } from '@/components/ner/TwinStar.tsx'
 import { Button } from '@/components/ui/button.tsx'
 import { color, gradient } from '@/styles/tokens.ts'
 import { IntroFilm, type FilmPhase } from './IntroFilm.tsx'
+import { useTranslation } from '@/i18n/index.ts'
 
 /** Set once the intro has played, so a return visit in the same session skips it. */
 const INTRO_SEEN_KEY = 'smriti:intro-seen'
@@ -52,6 +53,7 @@ function initialPhase(): FilmPhase {
  * brand's own warmth instead of the page switching to a dark, cinematic look.
  */
 export function Hero({ onCurtainLift }: { onCurtainLift?: () => void }) {
+  const { t } = useTranslation()
   const [phase, setPhase] = useState<FilmPhase>(initialPhase)
   const [copyShown, setCopyShown] = useState(phase === 'ambient' || phase === 'still')
 
@@ -167,33 +169,31 @@ export function Hero({ onCurtainLift }: { onCurtainLift?: () => void }) {
           {...copy(0)}
           className="max-w-[19ch] text-center text-[clamp(32px,5.4vw,62px)] leading-[1.06] text-ivory"
         >
-          Be close to their day, from wherever you are.
+          {t('marketing.heroTitle')}
         </motion.h1>
 
         <motion.p
           {...copy(0.15)}
           className="mt-4 max-w-[52ch] text-center text-[clamp(15.5px,1.5vw,19px)] leading-relaxed text-ivory/92"
         >
-          Smriti quietly keeps track of your parent&rsquo;s routines, medicine and mood at
-          home — and tells the family what actually matters. Nothing to wear. Nothing to
-          charge.
+          {t('marketing.heroBody')}
         </motion.p>
 
         <motion.div {...copy(0.3)} className="mt-8 flex flex-wrap justify-center gap-3">
           <Button asChild variant="accent" size="lg">
-            <Link to="/auth">Start free for 30 days</Link>
+            <Link to="/auth">{t('marketing.startTrial')}</Link>
           </Button>
           <Button
             asChild
             size="lg"
             className="border border-ivory/55 bg-terracotta-deep/40 text-ivory hover:bg-terracotta-deep/70"
           >
-            <a href="#how">See how it works</a>
+            <a href="#how">{t('marketing.seeHow')}</a>
           </Button>
         </motion.div>
 
         <motion.p {...copy(0.45)} className="mt-6 text-center text-[13.5px] text-ivory/80">
-          Set up in one evening &middot; Your parent stays in control &middot; Cancel any time
+          {t('marketing.heroFootnote')}
         </motion.p>
       </div>
 
@@ -247,14 +247,14 @@ export function Hero({ onCurtainLift }: { onCurtainLift?: () => void }) {
             animate={{ opacity: 1, transition: { delay: 0.8 } }}
             exit={{ opacity: 0 }}
           >
-            Skip intro
+            {t('marketing.skipIntro')}
           </motion.button>
         )}
       </AnimatePresence>
 
       <a
         href="#how"
-        aria-label="Scroll to how it works"
+        aria-label={t('marketing.scrollHow')}
         className="absolute inset-x-0 bottom-9 z-10 mx-auto w-fit text-ivory/70 animate-bob"
       >
         <ArrowDown className="size-5" strokeWidth={2.75} />

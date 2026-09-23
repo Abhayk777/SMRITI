@@ -7,7 +7,9 @@ import {
   Activity,
   BookHeart,
   CalendarHeart,
+  Check,
   FileText,
+  Globe,
   LayoutDashboard,
   LogOut,
   MessageSquareHeart,
@@ -25,6 +27,7 @@ import { Logomark } from '@/components/brand/Logomark.tsx'
 import { Wordmark } from '@/components/brand/Wordmark.tsx'
 import { GamosaBand } from '@/components/ner/GamosaBand.tsx'
 import { Badge } from '@/components/ui/badge.tsx'
+import { useTranslation, type TranslationKey } from '@/i18n/index.ts'
 import * as db from '@/lib/db.ts'
 import { qk } from '@/lib/queryKeys.ts'
 import { cn } from '@/lib/utils.ts'
@@ -36,28 +39,28 @@ import { TheirSky } from './TheirSky.tsx'
 
 type NavItem = {
   to: string
-  label: string
+  labelKey: TranslationKey
   icon: typeof LayoutDashboard
   /** Key of a live count to render as a badge, if any. */
   count?: 'flags' | 'memos'
 }
 
 const MAIN_NAV: NavItem[] = [
-  { to: 'dashboard', label: 'Today', icon: LayoutDashboard },
-  { to: 'trends', label: 'Trends', icon: TrendingUp, count: 'flags' },
-  { to: 'engagement', label: 'Engagement', icon: Activity },
-  { to: 'messages', label: 'Messages', icon: MessageSquareHeart, count: 'memos' },
-  { to: 'report', label: 'Report', icon: FileText },
-  { to: 'care-guide', label: 'Care guide', icon: BookHeart },
+  { to: 'dashboard', labelKey: 'nav.today', icon: LayoutDashboard },
+  { to: 'trends', labelKey: 'nav.trends', icon: TrendingUp, count: 'flags' },
+  { to: 'engagement', labelKey: 'nav.engagement', icon: Activity },
+  { to: 'messages', labelKey: 'nav.messages', icon: MessageSquareHeart, count: 'memos' },
+  { to: 'report', labelKey: 'nav.report', icon: FileText },
+  { to: 'care-guide', labelKey: 'nav.careGuide', icon: BookHeart },
 ]
 
 const MANAGE_NAV: NavItem[] = [
-  { to: 'manage/people', label: 'People', icon: Users },
-  { to: 'manage/medicines', label: 'Medicines', icon: Pill },
-  { to: 'manage/routine', label: 'Routine', icon: CalendarHeart },
-  { to: 'manage/alerts', label: 'Alerts', icon: ShieldAlert },
-  { to: 'manage/access', label: 'Access', icon: UserRound },
-  { to: 'manage/device', label: 'Tablet', icon: Smartphone },
+  { to: 'manage/people', labelKey: 'nav.people', icon: Users },
+  { to: 'manage/medicines', labelKey: 'nav.medicines', icon: Pill },
+  { to: 'manage/routine', labelKey: 'nav.routine', icon: CalendarHeart },
+  { to: 'manage/alerts', labelKey: 'nav.alerts', icon: ShieldAlert },
+  { to: 'manage/access', labelKey: 'nav.access', icon: UserRound },
+  { to: 'manage/device', labelKey: 'nav.tablet', icon: Smartphone },
 ]
 
 /**
@@ -79,6 +82,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   const { signOut } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
+  const { t, locale, setLocale, supportedLocales } = useTranslation()
   const minutes = usePatientMinutes(patient?.timezone)
   const firstName = patient?.display_name.split(' ')[0] ?? 'they'
 
@@ -97,7 +101,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   }
 
   const renderNav = (items: NavItem[], variant: 'sidebar' | 'strip') =>
-    items.map(({ to, label, icon: Icon, count }) => {
+    items.map(({ to, labelKey, icon: Icon, count }) => {
       const badge = count ? counts[count] : 0
       return (
         <NavLink
@@ -127,7 +131,7 @@ export function AppShell({ children }: { children: ReactNode }) {
                   !isActive && 'group-hover/nav:-rotate-6 group-hover/nav:scale-110',
                 )}
               />
-              <span className="relative">{label}</span>
+              <span className="relative">{t(labelKey)}</span>
               {badge > 0 && (
                 // Something new breathes a soft ring, so it is noticed from
                 // the corner of the eye without anything flashing.
@@ -165,7 +169,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           <DropdownMenu.Root modal={false}>
             <DropdownMenu.Trigger
               className="grid size-10 flex-none place-items-center rounded-full text-muted transition-colors hover:bg-ink/[0.06] hover:text-ink"
-              aria-label="Account"
+              aria-label={t('account.ariaLabel')}
             >
               <Settings2 className="size-[18px]" />
             </DropdownMenu.Trigger>
@@ -179,21 +183,53 @@ export function AppShell({ children }: { children: ReactNode }) {
                   onSelect={() => navigate('/patients')}
                   className="cursor-pointer rounded-xl px-3 py-2.5 text-sm outline-none data-[highlighted]:bg-sand/70"
                 >
-                  All patients
+                  {t('account.allPatients')}
                 </DropdownMenu.Item>
                 <DropdownMenu.Item
                   onSelect={() => navigate('/patients/new')}
                   className="cursor-pointer rounded-xl px-3 py-2.5 text-sm outline-none data-[highlighted]:bg-sand/70"
                 >
-                  Add another patient
+                  {t('account.addPatient')}
                 </DropdownMenu.Item>
+                <DropdownMenu.Separator className="my-1 h-px bg-ink/[0.08]" />
+                <DropdownMenu.Sub>
+                  <DropdownMenu.SubTrigger className="flex cursor-pointer items-center justify-between rounded-xl px-3 py-2.5 text-sm outline-none data-[highlighted]:bg-sand/70">
+                    <span className="flex items-center gap-2">
+                      <Globe className="size-4 text-muted" />
+                      <span>{t('account.language')}</span>
+                    </span>
+                    <span className="text-xs text-muted">
+                      {supportedLocales.find((l) => l.code === locale)?.nativeLabel}
+                    </span>
+                  </DropdownMenu.SubTrigger>
+                  <DropdownMenu.Portal>
+                    <DropdownMenu.SubContent
+                      sideOffset={4}
+                      className="z-50 min-w-48 rounded-card border border-ink/[0.08] bg-ivory p-1.5 shadow-panel"
+                    >
+                      {supportedLocales.map((item) => (
+                        <DropdownMenu.Item
+                          key={item.code}
+                          onSelect={() => setLocale(item.code)}
+                          className="flex cursor-pointer items-center justify-between rounded-xl px-3 py-2 text-sm outline-none data-[highlighted]:bg-sand/70"
+                        >
+                          <div className="flex flex-col">
+                            <span className="font-medium text-ink">{item.nativeLabel}</span>
+                            <span className="text-[11px] text-muted">{item.label}</span>
+                          </div>
+                          {item.code === locale && <Check className="size-4 text-terracotta" />}
+                        </DropdownMenu.Item>
+                      ))}
+                    </DropdownMenu.SubContent>
+                  </DropdownMenu.Portal>
+                </DropdownMenu.Sub>
                 <DropdownMenu.Separator className="my-1 h-px bg-ink/[0.08]" />
                 <DropdownMenu.Item
                   onSelect={() => void signOut()}
                   className="flex cursor-pointer items-center gap-2 rounded-xl px-3 py-2.5 text-sm text-alert outline-none data-[highlighted]:bg-alert/[0.08]"
                 >
                   <LogOut className="size-4" />
-                  Sign out
+                  {t('account.signOut')}
                 </DropdownMenu.Item>
               </DropdownMenu.Content>
             </DropdownMenu.Portal>
@@ -219,7 +255,7 @@ export function AppShell({ children }: { children: ReactNode }) {
                 {renderNav(MAIN_NAV, 'sidebar')}
                 <div className="flex items-center gap-3 px-4 pb-1 pt-5">
                   <p className="text-[11.5px] font-semibold uppercase tracking-[0.12em] text-muted">
-                    Manage
+                    {t('nav.manage')}
                   </p>
                   <GamosaBand variant="rule" size={4} className="flex-1 opacity-50" />
                 </div>

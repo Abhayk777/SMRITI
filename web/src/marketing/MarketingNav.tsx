@@ -3,15 +3,11 @@ import { Link } from 'react-router-dom'
 
 import { Logomark } from '@/components/brand/Logomark.tsx'
 import { Wordmark } from '@/components/brand/Wordmark.tsx'
+import { LocaleSelector } from '@/components/i18n/LocaleSelector.tsx'
 import { GamosaBand } from '@/components/ner/GamosaBand.tsx'
 import { cn } from '@/lib/utils.ts'
 import { useScrollSolid } from './useScrollSolid.ts'
-
-const LINKS = [
-  { href: '#how', label: 'How it works' },
-  { href: '#features', label: 'Features' },
-  { href: '#stories', label: 'Stories' },
-]
+import { useTranslation } from '@/i18n/index.ts'
 
 /**
  * The sticky nav.
@@ -24,7 +20,9 @@ const LINKS = [
  * hero rises into this one, and the two should never be on screen together.
  */
 export function MarketingNav({ shown = true }: { shown?: boolean }) {
+  const { t } = useTranslation()
   const solid = useScrollSolid()
+  const links = [{ href: '#how', label: t('marketing.how') }, { href: '#features', label: t('marketing.features') }, { href: '#stories', label: t('marketing.stories') }]
 
   return (
     <motion.nav
@@ -43,7 +41,7 @@ export function MarketingNav({ shown = true }: { shown?: boolean }) {
         <Wordmark size={19} />
       </a>
 
-      {LINKS.map((link) => (
+      {links.map((link) => (
         <a
           key={link.href}
           href={link.href}
@@ -57,6 +55,8 @@ export function MarketingNav({ shown = true }: { shown?: boolean }) {
         </a>
       ))}
 
+      <LocaleSelector className="hidden text-current sm:inline-flex" />
+
       <Link
         to="/auth"
         className={cn(
@@ -66,7 +66,7 @@ export function MarketingNav({ shown = true }: { shown?: boolean }) {
             : 'border border-ivory/40 bg-terracotta-deep/45 text-ivory hover:bg-terracotta-deep/75',
         )}
       >
-        Get started
+        {t('marketing.getStarted')}
       </Link>
 
       <div

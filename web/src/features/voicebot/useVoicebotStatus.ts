@@ -6,7 +6,7 @@ import { qk } from '@/lib/queryKeys.ts'
 
 import { voicebotStatusPollInterval } from './voicebotStatusPresentation.ts'
 
-export { voicebotStatusCopy, voicebotStatusPollInterval } from './voicebotStatusPresentation.ts'
+export { voicebotStatusKeys, voicebotStatusPollInterval } from './voicebotStatusPresentation.ts'
 
 type VoicebotStatus = NonNullable<VoicebotAdminResponse['data']>
 type Operation = 'enable' | 'disable' | 'retry_sync'

@@ -23,15 +23,13 @@ import { useMedicines } from '@/features/medicines/useMedicines.ts'
 import { useMemos } from '@/features/memos/useMemos.ts'
 import { rowForDay, useDailyReport } from '@/features/reports/useDailyReport.ts'
 import { useRoutine } from '@/features/routine/useRoutine.ts'
+import { useTranslation } from '@/i18n/index.ts'
 import {
-  DEVICE_HEALTH_COPY,
   deviceHealth,
   formatDayLong,
-  formatMinutes,
   isoWeekdayIndex,
   isDayOn,
   minutesOfDayInZone,
-  timeAgo,
   todayInZone,
 } from '@/lib/utils.ts'
 import { usePatientAccess } from '@/patients/usePatientAccess.ts'
@@ -119,6 +117,7 @@ function StatTile({
 
 export default function Dashboard() {
   const { patientId, patient } = usePatientAccess()
+  const { t, formatRelativeTime, formatTimeMinutes } = useTranslation()
   // Today where the patient is, not where the caregiver is.
   const today = todayInZone(patient?.timezone)
 
@@ -149,16 +148,16 @@ export default function Dashboard() {
     <>
       <PageHeader
         eyebrow={formatDayLong(today)}
-        title={patient ? `${patient.display_name.split(' ')[0]}’s day` : 'Today'}
-        description="What has happened so far, and what is still to come. Everything here comes from the tablet — nothing is inferred."
+        title={patient ? t('dashboard.dayTitle', { name: patient.display_name.split(' ')[0] }) : t('dashboard.today')}
+        description={t('dashboard.description')}
       />
 
       {health !== 'ok' && (
         <Notice tone="warn" className="mb-6">
-          <strong>{DEVICE_HEALTH_COPY[health].label}.</strong>{' '}
-          {DEVICE_HEALTH_COPY[health].detail}{' '}
+          <strong>{t(`device.health.${health}.label` as const)}.</strong>{' '}
+          {t(`device.health.${health}.detail` as const)}{' '}
           <Link to={`/p/${patientId}/manage/device`} className="font-semibold underline">
-            Check the tablet
+            {t('dashboard.checkTablet')}
           </Link>
         </Notice>
       )}
@@ -167,7 +166,7 @@ export default function Dashboard() {
           a caregiver should not have to scroll past three tiles of statistics
           to find out. */}
       {activeFlags.length > 0 && (
-        <section className="mb-8 space-y-3" aria-label="Things to look at">
+        <section className="mb-8 space-y-3" aria-label={t('dashboard.notices')}>
           {activeFlags.map((flag) => (
             <FlagCard key={flag.id} flag={flag} patientId={patientId} />
           ))}
@@ -180,40 +179,40 @@ export default function Dashboard() {
         ) : (
           <>
             <StatTile
-              label="Medicines"
+              label={t('report.medicines')}
               value={scheduled === 0 ? '—' : `${confirmed}/${scheduled}`}
               detail={
                 scheduled === 0
-                  ? 'Nothing scheduled for today.'
+                  ? t('dashboard.noMedsToday')
                   : confirmed >= scheduled
-                    ? 'All confirmed. Nothing needed from you.'
-                    : `${scheduled - confirmed} not confirmed yet.`
+                    ? t('dashboard.allConfirmed')
+                    : t('dashboard.unconfirmed', { count: scheduled - confirmed })
               }
               tone={
                 scheduled === 0 ? 'plain' : confirmed >= scheduled ? 'sage' : 'warm'
               }
             />
             <StatTile
-              label="Time together"
+              label={t('dashboard.timeTogether')}
               value={
                 todayRow?.played
-                  ? `${Math.round(todayRow.minutes_played ?? 0)} min`
-                  : 'None yet'
+                  ? t('engagement.minutes', { count: Math.round(todayRow.minutes_played ?? 0) })
+                  : t('dashboard.noTime')
               }
               detail={
                 todayRow?.played
-                  ? `${todayRow.sessions ?? 1} session${(todayRow.sessions ?? 1) === 1 ? '' : 's'} on the tablet.`
-                  : 'They have not opened the tablet today.'
+                  ? t('dashboard.sessions', { count: todayRow.sessions ?? 1 })
+                  : t('dashboard.noSession')
               }
               tone={todayRow?.played ? 'sage' : 'plain'}
             />
             <StatTile
-              label="Messages"
+              label={t('nav.messages')}
               value={String(unreadMemos.length)}
               detail={
                 unreadMemos.length > 0
-                  ? 'Waiting for you to listen.'
-                  : 'Nothing new since you last looked.'
+                  ? t('dashboard.messagesWaiting')
+                  : t('dashboard.noMessages')
               }
               tone={unreadMemos.length > 0 ? 'warm' : 'plain'}
             />
@@ -229,11 +228,11 @@ export default function Dashboard() {
           <div className="flex items-center justify-between gap-3">
             <CardTitle className="flex items-center gap-2">
               <Pill className="size-4.5 text-terracotta" />
-              Medicines today
+              {t('dashboard.medicinesToday')}
             </CardTitle>
             <Button asChild variant="ghost" size="sm">
               <Link to={`/p/${patientId}/manage/medicines`}>
-                Manage
+                {t('dashboard.manage')}
                 <ChevronRight className="size-4" />
               </Link>
             </Button>
@@ -244,11 +243,11 @@ export default function Dashboard() {
             {!medicines.isPending && todaysMedicines.length === 0 && (
               <EmptyState
                 icon={<Pill className="size-5" />}
-                title="No medicines set up"
-                description="Add their medicines and Smriti will chime at the right hour, in their language."
+                title={t('dashboard.noMedicines')}
+                description={t('dashboard.noMedicinesDescription')}
                 action={
                   <Button asChild size="sm">
-                    <Link to={`/p/${patientId}/manage/medicines`}>Add a medicine</Link>
+                    <Link to={`/p/${patientId}/manage/medicines`}>{t('dashboard.addMedicine')}</Link>
                   </Button>
                 }
               />
@@ -268,7 +267,7 @@ export default function Dashboard() {
                 </div>
                 <Badge tone="neutral" size="sm">
                   <Clock className="size-3" />
-                  {formatMinutes(med.chosen_time_min)}
+                  {formatTimeMinutes(med.chosen_time_min)}
                 </Badge>
               </div>
             ))}
@@ -278,8 +277,7 @@ export default function Dashboard() {
                 new view server-side. */}
             {todaysMedicines.length > 0 && (
               <p className="pt-1 text-[12.5px] leading-snug text-muted">
-                Times shown are when Smriti will chime. Whether each was confirmed rolls up
-                into the count above.
+                {t('dashboard.medicineNote')}
               </p>
             )}
           </div>
@@ -290,11 +288,11 @@ export default function Dashboard() {
           <div className="flex items-center justify-between gap-3">
             <CardTitle className="flex items-center gap-2">
               <Clock className="size-4.5 text-sage" />
-              Their routine
+              {t('dashboard.routineTitle')}
             </CardTitle>
             <Button asChild variant="ghost" size="sm">
               <Link to={`/p/${patientId}/manage/routine`}>
-                Manage
+                {t('dashboard.manage')}
                 <ChevronRight className="size-4" />
               </Link>
             </Button>
@@ -305,11 +303,11 @@ export default function Dashboard() {
             {!routine.isPending && (routine.data ?? []).length === 0 && (
               <EmptyState
                 icon={<Clock className="size-5" />}
-                title="No routine yet"
-                description="Tea at seven, a walk at half five — the small anchors of their day. The tablet shows these back to them."
+                title={t('dashboard.noRoutine')}
+                description={t('dashboard.noRoutineDescription')}
                 action={
                   <Button asChild size="sm">
-                    <Link to={`/p/${patientId}/manage/routine`}>Add a routine item</Link>
+                    <Link to={`/p/${patientId}/manage/routine`}>{t('dashboard.addRoutine')}</Link>
                   </Button>
                 }
               />
@@ -334,14 +332,14 @@ export default function Dashboard() {
                   </span>
                   <p className="min-w-0 flex-1 truncate font-semibold">{item.label_key}</p>
                   <span className="numeral text-[13.5px] text-sage">
-                    {formatMinutes(item.time_min)}
+                    {formatTimeMinutes(item.time_min)}
                   </span>
                 </div>
               )
             })}
             {(routine.data ?? []).length > 0 && (
               <p className="pt-1 text-[12.5px] leading-snug text-muted">
-                Ticks show what the hour has passed, not what they confirmed.
+                {t('dashboard.routineNote')}
               </p>
             )}
           </div>
@@ -357,19 +355,19 @@ export default function Dashboard() {
             </span>
             <div className="min-w-0 flex-1">
               <p className="text-[12px] font-semibold uppercase tracking-[0.12em] text-bark">
-                New from {patient?.display_name.split(' ')[0] ?? 'the patient'}
+                {t('dashboard.newFrom', { name: patient?.display_name.split(' ')[0] ?? t('setup.pairing.fallbackName') })}
               </p>
               <p className="mt-1.5 font-heading text-lg leading-snug">
                 {unreadMemos[0].transcript
                   ? `“${unreadMemos[0].transcript}”`
-                  : 'A voice message is waiting.'}
+                  : t('dashboard.fallbackMemo')}
               </p>
               <p className="mt-1.5 text-[13px] text-muted">
-                Recorded {timeAgo(new Date(unreadMemos[0].recorded_at).toISOString())}
+                {t('dashboard.recorded', { time: formatRelativeTime(new Date(unreadMemos[0].recorded_at).toISOString()) })}
               </p>
               <Button asChild variant="solid" size="sm" className="mt-4">
                 <Link to={`/p/${patientId}/messages`}>
-                  Listen
+                  {t('dashboard.listen')}
                   <ArrowRight className="size-4" />
                 </Link>
               </Button>
@@ -380,7 +378,7 @@ export default function Dashboard() {
 
       <p className="mt-8 flex items-center gap-2 text-[13px] text-muted">
         {health === 'ok' ? null : <WifiOff className="size-3.5" />}
-        Last synced from the tablet {timeAgo(patient?.device_last_seen_at)}.
+        {t('device.lastHeard', { time: formatRelativeTime(patient?.device_last_seen_at) })}
       </p>
     </>
   )
