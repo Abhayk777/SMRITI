@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 380" width="1200" height="380" role="img" aria-label="Smriti — be close to her day, from wherever you are">
+  <defs>
+    <linearGradient id="ground" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#F9F4ED"/>
+      <stop offset="1" stop-color="#F5EAD8"/>
+    </linearGradient>
+    <linearGradient id="tile" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#C76547"/>
+      <stop offset="1" stop-color="#AE4F34"/>
+    </linearGradient>
+    <linearGradient id="sweep" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#E8A83F" stop-opacity="0"/>
+      <stop offset="0.5" stop-color="#E8A83F" stop-opacity="0.55"/>
+      <stop offset="1" stop-color="#EF8B7C" stop-opacity="0"/>
+    </linearGradient>
+    <pattern id="weave" width="48" height="22" patternUnits="userSpaceOnUse">
+      <rect width="48" height="22" fill="#BC5A3C"/>
+      <path d="M0 11 L12 3 L24 11 L12 19 Z" fill="#F5EAD8"/>
+      <path d="M24 11 L36 3 L48 11 L36 19 Z" fill="#E8A83F"/>
+      <circle cx="12" cy="11" r="2.4" fill="#BC5A3C"/>
+      <circle cx="36" cy="11" r="2.4" fill="#BC5A3C"/>
+    </pattern>
+    <clipPath id="card"><rect width="1200" height="380" rx="28"/></clipPath>
+    <clipPath id="word"><text x="330" y="205" font-family="'Baloo 2','Trebuchet MS','Segoe UI',sans-serif" font-size="128" font-weight="800" letter-spacing="-2">Smriti</text></clipPath>
+    <style>
+      .strand { fill: none; stroke: #F5EAD8; stroke-width: 8.5; stroke-dasharray: 1; stroke-dashoffset: 1;
+                animation: draw 1.1s cubic-bezier(.6,0,.2,1) forwards; }
+      .s2 { animation-delay: .25s } .s3 { animation-delay: .5s } .s4 { animation-delay: .75s }
+      .knot { transform-origin: 170px 190px; animation: settle 1.6s cubic-bezier(.3,1.6,.5,1) 1.5s both; }
+      .rise { opacity: 0; animation: rise .9s ease-out forwards; }
+      .r1 { animation-delay: 1.2s } .r2 { animation-delay: 1.7s } .r3 { animation-delay: 2.1s }
+      .gold { animation: gold 5s ease-in-out 2.4s infinite; }
+      .band { animation: slide 14s linear infinite; }
+      .spark { opacity: 0; animation: spark 3.2s ease-in-out infinite; }
+      .k2 { animation-delay: 1.1s } .k3 { animation-delay: 2.2s }
+      @keyframes draw   { to { stroke-dashoffset: 0 } }
+      @keyframes settle { 0% { transform: rotate(-12deg) scale(.92) } 100% { transform: rotate(0) scale(1) } }
+      @keyframes rise   { from { opacity: 0; transform: translateY(18px) } to { opacity: 1; transform: translateY(0) } }
+      @keyframes gold   { 0% { transform: translateX(-420px) } 45%,100% { transform: translateX(520px) } }
+      @keyframes slide  { to { transform: translateX(-48px) } }
+      @keyframes spark  { 0%,100% { opacity: 0; transform: scale(.4) } 50% { opacity: 1; transform: scale(1) } }
+      @media (prefers-reduced-motion: reduce) {
+        .strand { animation: none; stroke-dashoffset: 0 }
+        .knot, .rise, .gold, .band, .spark { animation: none; opacity: 1 }
+      }
+    </style>
+  </defs>
+
+  <g clip-path="url(#card)">
+    <rect width="1200" height="380" fill="url(#ground)"/>
+
+    <!-- soft hill layers -->
+    <path d="M0 300 C 180 250 320 280 480 262 S 820 230 1000 256 S 1150 270 1200 250 L1200 380 L0 380 Z" fill="#EBDDC5" opacity=".7"/>
+    <path d="M0 330 C 220 300 400 322 640 304 S 1000 292 1200 312 L1200 380 L0 380 Z" fill="#E4CDAE" opacity=".6"/>
+
+    <!-- logomark tile -->
+    <g class="knot">
+      <rect x="80" y="100" width="180" height="180" rx="40" fill="url(#tile)"/>
+      <g transform="translate(170 190) scale(1.476) translate(-50 -50)" stroke-linecap="butt">
+        <path class="strand"    pathLength="1" d="M 58.04 48.44 L 38.3 28.7 A 16.5 16.5 0 1 1 61.7 28.7 L 51.62 38.78"/>
+        <path class="strand s2" pathLength="1" d="M 58.04 48.44 L 38.3 28.7 A 16.5 16.5 0 1 1 61.7 28.7 L 51.62 38.78" transform="rotate(-90 50 50)"/>
+        <path class="strand s3" pathLength="1" d="M 58.04 48.44 L 38.3 28.7 A 16.5 16.5 0 1 1 61.7 28.7 L 51.62 38.78" transform="rotate(180 50 50)"/>
+        <path class="strand s4" pathLength="1" d="M 58.04 48.44 L 38.3 28.7 A 16.5 16.5 0 1 1 61.7 28.7 L 51.62 38.78" transform="rotate(90 50 50)"/>
+      </g>
+    </g>
+
+    <!-- sparks -->
+    <g fill="#E8A83F">
+      <circle class="spark"    cx="276" cy="112" r="5" style="transform-origin:276px 112px"/>
+      <circle class="spark k2" cx="70"  cy="262" r="4" style="transform-origin:70px 262px"/>
+      <circle class="spark k3" cx="1120" cy="86" r="5" style="transform-origin:1120px 86px"/>
+    </g>
+
+    <!-- wordmark -->
+    <g class="rise r1">
+      <text x="330" y="205" font-family="'Baloo 2','Trebuchet MS','Segoe UI',sans-serif" font-size="128" font-weight="800" letter-spacing="-2" fill="#BC5A3C">Smriti</text>
+      <g clip-path="url(#word)"><rect class="gold" x="330" y="80" width="200" height="150" fill="url(#sweep)"/></g>
+    </g>
+    <text class="rise r2" x="336" y="248" font-family="'Figtree','Segoe UI',Helvetica,Arial,sans-serif" font-size="30" font-weight="500" fill="#474238">Be close to her day, from wherever you are.</text>
+    <text class="rise r3" x="337" y="286" font-family="'Figtree','Segoe UI',Helvetica,Arial,sans-serif" font-size="17" font-weight="600" letter-spacing="3" fill="#8C491A">स्मृति · স্মৃতি · ꯁ꯭ꯃ꯭ꯔꯤꯇꯤ · MEMORY  —  ELDER CARE FOR NORTHEAST INDIA</text>
+
+    <!-- woven gamosa band -->
+    <g transform="translate(0 358)">
+      <g class="band"><rect x="0" y="0" width="1296" height="22" fill="url(#weave)"/></g>
+    </g>
+  </g>
+</svg>

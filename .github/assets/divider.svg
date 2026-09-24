@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 14" width="1200" height="14" preserveAspectRatio="none" role="img" aria-label="">
+  <defs>
+    <pattern id="w" width="36" height="14" patternUnits="userSpaceOnUse">
+      <rect width="36" height="14" fill="#F5EAD8"/>
+      <path d="M0 7 L9 1 L18 7 L9 13 Z" fill="#BC5A3C"/>
+      <path d="M18 7 L27 2 L36 7 L27 12 Z" fill="#E8A83F"/>
+    </pattern>
+    <style>
+      .b { animation: s 10s linear infinite }
+      @keyframes s { to { transform: translateX(-36px) } }
+      @media (prefers-reduced-motion: reduce) { .b { animation: none } }
+    </style>
+  </defs>
+  <rect width="1200" height="14" rx="7" fill="#F5EAD8"/>
+  <g class="b"><rect width="1272" height="14" fill="url(#w)"/></g>
+</svg>

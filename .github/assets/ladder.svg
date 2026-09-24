@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 250" width="1000" height="250" role="img" aria-label="The missed-dose escalation ladder: tablet reminder, first call, second call, SMS to primary caregiver, SMS to secondary caregiver, and the server-side watchdog">
+  <defs>
+    <style>
+      text { font-family: 'Figtree','Segoe UI',Helvetica,Arial,sans-serif }
+      .t { font-size: 15px; font-weight: 700; fill: #201E1D }
+      .s { font-size: 12.5px; fill: #645C50 }
+      .n { font-size: 14px; font-weight: 800; fill: #F9F4ED; text-anchor: middle }
+      .track { stroke: #EBDDC5; stroke-width: 6; stroke-linecap: round }
+      .fill  { stroke: #BC5A3C; stroke-width: 6; stroke-linecap: round; stroke-dasharray: 800; stroke-dashoffset: 800;
+               animation: go 7s ease-in-out infinite }
+      .dot { transform-box: fill-box; transform-origin: center; animation: pop 7s ease-in-out infinite }
+      .d1 { animation-delay: 0s } .d2 { animation-delay: .9s } .d3 { animation-delay: 1.8s }
+      .d4 { animation-delay: 2.7s } .d5 { animation-delay: 3.6s }
+      .ok { opacity: 0; animation: ok 7s ease-in-out infinite }
+      @keyframes go  { 0% { stroke-dashoffset: 800 } 60%,85% { stroke-dashoffset: 0 } 100% { stroke-dashoffset: 800 } }
+      @keyframes pop { 0%,6% { transform: scale(1) } 3% { transform: scale(1.22) } }
+      @keyframes ok  { 0%,62% { opacity: 0 } 70%,90% { opacity: 1 } 100% { opacity: 0 } }
+      @media (prefers-reduced-motion: reduce) { .fill { animation: none; stroke-dashoffset: 0 } .dot, .ok { animation: none; opacity: 1 } }
+    </style>
+  </defs>
+  <rect width="1000" height="250" rx="22" fill="#F9F4ED"/>
+  <text x="40" y="44" style="font-size:13px;font-weight:700;letter-spacing:3px;fill:#8C491A">MISSED-DOSE ESCALATION LADDER</text>
+
+  <line class="track" x1="100" y1="120" x2="900" y2="120"/>
+  <line class="fill"  x1="100" y1="120" x2="900" y2="120"/>
+
+  <g class="dot d1"><circle cx="100" cy="120" r="22" fill="#56633F"/><text class="n" x="100" y="125">1</text></g>
+  <g class="dot d2"><circle cx="300" cy="120" r="22" fill="#BC5A3C"/><text class="n" x="300" y="125">2</text></g>
+  <g class="dot d3"><circle cx="500" cy="120" r="22" fill="#BC5A3C"/><text class="n" x="500" y="125">3</text></g>
+  <g class="dot d4"><circle cx="700" cy="120" r="22" fill="#AE4F34"/><text class="n" x="700" y="125">4</text></g>
+  <g class="dot d5"><circle cx="900" cy="120" r="22" fill="#B3402F"/><text class="n" x="900" y="125">5</text></g>
+
+  <g text-anchor="middle">
+    <text class="t" x="100" y="172">Tablet alarm</text><text class="s" x="100" y="192">on-device, offline-safe</text>
+    <text class="t" x="300" y="172">Voice call</text><text class="s" x="300" y="192">Vapi or DTMF keypad</text>
+    <text class="t" x="500" y="172">Second call</text><text class="s" x="500" y="192">same due list, one call</text>
+    <text class="t" x="700" y="172">SMS · primary</text><text class="s" x="700" y="192">caregiver notified</text>
+    <text class="t" x="900" y="172">SMS · secondary</text><text class="s" x="900" y="192">backup contact</text>
+  </g>
+
+  <g class="ok">
+    <rect x="360" y="206" width="280" height="30" rx="15" fill="#F0FAE1"/>
+    <text x="500" y="226" text-anchor="middle" style="font-size:13px;font-weight:700;fill:#56633F">✓ any confirmation cancels the rest</text>
+  </g>
+  <text x="960" y="44" text-anchor="end" class="s">watchdog re-checks every 10 min · 45-min grace</text>
+</svg>

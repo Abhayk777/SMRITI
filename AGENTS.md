@@ -3,8 +3,7 @@
 ## Before any task
 1. Read `docs/INDEX.md` to find the relevant spec section
 2. Read that section of `docs/backend-spec.md` in full
-3. Read the current task and its acceptance criteria in `TASKS.md`
-4. Do only that task
+3. Do only that task
 
 ## Stack
 Supabase (Postgres + Auth + Storage + Edge Functions, region `ap-south-1`)
