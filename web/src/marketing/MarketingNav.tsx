@@ -16,7 +16,7 @@ import { useTranslation } from '@/i18n/index.ts'
  * have scrolled past it, hemmed with a fine gamosa rule instead of a drop
  * shadow. Solid, not frosted: the bar is either there or it is not.
  *
- * `shown` holds it back until the intro's curtain has lifted — the logo in the
+ * `shown` holds it back until the intro's curtain has lifted - the logo in the
  * hero rises into this one, and the two should never be on screen together.
  */
 export function MarketingNav({ shown = true }: { shown?: boolean }) {

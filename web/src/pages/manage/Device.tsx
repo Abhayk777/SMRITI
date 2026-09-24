@@ -15,7 +15,7 @@ import { usePatientAccess } from '@/patients/usePatientAccess.ts'
 /**
  * Manage → Tablet (frontend.md §8).
  *
- * The `ok` / `stale` / `offline` thresholds are the watchdog's own — 24 and 72
+ * The `ok` / `stale` / `offline` thresholds are the watchdog's own - 24 and 72
  * hours. They match on purpose. A caregiver reading "Connected" here while the
  * server has already decided the device is offline and started calling people
  * about it is two systems telling one family different stories, which is worse
@@ -23,7 +23,7 @@ import { usePatientAccess } from '@/patients/usePatientAccess.ts'
  *
  * `content_version` is shown deliberately. When a caregiver edits a medicine and
  * asks "has it reached the tablet yet", this is the only honest answer available
- * — and the tablet's own pull is what closes the gap, not anything this page can
+ * - and the tablet's own pull is what closes the gap, not anything this page can
  * do.
  */
 
@@ -104,13 +104,13 @@ export default function Device() {
               <Detail label={t('device.appVersion')} value={device.appVersion ?? t('device.awaitingFirstSync')} />
               <Detail
                 label={t('device.contentVersion')}
-                value={device.contentVersion !== null ? `v${formatNumber(device.contentVersion)}` : '—'}
+                value={device.contentVersion !== null ? `v${formatNumber(device.contentVersion)}` : '-'}
               />
               <Detail
                 label={t('device.waitingToUpload')}
                 value={
                   device.pendingEvents === null
-                    ? '—'
+                    ? '-'
                     : t('device.eventsWaiting', { count: formatNumber(device.pendingEvents), suffix: device.pendingEvents === 1 ? '' : 's' })
                 }
               />
@@ -118,7 +118,7 @@ export default function Device() {
                 label={t('device.clockDifference')}
                 value={
                   device.clockSkewMs === null
-                    ? '—'
+                    ? '-'
                     : `${formatNumber(Math.round(device.clockSkewMs / 1000))}s`
                 }
               />

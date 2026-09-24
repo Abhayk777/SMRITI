@@ -8,8 +8,8 @@ import { useTranslation } from '@/i18n/index.ts'
  * The token as readable text: `SMRT-K4PQ`.
  *
  * This is the path that gets used more than the QR. Half of these setups happen
- * over a phone call — one sibling is with the parent and the other is reading
- * the code out from a laptop in another timezone — so the code has to survive
+ * over a phone call - one sibling is with the parent and the other is reading
+ * the code out from a laptop in another timezone - so the code has to survive
  * being spoken aloud. The alphabet the server generates it from already excludes
  * the characters that get misheard; the hyphen is here so it is read as two
  * short groups rather than one eight-character run.

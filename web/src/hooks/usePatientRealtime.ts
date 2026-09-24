@@ -13,14 +13,14 @@ import {
 
 /**
  * One realtime channel per patient, mounted once by the patient layout
- * (frontend.md §7). Not one per widget — six widgets each opening their own
+ * (frontend.md §7). Not one per widget - six widgets each opening their own
  * subscription is six websocket channels for one screen, and they accumulate
  * every time the caregiver navigates.
  *
  * The channel does not carry data into the cache; it invalidates. A payload
  * that arrives out of order, or a row the caregiver's RLS policy would filter
  * differently from the realtime broadcast, cannot then be written into the
- * cache as truth — the refetch that follows is the source of truth, and it goes
+ * cache as truth - the refetch that follows is the source of truth, and it goes
  * through the same policies as every other read.
  *
  * The cleanup is mandatory (§15 rule 9): the effect's teardown removes the

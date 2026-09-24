@@ -11,7 +11,7 @@ import { CATALOGUES, useTranslation } from '@/i18n/index.ts'
 /**
  * Care guide (frontend.md §8).
  *
- * Static content, no backend wiring — deliberately hardcoded rather than pulled
+ * Static content, no backend wiring - deliberately hardcoded rather than pulled
  * from a CMS, because it is short, it changes rarely, and a caregiver reading it
  * at midnight should not be waiting on a network request.
  *

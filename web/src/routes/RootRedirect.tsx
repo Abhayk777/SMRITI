@@ -47,8 +47,8 @@ export function RootRedirect() {
 
   // The splash covers the overview round-trip rather than adding to it, so the
   // welcome costs nothing on a fast connection. It leaves the way the
-  // marketing intro does — the terracotta lifts like a cloth, its gamosa hem
-  // passing up the screen — so the two read as the same brand moment.
+  // marketing intro does - the terracotta lifts like a cloth, its gamosa hem
+  // passing up the screen - so the two read as the same brand moment.
   if (!splashDone) {
     return (
       <div className="relative min-h-dvh overflow-hidden bg-ivory">

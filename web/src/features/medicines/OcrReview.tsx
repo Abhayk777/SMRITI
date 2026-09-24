@@ -38,7 +38,7 @@ import {
  *
  *   - every row shows a confidence badge;
  *   - anything below high confidence is distinguished by **a label and a
- *     border, not only by colour** — a caregiver with any degree of colour
+ *     border, not only by colour** - a caregiver with any degree of colour
  *     blindness must see the difference, and so must one glancing at a phone in
  *     sunlight;
  *   - the save button stays disabled until **every single row** has been ticked
@@ -72,7 +72,7 @@ function windowFor(frequency: string): Pick<
  * Whether a prescription line asks for more than one dose a day.
  *
  * This matters more than it looks. A `medications` row is **one dose at one
- * time** — "1-0-1", "twice daily" and "BD" all mean two rows, and this review
+ * time** - "1-0-1", "twice daily" and "BD" all mean two rows, and this review
  * screen can only propose one. Left unsaid, a caregiver ticks a line believing
  * they have set up a twice-daily tablet and Smriti silently reminds them once.
  * That is a missed dose every single day, caused by the interface.
@@ -202,7 +202,7 @@ export function OcrReview({
     Boolean(row.name.trim() && row.dose.trim() && parseDaysOfWeek(row.days_of_week).length)
   const usable = (rows ?? []).filter(validRow)
   // Lines the OCR could not read and the caregiver has not filled in. They are
-  // excluded from the save rather than blocking it forever — but never
+  // excluded from the save rather than blocking it forever - but never
   // silently, or a medicine on the prescription just quietly does not exist.
   const skipped = (rows ?? []).filter((row) => !validRow(row))
   const allConfirmed = usable.length > 0 && usable.every((row) => row.confirmed)

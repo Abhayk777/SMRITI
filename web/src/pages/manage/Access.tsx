@@ -21,14 +21,14 @@ import type { InviteMemberArgs } from '@smriti/shared'
  * Manage → Access (frontend.md §8).
  *
  * Only a `caregiver` sees the access form. A `family_viewer` gets the list and
- * nothing else — the RPC refuses them anyway (`invite_member` raises
+ * nothing else - the RPC refuses them anyway (`invite_member` raises
  * "caregiver only"), so not rendering the form is about not offering someone a
  * control that exists to reject them.
  *
  * ── A gap worth knowing about ─────────────────────────────────────────────
  * frontend.md §5 sketches `membersFor` as `.select('*, users(*)')`, but accounts
  * live in `auth.users`, which PostgREST does not expose and RLS deliberately
- * does not open up — that embed would 400 against the live server. So this list
+ * does not open up - that embed would 400 against the live server. So this list
  * shows role, when they joined, and which row is you. Showing names and phone
  * numbers needs a `public.profiles` view server-side; until then the page says
  * what it can rather than inventing what it cannot.

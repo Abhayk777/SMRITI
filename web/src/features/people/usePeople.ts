@@ -7,7 +7,7 @@ import { assertPatientMatchAll } from '@/patients/usePatientAccess.ts'
 import type { Person } from '@smriti/shared'
 
 /**
- * The people on the tablet's home screen — the faces, voices and one-line
+ * The people on the tablet's home screen - the faces, voices and one-line
  * prompts the recognition games are built from.
  */
 export function usePeople(patientId: string) {

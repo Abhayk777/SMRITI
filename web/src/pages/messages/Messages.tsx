@@ -21,7 +21,7 @@ import type { Memo } from '@smriti/shared'
  *
  * **Audio URLs are fetched on demand, never up front.** Fifty signed-URL round
  * trips to render a list nobody has pressed play on is a slow page for nothing,
- * and signed URLs expire — minting them early means minting them twice.
+ * and signed URLs expire - minting them early means minting them twice.
  *
  * **`read_at` is set on play, not on render.** A memo scrolling past in a list
  * has not been heard. Marking it read there would quietly bury the one thing a

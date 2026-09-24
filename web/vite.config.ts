@@ -17,7 +17,7 @@ export default defineConfig({
         name: 'Smriti',
         short_name: 'Smriti',
         description:
-          "Be close to your parent's day — routines, medicine and mood, from wherever you are.",
+          "Be close to your parent's day - routines, medicine and mood, from wherever you are.",
         theme_color: '#BC5A3C',
         background_color: '#F5EAD8',
         display: 'standalone',
@@ -28,7 +28,7 @@ export default defineConfig({
         ],
       },
       workbox: {
-        // Never cache Supabase responses — patient data must not be served stale
+        // Never cache Supabase responses - patient data must not be served stale
         // from a service worker, and a cached response for the wrong session is
         // a cross-patient leak (frontend.md §12).
         navigateFallbackDenylist: [/^\/auth/],

@@ -2,7 +2,7 @@
  * Fixtures for mock mode (see `lib/supabase.ts`).
  *
  * These exist so a fresh clone with no Supabase credentials still renders every
- * screen with plausible content — not so that any screen can quietly fall back
+ * screen with plausible content - not so that any screen can quietly fall back
  * to fake data when the server is reachable. `db.ts` consults them only when
  * `isMockMode` is true, and `supabase.ts` logs a loud warning when it is.
  *
@@ -42,7 +42,7 @@ const isoDaysAgo = (days: number) => new Date(Date.now() - days * DAY).toISOStri
  * `YYYY-MM-DD` in the fixture patient's timezone, matching how the real views
  * compute `day`. Using `toISOString()` here instead would silently produce UTC
  * dates, and today's row would then fail to match what the dashboard asks for
- * whenever the two disagree — which, for an India-based patient, is every
+ * whenever the two disagree - which, for an India-based patient, is every
  * evening.
  */
 const dateDaysAgo = (days: number) =>
@@ -329,7 +329,7 @@ export const mockMemos: Record<string, Memo[]> = {
       recorded_at: Date.now() - 3 * DAY,
       context_tag: 'memory',
       transcript:
-        'The mango tree behind the Pune house — we planted it the year Divya was born.',
+        'The mango tree behind the Pune house - we planted it the year Divya was born.',
       read_at: isoDaysAgo(2),
       server_received_at: isoDaysAgo(3),
     },

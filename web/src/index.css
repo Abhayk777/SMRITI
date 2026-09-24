@@ -3,7 +3,7 @@
 /* ─────────────────────────────────────────────────────────────────────────
    Brand tokens.
 
-   Mirrored from `src/styles/tokens.ts` — keep the two in step. Declaring them
+   Mirrored from `src/styles/tokens.ts` - keep the two in step. Declaring them
    inside `@theme` is what makes `bg-terracotta`, `text-ink`, `font-heading`
    and friends exist as real utility classes, so components never carry hex.
    ───────────────────────────────────────────────────────────────────────── */
@@ -27,7 +27,7 @@
   --color-bark-deep: #643312;
   --color-alert: #b3402f;
 
-  /* Northeast natural-dye accents. Motif threads and grounds only — see the
+  /* Northeast natural-dye accents. Motif threads and grounds only - see the
      `ner` block in tokens.ts for where each one comes from. */
   --color-lac: #9e2b25;
   --color-osak: #24303b;
@@ -80,7 +80,7 @@
     transform: translateX(8vw);
   }
 }
-/* A soft ring that breathes out from something new — unread counts, an
+/* A soft ring that breathes out from something new - unread counts, an
    unheard message, a serious flag. Opacity and scale only. */
 @keyframes pulse-ring {
   0% {
@@ -176,7 +176,7 @@
   background-image: linear-gradient(102deg, #e8a83f 0%, #ef9068 58%, #ef8b7c 100%);
 }
 
-/* Skeletons — a warm shimmer on sand, never a spinner. See §"loading".
+/* Skeletons - a warm shimmer on sand, never a spinner. See §"loading".
    Under the shimmer sits a faint cane twill, so a loading card reads as
    something being woven rather than a grey placeholder. */
 @utility skeleton {
@@ -201,7 +201,7 @@
 
    The repeating, flat ones live here as CSS so they cost nothing to render
    hundreds of times (skeletons, card edges, progress fills). The figurative
-   bands — gamosa, naga, siniar, temple hem — are SVG components in
+   bands - gamosa, naga, siniar, temple hem - are SVG components in
    `components/ner/`.
    ───────────────────────────────────────────────────────────────────────── */
 
@@ -283,12 +283,12 @@
 }
 
 /* ─────────────────────────────────────────────────────────────────────────
-   Stitched surfaces — the app's card border.
+   Stitched surfaces - the app's card border.
 
    A warm 1.5px outer border, and inside it a running stitch (the
    hand-finished edge of a woven cloth) with a small knot where the stitch
-   turns the top-left corner. The stitch takes `--stitch` — each card tone
-   sets its own — and deepens when the pointer is over the card. Both marks
+   turns the top-left corner. The stitch takes `--stitch` - each card tone
+   sets its own - and deepens when the pointer is over the card. Both marks
    are pseudo-elements, so a stitched box needs no extra markup and nothing
    in its layout moves.
    ───────────────────────────────────────────────────────────────────────── */
@@ -345,7 +345,7 @@
   );
 }
 
-/* A bead ring of Risa colours — wraps the patient's avatar. */
+/* A bead ring of Risa colours - wraps the patient's avatar. */
 @utility bg-risa-ring {
   background-image: repeating-conic-gradient(
     var(--color-lac) 0deg 14deg,
@@ -425,7 +425,7 @@
     text-wrap: balance;
   }
 
-  /* Numerals are a heading job in this system — they carry the same weight as
+  /* Numerals are a heading job in this system - they carry the same weight as
      a headline in a dashboard, and Figtree's figures are too quiet for it. */
   .numeral {
     font-family: var(--font-heading);

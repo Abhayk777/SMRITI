@@ -9,7 +9,7 @@ import { TempleHem } from './TempleHem.tsx'
 import { TwinStar } from './TwinStar.tsx'
 
 /**
- * "Eight sisters, eight looms" — one swatch for each Northeast state.
+ * "Eight sisters, eight looms" - one swatch for each Northeast state.
  *
  * The row is the whole motif library shown once, with each weave named and
  * placed, so the borders used across the site are credited to where they come

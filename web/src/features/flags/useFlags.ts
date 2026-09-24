@@ -32,7 +32,7 @@ export function useAcknowledgeFlag(patientId: string) {
  * How a flag is described to a caregiver.
  *
  * The database calls these `engagement_drop` and `adherence_drop`. A worried
- * adult child needs a sentence, not a column value — and, crucially, a sentence
+ * adult child needs a sentence, not a column value - and, crucially, a sentence
  * that does not diagnose. Smriti detects a *change in a pattern*; it does not
  * know why, and saying otherwise to someone frightened about their parent would
  * be both wrong and cruel. Every line below describes what changed and points

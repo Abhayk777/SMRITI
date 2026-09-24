@@ -21,14 +21,14 @@ import { useTranslation } from '@/i18n/index.ts'
 
 /**
  * Phone + OTP, Supabase Auth's native flow (frontend.md §3). There is nothing
- * custom to build here beyond the UI, and deliberately so — a bespoke auth path
+ * custom to build here beyond the UI, and deliberately so - a bespoke auth path
  * in a health app is a liability, not a feature.
  *
  * `family_viewer` accounts sign in through exactly this screen. They differ
  * only by the role on their `patient_members` rows; the UI adapts by role, not
  * by a separate login.
  *
- * On success the app always routes through `/`, never straight to a patient —
+ * On success the app always routes through `/`, never straight to a patient -
  * the patient-count redirect in §4 decides where a caregiver belongs, and this
  * screen has no business guessing.
  */
@@ -177,7 +177,7 @@ export default function SignIn() {
         </div>
 
         {/* A loom's worth of Northeast bands, drifting slowly in alternate
-            directions behind the copy — cream on terracotta, at low weight. */}
+            directions behind the copy - cream on terracotta, at low weight. */}
         <div className="pointer-events-none absolute inset-x-0 bottom-28 space-y-5 opacity-[0.16]">
           <GamosaBand size={22} thread={color.cream} ground="transparent" drift={9} />
           <TempleHem size={16} fill={color.cream} accent="transparent" />

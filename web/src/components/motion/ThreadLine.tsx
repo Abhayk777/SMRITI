@@ -8,7 +8,7 @@ import { color } from '@/styles/tokens.ts'
  * A single thread that draws itself down the page as you scroll past it.
  *
  * It is tied to scroll position rather than played on arrival, so scrolling
- * back up un-draws it — it behaves like a thread being pulled through the
+ * back up un-draws it - it behaves like a thread being pulled through the
  * section, not an animation that happened once. Lenis smooths the scroll it
  * reads from, which is what keeps the line from stepping.
  *

@@ -10,7 +10,7 @@ import { useTranslation } from '@/i18n/index.ts'
 /**
  * Choosing a photo.
  *
- * The preview is a local object URL, shown the instant a file is chosen — the
+ * The preview is a local object URL, shown the instant a file is chosen - the
  * upload happens behind it. The caregiver sees the face they picked
  * immediately, which is what makes adding eight family members bearable, while
  * the path that actually goes into the row is only handed back once the object

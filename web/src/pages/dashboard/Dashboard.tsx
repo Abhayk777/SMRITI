@@ -38,8 +38,8 @@ import { usePatientAccess } from '@/patients/usePatientAccess.ts'
  * Today (frontend.md §8).
  *
  * The one screen most caregivers will ever open. It answers three questions in
- * the order they are actually asked — is anything wrong, did today happen, and
- * what is still to come — and it does not answer any of them with a chart.
+ * the order they are actually asked - is anything wrong, did today happen, and
+ * what is still to come - and it does not answer any of them with a chart.
  *
  * Everything on it is honest about its own freshness: if the tablet has not
  * synced, that is said at the top, before any figure, because a page of
@@ -47,8 +47,8 @@ import { usePatientAccess } from '@/patients/usePatientAccess.ts'
  */
 
 /**
- * Eases every number in a string up from zero — "3/4" counts to 3 and 4,
- * "12 min" to 12 — and leaves the words where they are. The final text is the
+ * Eases every number in a string up from zero - "3/4" counts to 3 and 4,
+ * "12 min" to 12 - and leaves the words where they are. The final text is the
  * accessible name throughout, so a screen reader never hears the count.
  */
 function CountUpText({ text }: { text: string }) {
@@ -132,7 +132,7 @@ export default function Dashboard() {
   const activeFlags = sortByUrgency(flags.data ?? [])
   const unreadMemos = (memos.data ?? []).filter((memo) => !memo.read_at)
 
-  // Monday-first index, to match `days_of_week` — and derived from the patient's date,
+  // Monday-first index, to match `days_of_week` - and derived from the patient's date,
   // not the viewer's, for the same reason `today` is. A caregiver reading this
   // on Sunday evening in California is looking at the patient's Monday.
   const weekdayIndex = isoWeekdayIndex(today)
@@ -180,7 +180,7 @@ export default function Dashboard() {
           <>
             <StatTile
               label={t('report.medicines')}
-              value={scheduled === 0 ? '—' : `${confirmed}/${scheduled}`}
+              value={scheduled === 0 ? '-' : `${confirmed}/${scheduled}`}
               detail={
                 scheduled === 0
                   ? t('dashboard.noMedsToday')

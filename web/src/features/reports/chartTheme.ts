@@ -4,7 +4,7 @@
  * ── Why these are not simply the brand colours ────────────────────────────
  * Smriti's palette is warm and deliberately low-chroma: terracotta, gold,
  * coral, a muted olive sage. That is right for a calm product surface and
- * *wrong* as a categorical data palette — run those five hex values through a
+ * *wrong* as a categorical data palette - run those five hex values through a
  * colour-vision check against the ivory chart surface and they fail four ways:
  * gold sits outside the usable lightness band, sage is chromatic enough to read
  * as grey, and coral↔gold are only ΔE 11 apart to a reader with normal colour
@@ -14,13 +14,13 @@
  * legible:
  *
  * **1. Almost nothing here is categorical.** Where five things needed
- * comparing — the cognitive domains — they became five small multiples rather
+ * comparing - the cognitive domains - they became five small multiples rather
  * than five lines in five colours. That is a better chart anyway, and it means
  * the app never needs a five-hue palette it cannot make safe.
  *
  * **2. The one multi-colour encoding is a status palette, not a series
  * palette.** Medicine outcomes are not arbitrary categories; they are good,
- * middling and bad. `STATUS` below is the validated trio — every check passes
+ * middling and bad. `STATUS` below is the validated trio - every check passes
  * against the ivory surface, with the worst adjacent pair at ΔE 8.1 under
  * protanopia. Because that clears the floor rather than the target, these are
  * always shipped with the secondary encoding that makes them safe regardless:

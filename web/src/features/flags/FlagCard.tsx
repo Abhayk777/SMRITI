@@ -14,7 +14,7 @@ import type { Flag } from '@smriti/shared'
 /**
  * One flag, with its evidence.
  *
- * "See the evidence" is not a power-user affordance — it is the difference
+ * "See the evidence" is not a power-user affordance - it is the difference
  * between Smriti telling a frightened person something about their parent and
  * Smriti *showing its work*. Everything behind the toggle is already on the
  * `flags` row (`z_scores`, `changepoint_date`, `evidence_session_ids`, the two

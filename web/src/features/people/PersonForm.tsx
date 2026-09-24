@@ -43,7 +43,7 @@ export const toPersonDraft = (row: Person): PersonDraft => ({
 /**
  * Adding someone to a patient's circle.
  *
- * `photo_path` is required by the schema and by the games — a person without a
+ * `photo_path` is required by the schema and by the games - a person without a
  * face is not something the tablet can show them. The form says so rather than
  * letting the insert fail.
  *

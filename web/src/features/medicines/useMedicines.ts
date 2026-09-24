@@ -19,7 +19,7 @@ export function useMedicines(patientId: string) {
   })
 }
 
-/** Parameterised for the same reason as `usePeopleMutation` — forms submit drafts. */
+/** Parameterised for the same reason as `usePeopleMutation` - forms submit drafts. */
 export function useMedicineMutation<T extends object = Medication>(patientId: string) {
   return useContentMutation<T>('medications', patientId)
 }

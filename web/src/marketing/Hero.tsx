@@ -15,7 +15,7 @@ import { useTranslation } from '@/i18n/index.ts'
 /** Set once the intro has played, so a return visit in the same session skips it. */
 const INTRO_SEEN_KEY = 'smriti:intro-seen'
 
-/** How far into the film the copy arrives — over the paddy walk, not the last frame. */
+/** How far into the film the copy arrives - over the paddy walk, not the last frame. */
 const COPY_AT_SECONDS = 1.8
 
 /** The curtain lifts this long after the logo's last beat lands. */
@@ -38,8 +38,8 @@ function initialPhase(): FilmPhase {
  * On a first visit it is a short title sequence:
  *
  *   1. `<LogoReveal />` plays on a terracotta curtain, exactly as it always has.
- *   2. The curtain lifts like a cloth being raised — its lower edge is a
- *      gamosa border with a temple-tooth fringe — and carries the logo up with
+ *   2. The curtain lifts like a cloth being raised - its lower edge is a
+ *      gamosa border with a temple-tooth fringe - and carries the logo up with
  *      it towards the nav, which fades in as the curtain passes.
  *   3. Behind it the Northeast film is already rolling (`IntroFilm`), and the
  *      headline and buttons rise in over it a couple of seconds later.
@@ -47,7 +47,7 @@ function initialPhase(): FilmPhase {
  *
  * Every later visit in the session, and anyone who scrolls or presses "Skip
  * intro", goes straight to step 4. Under reduced motion there is no video at
- * all — a still frame, and the copy immediately.
+ * all - a still frame, and the copy immediately.
  *
  * The film sits under a terracotta multiply layer, so the footage takes on the
  * brand's own warmth instead of the page switching to a dark, cinematic look.
@@ -93,7 +93,7 @@ export function Hero({ onCurtainLift }: { onCurtainLift?: () => void }) {
     return () => window.clearTimeout(timer)
   }, [phase])
 
-  // Scrolling during the intro means "I'm here for the page" — skip it.
+  // Scrolling during the intro means "I'm here for the page" - skip it.
   useEffect(() => {
     if (phase !== 'reveal' && phase !== 'film') return
     const onScroll = () => {

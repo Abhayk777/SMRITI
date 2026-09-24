@@ -2,7 +2,7 @@ import { color } from '@/styles/tokens.ts'
 import { PatternBand } from './PatternBand.tsx'
 
 /**
- * Siniar — Mizoram.
+ * Siniar - Mizoram.
  *
  * The siniar is the composite motif found on most Mizo Puanchei: triangles,
  * zigzags and diamonds woven together in one band, usually on a red, black and

@@ -97,7 +97,7 @@ export function formatDaysOfWeek(
   locale: SupportedLocale = DEFAULT_LOCALE,
 ): string {
   const days = parseDaysOfWeek(value)
-  if (days.length === 0) return '—'
+  if (days.length === 0) return '-'
 
   try {
     // 2024-01-01 was a Monday, matching the product's ISO weekday convention.
@@ -147,9 +147,9 @@ export function formatRelativeTime(
   locale: SupportedLocale = DEFAULT_LOCALE,
   now = Date.now(),
 ): string {
-  if (date == null) return '—'
+  if (date == null) return '-'
   const timestamp = date instanceof Date ? date.getTime() : new Date(date).getTime()
-  if (Number.isNaN(timestamp)) return '—'
+  if (Number.isNaN(timestamp)) return '-'
 
   const seconds = Math.round((timestamp - now) / 1_000)
   const units: Array<[Intl.RelativeTimeFormatUnit, number]> = [

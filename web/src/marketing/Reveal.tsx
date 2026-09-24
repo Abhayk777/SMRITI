@@ -7,7 +7,7 @@ import { cn } from '@/lib/utils.ts'
  * The scroll-triggered entrance used by every section below the hero.
  *
  * The reference landing page animated the hero and then nothing else, which is
- * why it went flat the moment you scrolled — the page had already spent its
+ * why it went flat the moment you scrolled - the page had already spent its
  * only trick. Giving each section its own arrival keeps the page alive all the
  * way down without any single moment being loud.
  *

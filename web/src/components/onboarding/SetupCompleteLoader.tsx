@@ -18,7 +18,7 @@ import { useTranslation } from '@/i18n/index.ts'
  * letters of LOADING darken as the fill passes them.
  *
  * All four of those are driven here by a **single** normalised value, exactly
- * as the film does — which is what keeps the drawing head, the colour wash,
+ * as the film does - which is what keeps the drawing head, the colour wash,
  * the bar and the label locked together instead of four animations that happen
  * to be the same length. That single value is also what lets real progress
  * drive the whole sequence: pass `progress` and the scene draws at the speed
@@ -45,7 +45,7 @@ const LOADING_LETTERS = ['L', 'O', 'A', 'D', 'I', 'N', 'G'] as const
 export type SetupCompleteLoaderProps = {
   /**
    * Real progress, 0–1, when the caller has one. Leave undefined to run the
-   * timed simulation. The value only ever moves forwards on screen — a server
+   * timed simulation. The value only ever moves forwards on screen - a server
    * that reports 0.6 then 0.4 still reads as progress to the caregiver.
    */
   progress?: number
@@ -75,7 +75,7 @@ export function SetupCompleteLoader({
   const [visible, setVisible] = useState(true)
 
   // The rAF loop below reads the latest `progress` without restarting on every
-  // change, so it goes through a ref — written in an effect rather than during
+  // change, so it goes through a ref - written in an effect rather than during
   // render, because a render can be discarded and a ref write cannot be undone.
   const targetRef = useRef(progress)
   useEffect(() => {
@@ -153,7 +153,7 @@ export function SetupCompleteLoader({
                 <clipPath id="smriti-loader-draw">
                   <rect x={-OVERSCAN} y={0} width={Math.max(0, drawEdge + OVERSCAN)} height={H} />
                 </clipPath>
-                {/* Everything the colour wash has reached — always a little less. */}
+                {/* Everything the colour wash has reached - always a little less. */}
                 <clipPath id="smriti-loader-wash">
                   <rect x={-OVERSCAN} y={0} width={Math.max(0, washEdge + OVERSCAN)} height={H} />
                 </clipPath>
@@ -173,7 +173,7 @@ export function SetupCompleteLoader({
                 <SkylineArtwork mode="line" />
               </g>
 
-              {/* The light band riding the reveal edge — the film's signature
+              {/* The light band riding the reveal edge - the film's signature
                   beat, and the reason the wash reads as light falling across
                   the scene rather than a wipe transition. */}
               {value > 0.01 && value < 0.995 && (

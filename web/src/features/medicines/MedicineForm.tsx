@@ -55,7 +55,7 @@ export const toDraft = (row: Medication): MedicineDraft => ({
 /**
  * The medicine form, shared by the setup wizard and the Medicines page.
  *
- * The window control is where the real work is — see `MedicineWindow`. The rest
+ * The window control is where the real work is - see `MedicineWindow`. The rest
  * is deliberately plain: a name, a dose in the caregiver's own words, the days,
  * and two optional pieces of media that make the reminder land better on the
  * tablet than text alone would.

@@ -22,7 +22,7 @@ import { usePatientAccess } from '@/patients/usePatientAccess.ts'
  * Manage → Routine (frontend.md §8).
  *
  * The tablet renders these as a simple picture of the day. They are not
- * reminders and they do not escalate — that distinction is stated on the page,
+ * reminders and they do not escalate - that distinction is stated on the page,
  * because a caregiver who adds "take insulin" here expecting a phone call has
  * been badly misled by an interface that looked close enough to the medicines
  * screen.

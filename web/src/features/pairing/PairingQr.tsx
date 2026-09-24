@@ -7,7 +7,7 @@ import { useTranslation } from '@/i18n/index.ts'
 /**
  * The pairing QR.
  *
- * The encoded payload is the bare token, not a URL — the tablet app scans this
+ * The encoded payload is the bare token, not a URL - the tablet app scans this
  * and posts it to `redeem-pairing-token`. Wrapping it in a deep link would mean
  * a scan that "succeeds" into a browser, on a device whose whole point is that
  * it does not ask its user to deal with browsers.

@@ -7,7 +7,7 @@ import { cn } from '@/lib/utils.ts'
  *
  * A band is one small tile, authored in its own coordinate space, repeated
  * along a strip. The tile is scaled so its height matches the band's, which
- * means a motif keeps its proportions at 4 px and at 40 px — a woven border
+ * means a motif keeps its proportions at 4 px and at 40 px - a woven border
  * does not stretch, it repeats.
  *
  * `drift` slides the strip by exactly one tile on a loop. The strip is drawn
@@ -25,7 +25,7 @@ export type PatternBandProps = {
   vertical?: boolean
   /** Seconds per tile. Omit for a still band. */
   drift?: number
-  /** Run the drift the other way — for stacked bands that counter-move. */
+  /** Run the drift the other way - for stacked bands that counter-move. */
   reverse?: boolean
   className?: string
   style?: CSSProperties

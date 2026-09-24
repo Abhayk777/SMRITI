@@ -6,7 +6,7 @@ import * as db from '@/lib/db.ts'
 /**
  * Pairing (frontend.md §11).
  *
- * This one is fully live — `create-pairing-token` is deployed and tested, and
+ * This one is fully live - `create-pairing-token` is deployed and tested, and
  * it is the milestone where the web app and the tablet can finally be tested
  * against each other on entirely real infrastructure.
  */
@@ -30,7 +30,7 @@ export function useTokenCountdown(expiresAt: string | null | undefined) {
   /**
    * The only state here is the clock. How much time is left is *derived* from
    * it and `expiresAt` during render, rather than being a second copy kept in
-   * step by an effect — so the moment a fresh token arrives the countdown is
+   * step by an effect - so the moment a fresh token arrives the countdown is
    * already correct, with no render showing the previous token's remainder.
    */
   const [now, setNow] = useState(() => Date.now())

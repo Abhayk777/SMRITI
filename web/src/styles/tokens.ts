@@ -1,5 +1,5 @@
 /**
- * Smriti brand tokens — the single source of truth for colour and type.
+ * Smriti brand tokens - the single source of truth for colour and type.
  *
  * These values are mirrored into CSS custom properties in `src/index.css`
  * (inside Tailwind v4's `@theme` block) so that they are reachable three ways:
@@ -9,7 +9,7 @@
  *   - TypeScript                →  `tokens.color.terracotta`
  *
  * Reach for a utility class first, the CSS variable second, and this module
- * only where a value has to cross into JavaScript — SVG `stroke` attributes,
+ * only where a value has to cross into JavaScript - SVG `stroke` attributes,
  * Recharts series colours, Framer Motion `animate` targets. Raw hex literals
  * do not belong in components; if a colour is missing, add it here and to the
  * `@theme` block in the same change.
@@ -20,7 +20,7 @@ export const color = {
   terracotta: '#BC5A3C',
   /** Pressed/hover state for terracotta surfaces, and the hero gradient floor. */
   terracottaDeep: '#AE4F34',
-  /** Lifted terracotta — the hero gradient ceiling. */
+  /** Lifted terracotta - the hero gradient ceiling. */
   terracottaBright: '#C76547',
   /** The logo colour on dark, and the light-section ground. */
   cream: '#F5EAD8',
@@ -34,9 +34,9 @@ export const color = {
   body: '#474238',
   /** Tertiary text, labels, timestamps. */
   muted: '#645C50',
-  /** Warm accent — the leading edge of every gradient, and "attention" states. */
+  /** Warm accent - the leading edge of every gradient, and "attention" states. */
   gold: '#E8A83F',
-  /** Warm accent — the trailing edge of every gradient. */
+  /** Warm accent - the trailing edge of every gradient. */
   coral: '#EF8B7C',
   /**
    * Secondary accent. Deliberately promoted from the single "gentle reminders"
@@ -45,11 +45,11 @@ export const color = {
    * every job. Sage carries "calm / on track / nothing needed from you".
    */
   sage: '#56633F',
-  /** Sage at surface weight — the ground for a sage-tagged card. */
+  /** Sage at surface weight - the ground for a sage-tagged card. */
   sageSoft: '#F0FAE1',
   /** Sage lifted for icon chips on a sage-soft ground. */
   sageBright: '#8FA073',
-  /** Terracotta at surface weight — the ground for a warm-tagged card. */
+  /** Terracotta at surface weight - the ground for a warm-tagged card. */
   clay: '#FFF2EB',
   /** Link and eyebrow-label brown. Reads as terracotta but passes on cream. */
   bark: '#8C491A',
@@ -60,7 +60,7 @@ export const color = {
 
   /*
    * Northeast natural-dye accents. These colour the textile motifs in
-   * `components/ner/` — threads, borders, grounds — and are never used as a
+   * `components/ner/` - threads, borders, grounds - and are never used as a
    * page or card surface, which stays on the cream/ivory/terracotta base.
    */
   /** Lac-insect red: the red of the Assamese gamosa border. */

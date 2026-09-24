@@ -18,8 +18,8 @@ import { normaliseDaysOfWeek } from '@/lib/utils.ts'
  *      own, or the Device page will keep reporting a version the tablet has
  *      already moved past. Getting that pair right in fifteen call sites is
  *      how it ends up wrong in one.
- *   2. When a write fails — and against RLS it will, the first time a
- *      `family_viewer` finds an editable-looking control — there is one place
+ *   2. When a write fails - and against RLS it will, the first time a
+ *      `family_viewer` finds an editable-looking control - there is one place
  *      to make that failure comprehensible.
  */
 export function useContentMutation<T extends object>(

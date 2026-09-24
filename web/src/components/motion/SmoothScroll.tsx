@@ -7,8 +7,8 @@ import { ReactLenis, type LenisRef } from 'lenis/react'
  *
  * Lenis does not run its own requestAnimationFrame loop here (`autoRaf:
  * false`); it is stepped from Framer Motion's frame loop instead. Two
- * independent rAF loops — one moving the page, one reading scroll position for
- * `useScroll` — drift by a frame against each other and scroll-linked motion
+ * independent rAF loops - one moving the page, one reading scroll position for
+ * `useScroll` - drift by a frame against each other and scroll-linked motion
  * visibly shimmers. One loop, one clock.
  *
  * Deliberate limits:

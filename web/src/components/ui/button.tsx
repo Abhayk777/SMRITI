@@ -12,7 +12,7 @@ import { cn } from '@/lib/utils.ts'
  * product, which is why there is no generic "primary/secondary/tertiary":
  *
  *   accent    the one gold→coral gradient. Reserved for the single most
- *             important action on a screen — start setup, generate the code.
+ *             important action on a screen - start setup, generate the code.
  *   solid     terracotta. The ordinary confirming action.
  *   sage      the calm secondary. "Nothing needed", "mark as read".
  *   outline   equal-weight alternative next to a solid.
@@ -53,7 +53,7 @@ const buttonVariants = cva(
 
 export type ButtonProps = React.ComponentProps<'button'> &
   VariantProps<typeof buttonVariants> & {
-    /** Render as the child element instead of a `<button>` — e.g. a router Link. */
+    /** Render as the child element instead of a `<button>` - e.g. a router Link. */
     asChild?: boolean
   }
 

@@ -16,7 +16,7 @@ export function useMemos(patientId: string) {
 }
 
 /**
- * Marks a memo read. Fired on play, not on render — a memo scrolling past in a
+ * Marks a memo read. Fired on play, not on render - a memo scrolling past in a
  * list has not been heard, and marking it read there would quietly hide the
  * one thing a parent recorded that day.
  */

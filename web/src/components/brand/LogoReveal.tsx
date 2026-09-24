@@ -20,13 +20,13 @@ import { cn } from '@/lib/utils.ts'
  *   5. the gold→coral sweep crosses the "S" as the last beat.
  *
  * The film plays this over roughly eight seconds as a title sequence. The
- * timings below are the same beats at product pace — the ratios between them,
+ * timings below are the same beats at product pace - the ratios between them,
  * the stroke order and the easing curves are unchanged, and `speed` scales the
  * whole sequence uniformly so the hero and the post-sign-in splash stay the
  * same animation rather than two different ones.
  *
  * Used in exactly two places: the marketing hero, and the first app load after
- * a fresh sign-in. Not on every page load — a logo animation you have to sit
+ * a fresh sign-in. Not on every page load - a logo animation you have to sit
  * through repeatedly stops being brand and becomes an obstacle.
  */
 
@@ -90,7 +90,7 @@ export function LogoReveal({
   }, [onComplete, reduceMotion, speed])
 
   // Reduced motion skips straight to the settled lockup. Not a frozen frame of
-  // the animation — the finished thing, which is what the animation was for.
+  // the animation - the finished thing, which is what the animation was for.
   if (reduceMotion) {
     return (
       <div className={cn('flex flex-col items-center', className)}>
