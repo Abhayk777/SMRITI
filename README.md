@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src=".github/assets/banner.svg" alt="Smriti — be close to her day, from wherever you are" width="100%"/>
+<img src=".github/assets/banner.svg" alt="Smriti — be close to their day, from wherever you are" width="100%"/>
 
 <br/>
 
@@ -37,29 +37,32 @@
 
 ## 🪢 The idea
 
-> *Smriti* (स्मृति) means **memory**.
+> _Smriti_ (स्मृति) means **memory**.
 
 Many families in Northeast India live far from their ageing parents. Smriti is how they stay close. A tablet in the parent's home runs memory games, shows photos of family, and reminds them about medicine in their own language. On the other side, the family uses a caregiver web app that answers one question every morning: **is Ma okay today?**
 
-The logo is **four strands woven into a knot**. Across the Northeast, handloom is how one generation hands memory to the next: the *mekhela*, the *gamosa*, the *puan*. The whole product is built on that idea: warm terracotta and cream, woven pattern bands, hill layers, and a sky that follows the parent's local time.
+The logo is **four strands woven into a knot**. Across the Northeast, handloom is how one generation hands memory to the next: the _mekhela_, the _gamosa_, the _puan_. The whole product is built on that idea: warm terracotta and cream, woven pattern bands, hill layers, and a sky that follows the parent's local time.
 
 <table>
 <tr>
 <td width="33%" valign="top">
 
 ### 👵 For the parent
+
 A Flutter tablet that works offline. Medicine alarms with recorded voice and a pill photo. Memory games. Faces of family with the voice of the person who recorded them.
 
 </td>
 <td width="33%" valign="top">
 
 ### 👨‍👩‍👧 For the family
+
 A caregiver web app and PWA. A daily picture of routine, medicine and mood. Trends over weeks. Voice notes. Alerts only when something actually needs attention.
 
 </td>
 <td width="33%" valign="top">
 
 ### 🛟 For the bad day
+
 If a dose is missed, Smriti escalates: a phone call in the parent's language, then SMS to family. A server-side watchdog checks that this still happens when the tablet itself is offline.
 
 </td>
@@ -70,47 +73,47 @@ If a dose is missed, Smriti escalates: a phone call in the parent's language, th
 
 ## ✨ What it does
 
-| | Feature | What the caregiver gets |
-|:-:|---|---|
-| 🏠 | **Today dashboard** | Whether she played, took her medicine and was engaged today, computed in *her* timezone rather than the viewer's |
-| 📈 | **Trends** | Cognitive-domain trajectories as small multiples, plus change-point flags (`decline`, `engagement_drop`, `adherence_drop`, `device_offline`) |
-| 📑 | **Deep report** | A report page with seven sections, built on `daily_*` report views and never on raw events |
-| 📅 | **Engagement** | Calendar heatmap and adherence over time |
-| 💊 | **Medicines** | Dose windows set on a slider, a pill photo and a recorded voice prompt for each medicine |
-| 📸 | **Prescription OCR** | Photograph a prescription and it proposes medicines to add. Names are matched against a catalogue of Indian medicines, and you tick every row yourself before anything is saved |
-| 🧑‍🤝‍🧑 | **People** | Family photos, voices and memory prompts that the tablet shows in its recognition games |
-| 🗓️ | **Routine** | The daily routine, shown on the tablet |
-| 🎙️ | **Messages** | Voice memos from the parent, with transcripts and read state |
-| 🔔 | **Alerts** | Primary and secondary contacts for the escalation ladder |
-| 🔐 | **Access** | Invite siblings as `caregiver` or as read-only `family_viewer` |
-| 📟 | **Tablet** | Pairing by QR code or short code, with live heartbeat and sync status |
-| 🗣️ | **VoiceBot** | An opt-in conversational voice agent for each patient, synced through a queued worker |
-| 🌐 | **Localised UI** | Caregiver interface in English, Hindi, Assamese, Meiteilon (Meetei Mayek) and Khasi |
-| 🌗 | **Their sky** | The app's backdrop follows day and night at the parent's location |
+|     | Feature              | What the caregiver gets                                                                                                                                                         |
+| :-: | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 🏠  | **Today dashboard**  | Whether she played, took her medicine and was engaged today, computed in _her_ timezone rather than the viewer's                                                                |
+| 📈  | **Trends**           | Cognitive-domain trajectories as small multiples, plus change-point flags (`decline`, `engagement_drop`, `adherence_drop`, `device_offline`)                                    |
+| 📑  | **Deep report**      | A report page with seven sections, built on `daily_*` report views and never on raw events                                                                                      |
+| 📅  | **Engagement**       | Calendar heatmap and adherence over time                                                                                                                                        |
+| 💊  | **Medicines**        | Dose windows set on a slider, a pill photo and a recorded voice prompt for each medicine                                                                                        |
+| 📸  | **Prescription OCR** | Photograph a prescription and it proposes medicines to add. Names are matched against a catalogue of Indian medicines, and you tick every row yourself before anything is saved |
+| 🧑‍🤝‍🧑  | **People**           | Family photos, voices and memory prompts that the tablet shows in its recognition games                                                                                         |
+| 🗓️  | **Routine**          | The daily routine, shown on the tablet                                                                                                                                          |
+| 🎙️  | **Messages**         | Voice memos from the parent, with transcripts and read state                                                                                                                    |
+| 🔔  | **Alerts**           | Primary and secondary contacts for the escalation ladder                                                                                                                        |
+| 🔐  | **Access**           | Invite siblings as `caregiver` or as read-only `family_viewer`                                                                                                                  |
+| 📟  | **Tablet**           | Pairing by QR code or short code, with live heartbeat and sync status                                                                                                           |
+| 🗣️  | **VoiceBot**         | An opt-in conversational voice agent for each patient, synced through a queued worker                                                                                           |
+| 🌐  | **Localised UI**     | Caregiver interface in English, Hindi, Assamese, Meiteilon (Meetei Mayek) and Khasi                                                                                             |
+| 🌗  | **Their sky**        | The app's backdrop follows day and night at the parent's location                                                                                                               |
 
 <details>
 <summary><b>🧭 Every route in the web app</b> (click to expand)</summary>
 
 <br/>
 
-| Route | Page |
-|---|---|
-| `/` | Marketing site when signed out; when signed in, goes to the dashboard or the patient overview depending on how many patients you have |
-| `/auth` | Phone OTP · Google sign-in |
-| `/patients` | Overview (only shown when there is more than one patient) |
-| `/patients/new` | Create a patient + setup wizard |
-| `/p/:pid/dashboard` | *"Is Ma okay today?"* |
-| `/p/:pid/trends` | Domain trajectories and flags |
-| `/p/:pid/report` | The deep report |
-| `/p/:pid/engagement` | Heatmap and adherence |
-| `/p/:pid/messages` | Voice memo inbox |
-| `/p/:pid/manage/people` | Family faces and voices |
-| `/p/:pid/manage/medicines` | Medicines and OCR |
-| `/p/:pid/manage/routine` | Daily routine |
-| `/p/:pid/manage/alerts` | Escalation contacts |
-| `/p/:pid/manage/access` | Invite family |
-| `/p/:pid/manage/device` | Pairing and sync |
-| `/p/:pid/care-guide` | Care guide |
+| Route                      | Page                                                                                                                                  |
+| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| `/`                        | Marketing site when signed out; when signed in, goes to the dashboard or the patient overview depending on how many patients you have |
+| `/auth`                    | Phone OTP · Google sign-in                                                                                                            |
+| `/patients`                | Overview (only shown when there is more than one patient)                                                                             |
+| `/patients/new`            | Create a patient + setup wizard                                                                                                       |
+| `/p/:pid/dashboard`        | _"Is Ma okay today?"_                                                                                                                 |
+| `/p/:pid/trends`           | Domain trajectories and flags                                                                                                         |
+| `/p/:pid/report`           | The deep report                                                                                                                       |
+| `/p/:pid/engagement`       | Heatmap and adherence                                                                                                                 |
+| `/p/:pid/messages`         | Voice memo inbox                                                                                                                      |
+| `/p/:pid/manage/people`    | Family faces and voices                                                                                                               |
+| `/p/:pid/manage/medicines` | Medicines and OCR                                                                                                                     |
+| `/p/:pid/manage/routine`   | Daily routine                                                                                                                         |
+| `/p/:pid/manage/alerts`    | Escalation contacts                                                                                                                   |
+| `/p/:pid/manage/access`    | Invite family                                                                                                                         |
+| `/p/:pid/manage/device`    | Pairing and sync                                                                                                                      |
+| `/p/:pid/care-guide`       | Care guide                                                                                                                            |
 
 The patient id always lives in the URL. This keeps pages bookmarkable, and it is also a safety guard against showing one patient's data on another patient's screen.
 
@@ -120,7 +123,7 @@ The patient id always lives in the URL. This keeps pages bookmarkable, and it is
 
 ## 🏛 Architecture
 
-There is **no custom REST server**. Postgres *is* the API: PostgREST generates CRUD endpoints from the schema, and row-level security is the entire authorisation layer. The only hand-written HTTP endpoints are Deno Edge Functions.
+There is **no custom REST server**. Postgres _is_ the API: PostgREST generates CRUD endpoints from the schema, and row-level security is the entire authorisation layer. The only hand-written HTTP endpoints are Deno Edge Functions.
 
 ```mermaid
 %%{init: {'theme':'base','themeVariables':{'primaryColor':'#F5EAD8','primaryBorderColor':'#BC5A3C','primaryTextColor':'#201E1D','lineColor':'#8C491A','secondaryColor':'#F0FAE1','tertiaryColor':'#FFF2EB','fontFamily':'Segoe UI, Helvetica, sans-serif'}}}%%
@@ -180,26 +183,28 @@ flowchart LR
 <td width="50%" valign="top">
 
 #### 1 · Single-writer ownership
+
 Every table has **exactly one writer**. The web app writes content, the tablet writes events, and the server writes derived data. Because no two writers ever touch the same table, the codebase has no conflict-resolution code at all.
 
 </td>
 <td width="50%" valign="top">
 
 #### 2 · Idempotency by primary key
+
 Every row the tablet sends carries a **client-generated UUID** and is inserted with `ON CONFLICT DO NOTHING`. If the tablet goes offline and re-uploads the same batch, nothing changes.
 
 </td>
 </tr>
 </table>
 
-| Table | ✍️ Writer | 👀 Readers |
-|---|---|---|
-| `patients`, `patient_members` | 💻 web (caregiver) | all members |
-| `people`, `medications`, `routine_items`, `escalation_config` | 💻 **web only** | web, tablet |
-| `events`, `sessions`, `reminder_events`, `memos` | 📱 **tablet only** | web, analysis |
-| `escalations` | 📱 tablet creates · ☁️ server updates | server |
-| `flags`, `ability_mirror`, `bandit_state` | ☁️ **server only** | web |
-| `reports`, `audit_log` | ☁️ server only | web |
+| Table                                                         | ✍️ Writer                             | 👀 Readers    |
+| ------------------------------------------------------------- | ------------------------------------- | ------------- |
+| `patients`, `patient_members`                                 | 💻 web (caregiver)                    | all members   |
+| `people`, `medications`, `routine_items`, `escalation_config` | 💻 **web only**                       | web, tablet   |
+| `events`, `sessions`, `reminder_events`, `memos`              | 📱 **tablet only**                    | web, analysis |
+| `escalations`                                                 | 📱 tablet creates · ☁️ server updates | server        |
+| `flags`, `ability_mirror`, `bandit_state`                     | ☁️ **server only**                    | web           |
+| `reports`, `audit_log`                                        | ☁️ server only                        | web           |
 
 <img src=".github/assets/divider.svg" width="100%" alt=""/>
 
@@ -243,17 +248,17 @@ sequenceDiagram
 
 <br/>
 
-The tablet can fail without anyone noticing: a dead battery, days without internet, or an OEM battery manager that kills the alarm. When that happens the tablet writes no escalation, so the parent would get nothing. The **watchdog** covers this case. Every 10 minutes it works out which reminders *should* have fired, checks whether each one did, and raises a server-side escalation `wd_{patient}_{date}_{slot}` when one did not.
+The tablet can fail without anyone noticing: a dead battery, days without internet, or an OEM battery manager that kills the alarm. When that happens the tablet writes no escalation, so the parent would get nothing. The **watchdog** covers this case. Every 10 minutes it works out which reminders _should_ have fired, checks whether each one did, and raises a server-side escalation `wd_{patient}_{date}_{slot}` when one did not.
 
 The watchdog waits a **45-minute grace period**, longer than the tablet's own T+30 escalation, so the two paths never race each other.
 
-| Rule | Why |
-|---|---|
-| One call per patient for **all** due medicines | An elder should never get three calls in five minutes |
-| Deterministic escalation IDs | Retries and duplicate webhooks collapse into a single row |
-| Time is stored as integer minutes and compared modulo 1440 | Comparing `time` strings breaks every night at 23:55 |
+| Rule                                                            | Why                                                                          |
+| --------------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| One call per patient for **all** due medicines                  | An elder should never get three calls in five minutes                        |
+| Deterministic escalation IDs                                    | Retries and duplicate webhooks collapse into a single row                    |
+| Time is stored as integer minutes and compared modulo 1440      | Comparing `time` strings breaks every night at 23:55                         |
 | Missing Twilio or Vapi credentials mark the escalation `failed` | The problem shows up in the response instead of passing as a silent `200 OK` |
-| `Promise.allSettled` dispatch | One failing patient never blocks the others |
+| `Promise.allSettled` dispatch                                   | One failing patient never blocks the others                                  |
 
 </details>
 
@@ -262,14 +267,14 @@ The watchdog waits a **45-minute grace period**, longer than the tablet's own T+
 
 <br/>
 
-| Job | Schedule | Purpose |
-|---|---|---|
-| `smriti-watchdog` | every 10 min | Server-side missed-dose safety net |
-| `smriti-escalation-sweep` | every 5 min | Retry escalations that got stuck |
-| `smriti-analysis` | 02:00 IST nightly | Trajectory and change-point analysis |
-| `smriti-bandit-decay` | Sunday 03:00 IST | Decays the game-difficulty bandit's posteriors ×0.99 |
-| `smriti-keepalive` | every 6 h | Keeps the free-tier project from pausing |
-| VoiceBot sync | scheduled | Drains `voicebot_sync_queue` with locking and retries |
+| Job                       | Schedule          | Purpose                                               |
+| ------------------------- | ----------------- | ----------------------------------------------------- |
+| `smriti-watchdog`         | every 10 min      | Server-side missed-dose safety net                    |
+| `smriti-escalation-sweep` | every 5 min       | Retry escalations that got stuck                      |
+| `smriti-analysis`         | 02:00 IST nightly | Trajectory and change-point analysis                  |
+| `smriti-bandit-decay`     | Sunday 03:00 IST  | Decays the game-difficulty bandit's posteriors ×0.99  |
+| `smriti-keepalive`        | every 6 h         | Keeps the free-tier project from pausing              |
+| VoiceBot sync             | scheduled         | Drains `voicebot_sync_queue` with locking and retries |
 
 Every internal endpoint checks the `x-internal-secret` header.
 
@@ -423,22 +428,22 @@ timeline
 
 Row-level security is the entire authorisation layer, so the codebase treats every rule below as a hard requirement. `npm run verify` checks the ones marked 🤖 automatically.
 
-| # | Rule | |
-|:-:|---|:-:|
-| 1 | Every table has RLS enabled | 🤖 |
-| 2 | `auth.uid()` is always wrapped as `(select auth.uid())`, so it is evaluated once per statement and not once per row | 🤖 |
-| 3 | Time of day is stored as integer minutes (0–1439), never as a `time` column | 🤖 |
-| 4 | Migrations are unique, sequential, and never edited after they are applied | 🤖 |
-| 5 | No trigger on `events` writes back to `events` | 🤖 |
-| 6 | Every view is `security_invoker = true`, so views cannot bypass RLS | 🤖 |
-| 7 | The service-role key never appears under `web/` | 🤖 |
-| 8 | Only `web/src/lib/db.ts` imports `@supabase/supabase-js` (plus the `lib/supabase.ts` initialiser) | 🤖 |
-| 9 | No `.env` file is committed | 🤖 |
-| 10 | Every webhook verifies its signature before writing anything | 👤 |
-| 11 | Media uploads finish before their storage path is written to a row | 👤 |
-| 12 | Device writes never use `.select()` / `RETURNING`, because the device has insert-only access | 👤 |
-| 13 | The `family_viewer` role never sees a control that edits data | 👤 |
-| 14 | Every patient-scoped query key includes the patient id | 👤 |
+|  #  | Rule                                                                                                                |     |
+| :-: | ------------------------------------------------------------------------------------------------------------------- | :-: |
+|  1  | Every table has RLS enabled                                                                                         | 🤖  |
+|  2  | `auth.uid()` is always wrapped as `(select auth.uid())`, so it is evaluated once per statement and not once per row | 🤖  |
+|  3  | Time of day is stored as integer minutes (0–1439), never as a `time` column                                         | 🤖  |
+|  4  | Migrations are unique, sequential, and never edited after they are applied                                          | 🤖  |
+|  5  | No trigger on `events` writes back to `events`                                                                      | 🤖  |
+|  6  | Every view is `security_invoker = true`, so views cannot bypass RLS                                                 | 🤖  |
+|  7  | The service-role key never appears under `web/`                                                                     | 🤖  |
+|  8  | Only `web/src/lib/db.ts` imports `@supabase/supabase-js` (plus the `lib/supabase.ts` initialiser)                   | 🤖  |
+|  9  | No `.env` file is committed                                                                                         | 🤖  |
+| 10  | Every webhook verifies its signature before writing anything                                                        | 👤  |
+| 11  | Media uploads finish before their storage path is written to a row                                                  | 👤  |
+| 12  | Device writes never use `.select()` / `RETURNING`, because the device has insert-only access                        | 👤  |
+| 13  | The `family_viewer` role never sees a control that edits data                                                       | 👤  |
+| 14  | Every patient-scoped query key includes the patient id                                                              | 👤  |
 
 <img src=".github/assets/divider.svg" width="100%" alt=""/>
 
@@ -483,17 +488,17 @@ pie showData
 </td>
 <td width="45%" valign="top">
 
-| | |
-|---|--:|
-| 🗄 Tables | **21** |
-| 📜 Migrations | **25** |
-| 🦕 Edge Functions | **10** |
-| 🧭 Web routes | **16** |
-| 🌐 UI locales | **5** |
-| 🗣 Parent languages | **6** |
-| 🔑 i18n keys | **~400** |
-| 🧪 Test suites | **17** |
-| 📚 Catalogue shards | **685** |
+|                     |          |
+| ------------------- | -------: |
+| 🗄 Tables           |   **21** |
+| 📜 Migrations       |   **25** |
+| 🦕 Edge Functions   |   **10** |
+| 🧭 Web routes       |   **16** |
+| 🌐 UI locales       |    **5** |
+| 🗣 Parent languages |    **6** |
+| 🔑 i18n keys        | **~400** |
+| 🧪 Test suites      |   **17** |
+| 📚 Catalogue shards |  **685** |
 
 </td>
 </tr>
@@ -610,16 +615,16 @@ SMRITI/
 
 <br/>
 
-| Swatch | Token | Hex | Role |
-|:-:|---|---|---|
-| ![](https://img.shields.io/badge/-%20%20%20%20-BC5A3C?style=flat-square) | `terracotta` | `#BC5A3C` | Primary brand |
-| ![](https://img.shields.io/badge/-%20%20%20%20-F5EAD8?style=flat-square) | `cream` | `#F5EAD8` | Logo on dark, light sections |
-| ![](https://img.shields.io/badge/-%20%20%20%20-F9F4ED?style=flat-square) | `ivory` | `#F9F4ED` | Lightest surface |
-| ![](https://img.shields.io/badge/-%20%20%20%20-E8A83F?style=flat-square) | `gold` | `#E8A83F` | Warm accent, attention |
-| ![](https://img.shields.io/badge/-%20%20%20%20-EF8B7C?style=flat-square) | `coral` | `#EF8B7C` | Gradient trailing edge |
-| ![](https://img.shields.io/badge/-%20%20%20%20-56633F?style=flat-square) | `sage` | `#56633F` | Calm, on track |
-| ![](https://img.shields.io/badge/-%20%20%20%20-201E1D?style=flat-square) | `ink` | `#201E1D` | Primary text |
-| ![](https://img.shields.io/badge/-%20%20%20%20-B3402F?style=flat-square) | `alert` | `#B3402F` | Only where action is needed |
+|                                  Swatch                                  | Token        | Hex       | Role                         |
+| :----------------------------------------------------------------------: | ------------ | --------- | ---------------------------- |
+| ![](https://img.shields.io/badge/-%20%20%20%20-BC5A3C?style=flat-square) | `terracotta` | `#BC5A3C` | Primary brand                |
+| ![](https://img.shields.io/badge/-%20%20%20%20-F5EAD8?style=flat-square) | `cream`      | `#F5EAD8` | Logo on dark, light sections |
+| ![](https://img.shields.io/badge/-%20%20%20%20-F9F4ED?style=flat-square) | `ivory`      | `#F9F4ED` | Lightest surface             |
+| ![](https://img.shields.io/badge/-%20%20%20%20-E8A83F?style=flat-square) | `gold`       | `#E8A83F` | Warm accent, attention       |
+| ![](https://img.shields.io/badge/-%20%20%20%20-EF8B7C?style=flat-square) | `coral`      | `#EF8B7C` | Gradient trailing edge       |
+| ![](https://img.shields.io/badge/-%20%20%20%20-56633F?style=flat-square) | `sage`       | `#56633F` | Calm, on track               |
+| ![](https://img.shields.io/badge/-%20%20%20%20-201E1D?style=flat-square) | `ink`        | `#201E1D` | Primary text                 |
+| ![](https://img.shields.io/badge/-%20%20%20%20-B3402F?style=flat-square) | `alert`      | `#B3402F` | Only where action is needed  |
 
 Type: **Baloo 2** for display text, **Figtree** for body text, and **Noto Sans Meetei Mayek** for Meiteilon.
 
@@ -631,7 +636,7 @@ Type: **Baloo 2** for display text, **Figtree** for body text, and **Noto Sans M
 
 <img src="web/public/favicon.svg" width="56" alt="Smriti logomark"/>
 
-**Smriti** · *built for families who live far from home, and for the parents who raised them.*
+**Smriti** · _built for families who live far from home, and for the parents who raised them._
 
 <sub>Specs live in <a href="docs/INDEX.md"><code>docs/</code></a> · contributor rules in <a href="AGENTS.md"><code>AGENTS.md</code></a> · web app details in <a href="web/README.md"><code>web/README.md</code></a></sub>
 
