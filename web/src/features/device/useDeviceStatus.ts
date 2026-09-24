@@ -8,7 +8,7 @@ import { deviceHealth } from '@/lib/utils.ts'
  * The tablet's health, read off the `patients` row the device's heartbeat
  * updates.
  *
- * The `ok` / `stale` / `offline` thresholds here are the watchdog's own — 24
+ * The `ok` / `stale` / `offline` thresholds here are the watchdog's own - 24
  * and 72 hours. They have to match, or the caregiver ends up looking at a
  * screen saying "connected" while the server has already decided the device is
  * offline and started calling people about it. Two systems disagreeing about

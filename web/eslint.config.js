@@ -24,7 +24,7 @@ export default defineConfig([
        * module that exports both a component and something else cannot be
        * swapped in place, so an edit reloads the page and loses state.
        *
-       * `allowConstantExport` covers the case that is worth keeping — a
+       * `allowConstantExport` covers the case that is worth keeping - a
        * component exported beside the constants it owns, like `Logomark` with
        * `LOGOMARK_PATH`, or `Button` with `buttonVariants`. Splitting those into
        * satellite files to satisfy a dev-server optimisation would scatter each
@@ -42,7 +42,7 @@ export default defineConfig([
            * that owns them. Listing them by name rather than switching the rule
            * off per file keeps it live for everything else in those files.
            *
-           *   buttonVariants / badgeVariants  the shadcn/ui convention — the
+           *   buttonVariants / badgeVariants  the shadcn/ui convention - the
            *                                   variant map beside its component
            *   WORDMARK_LETTERS, SKYLINE_VIEWBOX, LOGOMARK_*  a component's own
            *                                   geometry, meaningless elsewhere
@@ -73,13 +73,13 @@ export default defineConfig([
     /**
      * Route modules and context modules genuinely cannot satisfy the rule.
      *
-     * `router.tsx` is a table of `lazy()` component references — the rule reads
+     * `router.tsx` is a table of `lazy()` component references - the rule reads
      * them as non-component exports; there is no arrangement of this file that
      * both defines the routes and passes.
      *
      * `PatientContext.tsx` and `AuthProvider.tsx` each export their context
      * alongside their provider, which is the file layout `docs/frontend.md` §1
-     * specifies — `auth/AuthProvider.tsx` + `auth/useAuth.ts`, with no third
+     * specifies - `auth/AuthProvider.tsx` + `auth/useAuth.ts`, with no third
      * module for the context. Splitting them to satisfy HMR would put the app's
      * structure out of step with its own spec.
      */

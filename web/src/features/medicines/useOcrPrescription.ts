@@ -17,7 +17,7 @@ import type { OcrMedicationCandidate as OcrCandidate } from '@smriti/shared'
 
 export type OcrDocument = { base64: string; mimeType: string }
 
-/** Thresholds are a product call, not a spec one — stated here rather than buried. */
+/** Thresholds are a product call, not a spec one - stated here rather than buried. */
 export function confidenceBand(confidence: number): OcrConfidenceBand {
   if (confidence >= 0.85) return 'high'
   if (confidence >= 0.5) return 'low'

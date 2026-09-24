@@ -91,7 +91,7 @@ export default function Report() {
               {t('report.medicines')}
             </p>
             <p className="numeral mt-2 text-[30px] leading-none">
-              {adherence.rate === null ? '—' : `${Math.round(adherence.rate * 100)}%`}
+              {adherence.rate === null ? '-' : `${Math.round(adherence.rate * 100)}%`}
             </p>
             <p className="mt-2 text-[14px] leading-relaxed text-body">
               {adherence.rate === null

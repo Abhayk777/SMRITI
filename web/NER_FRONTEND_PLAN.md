@@ -1,6 +1,6 @@
-# Smriti — Frontend Polish & Northeast India Theme: Implementation Plan
+# Smriti - Frontend Polish & Northeast India Theme: Implementation Plan
 
-> Status: **DRAFT — waiting for approval.** No code changes until this is approved.
+> Status: **DRAFT - waiting for approval.** No code changes until this is approved.
 > Scope: `web/` frontend only. No schema, no `db.ts`, no hooks/queries, no route
 > changes, no Edge Functions. Every page keeps its current layout skeleton and the
 > data it renders. What changes is how the pages look and move.

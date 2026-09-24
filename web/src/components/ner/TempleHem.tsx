@@ -2,11 +2,11 @@ import { color } from '@/styles/tokens.ts'
 import { PatternBand } from './PatternBand.tsx'
 
 /**
- * Temple hem — Manipur.
+ * Temple hem - Manipur.
  *
  * The Moirang Phee border is a run of stepped, sharp-topped triangles woven
- * along the length of the cloth. Locally it is *yarong phi* — "ya", tooth,
- * "rong", long — said to be the teeth of Pakhangba, the python deity of Meitei
+ * along the length of the cloth. Locally it is *yarong phi* - "ya", tooth,
+ * "rong", long - said to be the teeth of Pakhangba, the python deity of Meitei
  * belief. Here it is the edge where one section is hemmed into the next: the
  * teeth are painted in the colour of the section *below*, rising into the one
  * above, so the join reads as the finished edge of a cloth rather than a cut.

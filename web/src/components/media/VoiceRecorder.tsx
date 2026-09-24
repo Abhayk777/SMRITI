@@ -12,8 +12,8 @@ const MAX_MS = 20_000
 /**
  * Recording a short voice clip with the `MediaRecorder` API (frontend.md §8).
  *
- * These clips are the person's own voice saying who they are — "Divya, your
- * daughter" — and the tablet plays them alongside the photo. A familiar voice
+ * These clips are the person's own voice saying who they are - "Divya, your
+ * daughter" - and the tablet plays them alongside the photo. A familiar voice
  * does something a caption cannot, which is why this is worth the extra step in
  * setup rather than a text field.
  *

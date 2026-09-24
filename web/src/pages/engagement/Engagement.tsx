@@ -43,7 +43,7 @@ const RANGES = [
 /**
  * The calendar heatmap, driven by the `played` boolean per day.
  *
- * One hue, light to dark — a sequential encoding for a magnitude, with "no
+ * One hue, light to dark - a sequential encoding for a magnitude, with "no
  * session" as an off-ramp neutral rather than the lightest step of the ramp.
  * Those two states mean different things and must not blend into each other.
  */
@@ -64,7 +64,7 @@ function PlayCalendar({ rows }: { rows: DailyReportRow[] }) {
     <div>
       {/* Fixed 14px cells rather than fractional columns. A `1fr` track stretches
           each square to a hundred pixels on a wide screen, at which point the
-          calendar stops reading as a calendar and becomes a wall of blocks —
+          calendar stops reading as a calendar and becomes a wall of blocks -
           the whole value of this form is seeing a quarter of a year at once. */}
       <div className="overflow-x-auto pb-1">
         <div
@@ -81,7 +81,7 @@ function PlayCalendar({ rows }: { rows: DailyReportRow[] }) {
             return (
               <span
                 key={row.day}
-                title={`${formatDayShort(row.day)} — ${
+                title={`${formatDayShort(row.day)} - ${
                   row.played ? t('engagement.minutes', { count: Math.round(row.minutes_played ?? 0) }) : t('engagement.noSession')
                 }`}
                 className={cn(
@@ -147,7 +147,7 @@ export default function Engagement() {
   const play = summarisePlay(rows)
   const adherence = summariseAdherence(rows)
 
-  // Weekly buckets — daily bars over ninety days are unreadable, and the
+  // Weekly buckets - daily bars over ninety days are unreadable, and the
   // question here is about weeks anyway.
   const weeks: Array<{
     week: string
@@ -217,7 +217,7 @@ export default function Engagement() {
             />
             <Stat
               label={t('engagement.confirmed')}
-              value={adherence.rate === null ? '—' : `${Math.round(adherence.rate * 100)}%`}
+              value={adherence.rate === null ? '-' : `${Math.round(adherence.rate * 100)}%`}
               detail={
                 adherence.rate === null
                   ? t('engagement.noScheduled')
@@ -272,7 +272,7 @@ export default function Engagement() {
                   />
                   <YAxis {...axisProps} allowDecimals={false} />
                   <Tooltip cursor={{ fill: 'rgba(32,30,29,0.04)' }} content={<ChartTooltip />} />
-                  {/* 2px surface gap between stacked segments, per the mark spec —
+                  {/* 2px surface gap between stacked segments, per the mark spec -
                       it is also the secondary encoding the status trio needs. */}
                   <Bar
                     name={t('engagement.onTablet')}

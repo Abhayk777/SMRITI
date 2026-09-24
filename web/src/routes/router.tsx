@@ -11,8 +11,8 @@ import { RootEntry } from './RootEntry.tsx'
  *
  * The patient id lives in the URL on every patient-scoped route, without
  * exception (§15 rule 10). That is what gives a working back button,
- * bookmarkable pages, correct behaviour on refresh, and — because the id is
- * read from one place — it is the foundation the cross-patient guards in §12
+ * bookmarkable pages, correct behaviour on refresh, and - because the id is
+ * read from one place - it is the foundation the cross-patient guards in §12
  * are built on.
  *
  * The marketing site is a separate top-level route rather than a separate app:

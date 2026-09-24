@@ -12,7 +12,7 @@ const STEP = 15
  * The server enforces `window_start_min ≤ chosen_time_min ≤ window_end_min`
  * with a check constraint. frontend.md §8 is explicit that the UI must make
  * that constraint **structurally unreachable** rather than lean on the database
- * to reject it — a caregiver who submits an invalid time and is handed a raw
+ * to reject it - a caregiver who submits an invalid time and is handed a raw
  * Postgres constraint violation has learned nothing about what they did wrong.
  *
  * Two things make it unreachable here:

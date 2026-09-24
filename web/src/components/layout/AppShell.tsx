@@ -68,14 +68,14 @@ const MANAGE_NAV: NavItem[] = [
  *
  * Two things it guarantees, both from frontend.md §12: the patient identity
  * block is present on every screen without exception, and the patient id in
- * every link is taken from the URL rather than from anything held in memory —
+ * every link is taken from the URL rather than from anything held in memory -
  * so the back button, a refresh and a bookmarked link all behave.
  *
  * The chrome: a solid ivory header hemmed with a slowly drifting gamosa rule,
  * a nav on its own stitched panel whose active pill slides between items, and
  * behind everything the patient's sky (`AppBackdrop`) following the time of
  * day where they are. Each screen fades in and its blocks rise one after
- * another — quickly, and with no exit delay, so navigating never feels slower.
+ * another - quickly, and with no exit delay, so navigating never feels slower.
  */
 export function AppShell({ children }: { children: ReactNode }) {
   const { patientId, patient } = usePatientAccess()
@@ -271,8 +271,8 @@ export function AppShell({ children }: { children: ReactNode }) {
         </aside>
 
         <main className="min-w-0 flex-1 py-6 pb-24 sm:py-8">
-          {/* Each screen fades in, and its top-level blocks — header, flags,
-              tiles, cards — rise one after another. */}
+          {/* Each screen fades in, and its top-level blocks - header, flags,
+              tiles, cards - rise one after another. */}
           <motion.div
             key={location.pathname}
             className="stagger"

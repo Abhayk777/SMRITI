@@ -7,11 +7,11 @@ import { AnimatePresence, motion } from 'framer-motion'
  * Two clips, cut from the reference footage in `fontend references/` and
  * encoded once into `public/media/`:
  *
- *   intro    ~13 s — clouds over the Khasi hills, a walk across the paddy
+ *   intro    ~13 s - clouds over the Khasi hills, a walk across the paddy
  *            fields, a waterfall, a festival dance in Arunachal, and last an
  *            elder in her doorway pulling a red shawl round her shoulders. It
  *            ends on the person Smriti is for.
- *   ambient  ~10 s — the clouds alone, played forward then back so the loop
+ *   ambient  ~10 s - the clouds alone, played forward then back so the loop
  *            point cannot be seen. What the hero rests on after the intro, and
  *            on every later visit.
  *

@@ -20,7 +20,7 @@ const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
  *
  * On mount it verifies the caller really is a member of this patient and loads
  * their role into context. RLS already refuses the underlying rows, so this
- * check adds no security — what it adds is an *answer*. Without it, an
+ * check adds no security - what it adds is an *answer*. Without it, an
  * unauthorised URL produces a screen of empty lists and zeroed figures, which
  * reads as "your mother did nothing today" rather than "this isn't your
  * mother". In a medication app those two are not close enough to leave to

@@ -6,7 +6,7 @@ import { cn } from '@/lib/utils.ts'
  *
  * `LOGOMARK_PATH` is lifted verbatim from the approved brand artwork. Do not
  * re-derive it from the PNGs, do not "clean it up", and do not round the
- * numbers — the arc sweep and the two straight tails are what make the four
+ * numbers - the arc sweep and the two straight tails are what make the four
  * copies interlock into a closed knot rather than four separate loops.
  *
  * This component is the single source of truth for the mark. The nav, the

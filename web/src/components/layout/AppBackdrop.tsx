@@ -10,7 +10,7 @@ import { arcProgress, skyPhase, type SkyPhase } from './sky.ts'
  * A fixed layer behind every signed-in screen, following the time of day where
  * the patient is:
  *
- *   sky    a wash at the top of the window — gold at dawn, pale mist through
+ *   sky    a wash at the top of the window - gold at dawn, pale mist through
  *          the day, coral in the evening, a cool indigo mist at night. Always
  *          light; the app never turns into a dark theme after sunset.
  *   sun    a flat disc inside a slowly turning stitched ring, crossing the sky
@@ -19,7 +19,7 @@ import { arcProgress, skyPhase, type SkyPhase } from './sky.ts'
  *   hills  three Khasi-hill ridgelines along the bottom of the window, the far
  *          one swaying slowly, with mist drifting through the valleys.
  *   loom   faint vertical warp threads over everything, and a handful of
- *          Apatani twin stars that twinkle — stronger at night.
+ *          Apatani twin stars that twinkle - stronger at night.
  *
  * Cards are opaque, so all of this lives in the gutters between them and never
  * behind anything that has to be read. Every movement is a compositor-only
@@ -82,7 +82,7 @@ export function AppBackdrop({ minutes }: { minutes: number }) {
       <div className="absolute inset-0 bg-loom" />
 
       {/* Sun or moon: a flat disc with a crisp edge inside a slowly turning
-          stitched ring — drawn, not glowing. */}
+          stitched ring - drawn, not glowing. */}
       <motion.div
         className="absolute size-[clamp(56px,6vw,88px)] -translate-x-1/2 -translate-y-1/2"
         initial={false}

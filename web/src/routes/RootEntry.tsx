@@ -16,7 +16,7 @@ const Marketing = lazy(() => import('@/marketing/MarketingPage.tsx'))
  * caregiver never has to walk past a marketing page to reach their mother's
  * medicines, and a visitor never sees a redirect loop.
  *
- * The §4 redirect logic itself is not duplicated here — it stays in exactly one
+ * The §4 redirect logic itself is not duplicated here - it stays in exactly one
  * place, `RootRedirect`, which this delegates to.
  */
 export function RootEntry() {

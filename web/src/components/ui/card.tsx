@@ -6,7 +6,7 @@ import { cn } from '@/lib/utils.ts'
 /**
  * Cards.
  *
- * `tone` is not decoration — it is how a caregiver reads a screen at a glance.
+ * `tone` is not decoration - it is how a caregiver reads a screen at a glance.
  * `sage` means on track, `warm` means attention, `alert` means act now, and
  * `plain` means neutral information. Picking a tone for its colour rather than
  * its meaning is how a dashboard stops being scannable.

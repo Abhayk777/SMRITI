@@ -26,7 +26,7 @@ export const AuthContext = createContext<AuthContextValue | null>(null)
  * logic is in `signOut`: the entire query cache is dropped on the way out.
  * Leaving a previous account's patients, medicines and memos sitting in memory
  * for whoever signs in next on a shared laptop is the same class of failure as
- * the cross-patient leaks §12 is about, and the fix is the same — evict, don't
+ * the cross-patient leaks §12 is about, and the fix is the same - evict, don't
  * hope the keys differ.
  */
 export function AuthProvider({ children }: { children: ReactNode }) {

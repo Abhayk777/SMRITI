@@ -33,7 +33,7 @@ export const toRoutineDraft = (row: RoutineItem): RoutineDraft => ({
  * The icon is a `<select>` over the fixed set the Flutter app ships assets for
  * rather than a free-text field, because `icon_asset` is free text server-side
  * and anything outside that set renders as an empty card on the patient's home
- * screen — a silent failure the caregiver would never see.
+ * screen - a silent failure the caregiver would never see.
  */
 export function RoutineForm({
   value,

@@ -18,13 +18,13 @@ import {
  * Section order follows the reference; the colour does not. The reference ran
  * terracotta → cream → cream → sand → cream → ivory → terracotta, which is one
  * hue doing almost all the work and is why the page read as monotonous below
- * the fold. Here each section takes a distinct ground — terracotta, cream,
- * ivory, **sage**, sand, ivory, terracotta, cream — and the gold/coral gradient
+ * the fold. Here each section takes a distinct ground - terracotta, cream,
+ * ivory, **sage**, sand, ivory, terracotta, cream - and the gold/coral gradient
  * stays reserved for the two moments that actually matter, the primary buttons.
  *
  * The joins between sections are textile edges drawn from the eight Northeast
  * states (see `components/ner/`), and scrolling is smoothed by Lenis, mounted
- * once for the whole app in `main.tsx` — which is also what makes the `#how`
+ * once for the whole app in `main.tsx` - which is also what makes the `#how`
  * and `#features` anchor links glide.
  */
 export default function MarketingPage() {

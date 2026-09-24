@@ -4,7 +4,7 @@ import { cn } from '@/lib/utils.ts'
  * Loading states are skeletons, never spinners.
  *
  * A spinner says "something is happening". A skeleton says "a card with a name,
- * a time and two figures is about to appear here" — which is what a caregiver
+ * a time and two figures is about to appear here" - which is what a caregiver
  * opening the app at lunch on a slow connection actually needs, because the
  * page stops jumping under them when the data lands.
  */

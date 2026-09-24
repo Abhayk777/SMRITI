@@ -30,8 +30,8 @@ import type { Person } from '@smriti/shared'
 /**
  * Manage → People (frontend.md §8).
  *
- * Every write goes through `useContentMutation('people', id)` — never a bespoke
- * inline mutation (§15 rule 3) — so the server-side `content_version` bump
+ * Every write goes through `useContentMutation('people', id)` - never a bespoke
+ * inline mutation (§15 rule 3) - so the server-side `content_version` bump
  * always lands with a matching cache invalidation and the Tablet page never
  * reports a version the device has already moved past.
  *

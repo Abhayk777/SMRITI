@@ -10,7 +10,7 @@ import { PairingQr } from './PairingQr.tsx'
 import { usePairingToken, useTokenCountdown } from './usePairingToken.ts'
 
 /**
- * Generating and presenting a pairing token — shared by the last step of the
+ * Generating and presenting a pairing token - shared by the last step of the
  * setup wizard and the Tablet page, because they are the same job. A device
  * that has to be re-paired after a factory reset should not meet a different
  * screen from the one the caregiver used the first time.
@@ -83,7 +83,7 @@ export function PairingPanel({
                 </Notice>
               ) : (
                 <p className="text-sm text-muted">
-                  {t('pairing.expiresIn', { time: countdown.display ?? '—' })} {t('pairing.singleUse')}
+                  {t('pairing.expiresIn', { time: countdown.display ?? '-' })} {t('pairing.singleUse')}
                 </p>
               )}
             </div>

@@ -253,7 +253,7 @@ export default function Overview() {
     return <Navigate to="/patients/new" replace />
   }
 
-  // With one patient this page is not the right screen — §4 decides, once.
+  // With one patient this page is not the right screen - §4 decides, once.
   if (!isPending && !error && rows.length < 2) {
     return <Navigate to="/" replace />
   }

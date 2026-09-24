@@ -5,9 +5,9 @@
  * The reference film (`/brand/setup-loading-reference.mp4`) is a generated
  * illustration: a brick temple hall, a pair of guardian lions, a classical
  * dancer, a rank of gilded chedis and a mountain range, drawn as line art and
- * then washed with colour from left to right. The *mechanics* of that film —
+ * then washed with colour from left to right. The *mechanics* of that film -
  * composition, left-to-right draw order, the diagonal gold light band riding
- * the reveal edge, the progress bar and the LOADING label — are reproduced
+ * the reveal edge, the progress bar and the LOADING label - are reproduced
  * exactly in `SetupCompleteLoader`. The **artwork below is a redraw, not a
  * trace.** Hand-authoring path data faithful to that illustration from video
  * frames is not something that can be done to brand standard, and a muddy
@@ -186,8 +186,8 @@ function GuardianLion({ mode, x, scale = 1 }: { mode: ArtworkMode; x: number; sc
   /**
    * One confident profile silhouette rather than a stack of anatomical parts.
    *
-   * Two earlier attempts — an outline with a large head, then overlapping
-   * masses with a ring of mane lobes — both read as a bird at this size. What
+   * Two earlier attempts - an outline with a large head, then overlapping
+   * masses with a ring of mane lobes - both read as a bird at this size. What
    * actually makes a lion legible in a 150px skyline figure is a small head
    * with a pointed snout, a heavy chest above vertical foreleg columns, and a
    * spiked mane edge. Detail below that threshold is noise; anything above it
@@ -265,7 +265,7 @@ function GuardianLion({ mode, x, scale = 1 }: { mode: ArtworkMode; x: number; sc
 }
 
 /* ────────────────────────────────────────────────────────────────────────
-   The dancer — the one figure in the scene, and the reason it reads as a
+   The dancer - the one figure in the scene, and the reason it reads as a
    place rather than a skyline. Local 0–150 × 0–250 box.
    ──────────────────────────────────────────────────────────────────────── */
 
@@ -341,7 +341,7 @@ function Dancer({ mode, x, scale = 1 }: { mode: ArtworkMode; x: number; scale?: 
         d="M 52 54 C 52 42, 60 34, 68 34 C 76 34, 82 42, 82 54 C 82 66, 76 72, 68 72 C 60 72, 52 66, 52 54 Z"
         strokeWidth={2.2}
       />
-      {/* chada — the tapered headdress */}
+      {/* chada - the tapered headdress */}
       <Shape
         mode={mode}
         fill={C.gold}
@@ -361,7 +361,7 @@ function Dancer({ mode, x, scale = 1 }: { mode: ArtworkMode; x: number; scale?: 
 }
 
 /* ────────────────────────────────────────────────────────────────────────
-   The brick hall on the left — the scene's anchor, and the first thing the
+   The brick hall on the left - the scene's anchor, and the first thing the
    colour wash reaches.
    ──────────────────────────────────────────────────────────────────────── */
 
@@ -405,7 +405,7 @@ function BrickHall({ mode }: { mode: ArtworkMode }) {
 }
 
 /**
- * The mountain range. Line only in both layers — in the reference the peaks
+ * The mountain range. Line only in both layers - in the reference the peaks
  * stay as outline while everything in front of them takes colour, which is
  * what gives the composition its depth.
  */

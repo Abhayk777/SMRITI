@@ -10,7 +10,7 @@ export function cn(...inputs: ClassValue[]) {
    Time-of-day.
 
    Every time-of-day value in this system is an integer number of minutes
-   past local midnight, 0–1439, with modulo-1440 arithmetic — never a `time`
+   past local midnight, 0–1439, with modulo-1440 arithmetic - never a `time`
    column, never a `Date` (AGENTS.md non-negotiable 3). A tablet in a village
    with a drifting clock and a caregiver in another timezone have to agree on
    what "9 in the morning" means, and only a plain integer survives that.
@@ -24,7 +24,7 @@ export const wrapMinutes = (min: number) =>
 
 /** `540` → `"9:00 am"`. */
 export function formatMinutes(min: number | null | undefined): string {
-  if (min === null || min === undefined) return '—'
+  if (min === null || min === undefined) return '-'
   const m = wrapMinutes(min)
   const hour24 = Math.floor(m / 60)
   const minute = m % 60
@@ -55,7 +55,7 @@ export function partOfDay(min: number): 'Morning' | 'Afternoon' | 'Evening' | 'N
 }
 
 /* ────────────────────────────────────────────────────────────────────────
-   days_of_week — comma-separated ISO weekdays (Monday=1 … Sunday=7).
+   days_of_week - comma-separated ISO weekdays (Monday=1 … Sunday=7).
    ──────────────────────────────────────────────────────────────────────── */
 
 export const DAY_LABELS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'] as const
@@ -139,11 +139,11 @@ export function isoDateDaysAgo(days: number): string {
  *
  * This distinction is the whole point of the function. The `day` column on
  * `daily_report` and every other view is computed server-side as
- * `(to_timestamp(ts) at time zone p.timezone)::date` — the patient's local date, not the
+ * `(to_timestamp(ts) at time zone p.timezone)::date` - the patient's local date, not the
  * viewer's. The viewer is very often somewhere else entirely; that is the
  * product. A daughter in Seattle opening this at 4pm is looking at a woman in
  * Pune for whom it is already tomorrow morning, and comparing against the
- * browser's own date makes today's row simply fail to match — the dashboard
+ * browser's own date makes today's row simply fail to match - the dashboard
  * then reports "no session today" on a day the patient has already played.
  *
  * Falls back to the viewer's timezone only when the patient row has not loaded
@@ -235,7 +235,7 @@ export function isoWeekdayIndex(iso: string): number {
 
 /**
  * "4 minutes ago", "2 days ago". Used for `device_last_seen_at`, where being
- * honest about staleness matters more than being pretty — a caregiver must
+ * honest about staleness matters more than being pretty - a caregiver must
  * never read a screen as live when the tablet last synced on Tuesday.
  */
 export function timeAgo(iso: string | null | undefined): string {

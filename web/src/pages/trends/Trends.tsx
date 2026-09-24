@@ -96,14 +96,14 @@ function DomainSpark({
           }`}
         >
           {delta === null
-            ? '—'
+            ? '-'
             : t('trends.points', { count: `${delta >= 0 ? '+' : ''}${Math.round(delta * 100)}` })}
         </span>
       </div>
       <div className="mt-1 flex items-center justify-between gap-3">
         <span className="text-[12px] text-muted">{t('trends.thatDay')}</span>
         <span className="numeral text-[15px] font-semibold text-ink">
-          {last === null ? '—' : t('trends.percentCorrect', { percent: Math.round(last * 100) })}
+          {last === null ? '-' : t('trends.percentCorrect', { percent: Math.round(last * 100) })}
         </span>
       </div>
       <div className="mt-3 h-36">
@@ -131,7 +131,7 @@ function DomainSpark({
               content={
                 <ChartTooltip
                   formatter={(value) =>
-                    typeof value === 'number' ? t('trends.percentCorrect', { percent: Math.round(value * 100) }) : '—'
+                    typeof value === 'number' ? t('trends.percentCorrect', { percent: Math.round(value * 100) }) : '-'
                   }
                 />
               }
@@ -199,7 +199,7 @@ export default function Trends() {
   const changepoint = activeFlags.find((f) => f.changepoint_date)?.changepoint_date ?? null
 
   // Accuracy: the raw daily figure plus a seven-day mean over it. Same measure,
-  // same hue at two weights — not two series.
+  // same hue at two weights - not two series.
   const accuracySeries = rollingMean(rows, (row) => row.accuracy, 7)
   const accuracyData = rows.map((row, i) => ({
     day: row.day,
@@ -270,8 +270,8 @@ export default function Trends() {
                 .reverse()
                 .map((row) => [
                   formatDayShort(row.day),
-                  row.accuracy !== null ? `${Math.round(row.accuracy * 100)}%` : '—',
-                  row.mean !== null ? `${Math.round(row.mean * 100)}%` : '—',
+                  row.accuracy !== null ? `${Math.round(row.accuracy * 100)}%` : '-',
+                  row.mean !== null ? `${Math.round(row.mean * 100)}%` : '-',
                 ]),
             }}
           >
@@ -282,7 +282,7 @@ export default function Trends() {
                 </p>
                 <p className="numeral mt-1 text-2xl font-bold text-ink">
                   {latestAccuracy?.accuracy === null || !latestAccuracy
-                    ? '—'
+                    ? '-'
                     : t('trends.percentCorrect', { percent: Math.round(latestAccuracy.accuracy * 100) })}
                 </p>
                 {latestAccuracy && <p className="mt-0.5 text-xs text-muted">{formatDayShort(latestAccuracy.day)}</p>}
@@ -293,7 +293,7 @@ export default function Trends() {
                 </p>
                 <p className="numeral mt-1 text-2xl font-bold text-ink">
                   {latestMean?.mean === null || !latestMean
-                    ? '—'
+                    ? '-'
                     : t('trends.percentCorrect', { percent: Math.round(latestMean.mean * 100) })}
                 </p>
                 {latestMean && <p className="mt-0.5 text-xs text-muted">{formatDayShort(latestMean.day)}</p>}
@@ -337,7 +337,7 @@ export default function Trends() {
                     content={
                       <ChartTooltip
                         formatter={(value) =>
-                          typeof value === 'number' ? `${Math.round(value * 100)}%` : '—'
+                          typeof value === 'number' ? `${Math.round(value * 100)}%` : '-'
                         }
                       />
                     }

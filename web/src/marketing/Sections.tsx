@@ -24,7 +24,7 @@ import { Reveal } from './Reveal.tsx'
 import { useTranslation } from '@/i18n/index.ts'
 
 /* ══════════════════════════════════════════════════════════════════════════
-   How it works — cream.
+   How it works - cream.
    Each step carries a different accent chip, so "three steps" reads as three
    distinct things rather than one thing repeated. A single thread runs down
    beside them and draws itself as you scroll, tying the three together.
@@ -98,7 +98,7 @@ export function HowItWorks() {
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
-   Stat band — sage.
+   Stat band - sage.
 
    The reference put this on sand, which made it the fourth cream section in a
    row and the point where the page stopped registering as sections at all.
@@ -122,7 +122,7 @@ function CountUp({ stat }: { stat: (typeof STATS)[number] }) {
   const reduceMotion = useReducedMotion()
   const [counted, setCounted] = useState<string | null>(null)
 
-  // Under reduced motion the final value is the value — derived, not animated
+  // Under reduced motion the final value is the value - derived, not animated
   // into place by an effect that would fire a second render for nothing.
   const text = reduceMotion ? stat.display : (counted ?? '0')
 
@@ -183,7 +183,7 @@ export function StatBand() {
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
-   The product preview — sand.
+   The product preview - sand.
    ══════════════════════════════════════════════════════════════════════════ */
 
 function PhonePreview() {
@@ -309,7 +309,7 @@ export function ProductPreview() {
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
-   Stories — ivory.
+   Stories - ivory.
    ══════════════════════════════════════════════════════════════════════════ */
 
 /*
@@ -394,7 +394,7 @@ export function Stories() {
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
-   Closing call to action — terracotta.
+   Closing call to action - terracotta.
    The logomark turns slowly beside a japi crown, and the section ends on the
    hills: three ridgelines rising at different rates as it scrolls in, the
    nearest one in the footer's cream so the page lands on the ground.
@@ -457,7 +457,7 @@ export function FinalCta() {
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
-   Footer — cream.
+   Footer - cream.
    ══════════════════════════════════════════════════════════════════════════ */
 
 export function MarketingFooter() {

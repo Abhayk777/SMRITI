@@ -186,7 +186,7 @@ export const kha: TranslationCatalogue = {
       "deceasedHint": "Sngewbha set ia kane lada ka iadei. Ka Smriti kan dang pyni ia ka dur jong ki bad kan kren shaphang jong ki da ka jingsngewtynnat, hynrei kan ym kylli satia shano ki don ne lano kin wan.",
       "nameRequired": "Ka kyrteng kaba nyngkong ka la biang .",
       "relationshipRequired": "Kaei ka jingiadei jong ki bad u nongpang?",
-      "photoRequired": "Donkam ia ka dur — ka tablet ka pyni ia ka khmat."
+      "photoRequired": "Donkam ia ka dur - ka tablet ka pyni ia ka khmat."
     }
   },
   "access": {
@@ -199,7 +199,7 @@ export const kha: TranslationCatalogue = {
     },
     "family": {
       "label": "Long iing",
-      "body": "Lah ban iohi ia baroh — mynta, ki jinglong, ki kaiphod bad ki khubor — bad ym pynkylla ei ei."
+      "body": "Lah ban iohi ia baroh - mynta, ki jinglong, ki kaiphod bad ki khubor - bad ym pynkylla ei ei."
     },
     "healthWorker": {
       "label": "U nongtrei ka koit ka khiah",
@@ -211,9 +211,9 @@ export const kha: TranslationCatalogue = {
     "addUserDescription": "Kane kam phah ia ka jingthoh ne email. Pyndonkam ia u nombar ba ki la dep pyndonkam ban sign in ha ka Smriti; ka jingrung la pyndap tang ha kata ka account kaba la don lypa.",
     "phone": "U number mobile jong ki .",
     "role": "Kaei kaba ki lah ban leh .",
-    "familyOption": "Ka longiing — ka lah ban iohi ia baroh .",
-    "caregiverOption": "U nongsumar — u lah ruh ban pynkylla .",
-    "pending": "Ym pat don mano mano ba la soi ia ka {phone} haduh mynta. Kylli ia ki ban rung ha ka Smriti da uta u nombar shisien, nangta khot biang ia ki — ym pat ailad ia ki ban rung.",
+    "familyOption": "Ka longiing - ka lah ban iohi ia baroh .",
+    "caregiverOption": "U nongsumar - u lah ruh ban pynkylla .",
+    "pending": "Ym pat don mano mano ba la soi ia ka {phone} haduh mynta. Kylli ia ki ban rung ha ka Smriti da uta u nombar shisien, nangta khot biang ia ki - ym pat ailad ia ki ban rung.",
     "addedNotice": "La pyndap. Kin sa iohi ia ka {name} ha ka sien kaba bud ba kin plie ia ka Smriti.",
     "adding": "Ka jingpynrung...",
     "addAccess": "Pyndap ia ka jingrung",
@@ -225,13 +225,13 @@ export const kha: TranslationCatalogue = {
     "acceptableHint": "Ka span ba lah ban shim ia ka dose Lada ki bakla ia ka jingsawa, ka Smriti ka dang lah ban khein ia ka hapoh kane ka jingkhang.",
     "windowAriaLabel": "Ka jingkhang dawai",
     "reminderTime": "Lano dei ban pynsawa ia ka Smriti?",
-    "reminderHint": "Jied ia ka por ha ka sngi jong ki kaba kane ka iadei — hadien ka sha, shwa ban iaid kai. U lah ban shong tang hapoh ka jingkhang kaba shaneng.",
+    "reminderHint": "Jied ia ka por ha ka sngi jong ki kaba kane ka iadei - hadien ka sha, shwa ban iaid kai. U lah ban shong tang hapoh ka jingkhang kaba shaneng.",
     "reminderAriaLabel": "Ka por pynkynmaw"
   },
   "medicines": {
     "eyebrow": "Pyniaid",
     "title": "Ki dawai",
-    "description": "Ka jingsawa kaba jem ha ka por jong ki, ha ka ktien jong ki. Lada kim jubab, ka Smriti ka ap, ka pyrta biang, bad tang nangta ka khot ia phi — kawei ka jingkhot kaba kynthup lut ia baroh kaba dei ban siew, ym ju don kawei ka pill.",
+    "description": "Ka jingsawa kaba jem ha ka por jong ki, ha ka ktien jong ki. Lada kim jubab, ka Smriti ka ap, ka pyrta biang, bad tang nangta ka khot ia phi - kawei ka jingkhot kaba kynthup lut ia baroh kaba dei ban siew, ym ju don kawei ka pill.",
     "scan": "Scan ia ka jingthoh dawai",
     "add": "Ka jingpynrung ia ka dawai .",
     "addByHand": "Add da ka kti",
@@ -269,10 +269,10 @@ export const kha: TranslationCatalogue = {
     "title": "Ka rukom leh jong ki",
     "description": "Ki jingpynbna rit jong ka sngi jong u {name}. Ka tablet ka pyni ia kine shadien sha ki kum ka dur jong kaei kaban sa wan.",
     "add": "Pyndap ia ka sngi jong ki .",
-    "orientationNotice": "Ki tiar ba man ka sngi ki long na ka bynta ka jingpynsngewthuh, ym ki jingpynkynmaw. Kim ju chime bad kim ju pynmih ia ka jingkhot phone — kano kano kaba ym dei ban klet ka dei jong ka sla jong ki Dawai.",
+    "orientationNotice": "Ki tiar ba man ka sngi ki long na ka bynta ka jingpynsngewthuh, ym ki jingpynkynmaw. Kim ju chime bad kim ju pynmih ia ka jingkhot phone - kano kano kaba ym dei ban klet ka dei jong ka sla jong ki Dawai.",
     "edit": "Pynbeit ia kane",
     "emptyTitle": "Ka sngi jong ki ka long kaba thylli .",
-    "emptyDescription": "Lai ne saw tylli ki anchor ka long kaba biang — ka sha mynstep, ka jingbam miet, ka jingleit kai, ka por thiah. Ka biang ba ka sngi ka don ka dur.",
+    "emptyDescription": "Lai ne saw tylli ki anchor ka long kaba biang - ka sha mynstep, ka jingbam miet, ka jingleit kai, ka por thiah. Ka biang ba ka sngi ka don ka dur.",
     "addFirst": "Add ia kaba nyngkong .",
     "form": {
       "label": "Kaei kaba jia",
@@ -313,7 +313,7 @@ export const kha: TranslationCatalogue = {
     "scan": "Scan ia ka dur ne ka PDF .",
     "reading": "Pule…",
     "unreadable": "U Smriti um lah ban pule ia kata ka jingthoh dawai. Pyrshang ia ka dur kaba kham shai ne PDF, lane pyndap ia ki dawai da ka kti.",
-    "notScheduled": "Ym pat don ei ei hangne ​​kaba la buh por haduh mynta. Ka Smriti kan ym pynkynmaw iano iano ruh shaphang kine tad haduh ba phin da buh dak ia man la u lain marwei marwei. Peit ia kawei pa kawei pyrshah ia ka jingthoh tynrai — ka kyrteng, ka jingdih, bad ka por ba ka Smriti ka tyrwa.",
+    "notScheduled": "Ym pat don ei ei hangne ​​kaba la buh por haduh mynta. Ka Smriti kan ym pynkynmaw iano iano ruh shaphang kine tad haduh ba phin da buh dak ia man la u lain marwei marwei. Peit ia kawei pa kawei pyrshah ia ka jingthoh tynrai - ka kyrteng, ka jingdih, bad ka por ba ka Smriti ka tyrwa.",
     "noLines": "Ym shym la lap ia ki lain dawai. Pyrshang ia ka dur kaba kham shai ne PDF, lane pyndap ia ki dawai da ka kti.",
     "chooseAnother": "Jied ia kawei pat ka file .",
     "discard": "Pynduh noh ia une u lain",
@@ -321,7 +321,7 @@ export const kha: TranslationCatalogue = {
     "chimeAt": "Ka Smriti kan chime ha ka {time}, {days}, ha kano kano ka jaka hapdeng ka {start} bad ka {end}.",
     "done": "Lah dep",
     "changeTime": "Pynkylla ia ka por .",
-    "multipleDoses": "Kane ka lain ka long kum ki dose jong ka {count} ha ka shisngi, bad ka Smriti ka lah ban tyrwa tang shisien ha ka shi lain. Save ia kane kawei, nangta pyndap ia kawei pat ka {remaining} da ka kti — lym kumta kin sa shah pynkynmaw tang shisien.",
+    "multipleDoses": "Kane ka lain ka long kum ki dose jong ka {count} ha ka shisngi, bad ka Smriti ka lah ban tyrwa tang shisien ha ka shi lain. Save ia kane kawei, nangta pyndap ia kawei pat ka {remaining} da ka kti - lym kumta kin sa shah pynkynmaw tang shisien.",
     "media": "Pynrung ia kane ka dur jong ka pill bad ka jingpynkynmaw sur",
     "photoHint": "Pynmih dur ia ka pill ne ka jingsong ba shisha, ym ia ka sla jong ka jingthoh dawai.",
     "confirmChecked": "La check pyrshah ia ka jingthoh dawai.",
@@ -329,7 +329,7 @@ export const kha: TranslationCatalogue = {
     "save": "Pynsah ia ki dawai {count}{suffix}",
     "allChecked": "Kawei pa kawei ka lain ka la shah check.",
     "linesOutstanding": "Dang don {count} lain{suffix} ban peit.",
-    "skippedLines": "Ki {count} lain{suffix} kin ym shah pynim — ki dang donkam ia ka kyrteng, ka dose, bad la kumno kumno shisngi. Pyndep ia ki, lane bret noh ia ki."
+    "skippedLines": "Ki {count} lain{suffix} kin ym shah pynim - ki dang donkam ia ka kyrteng, ka dose, bad la kumno kumno shisngi. Pyndep ia ki, lane bret noh ia ki."
   },
   "messages": {
     "tags": {
@@ -347,7 +347,7 @@ export const kha: TranslationCatalogue = {
     "play": "Pynpaw ia kane ka khubor .",
     "pause": "Sangeh shipor",
     "new": "Bathymmai",
-    "noTranscript": "Ym don jingthoh na ka bynta kane kawei — nion play ban iohsngew ia ka.",
+    "noTranscript": "Ym don jingthoh na ka bynta kane kawei - nion play ban iohsngew ia ka.",
     "fetching": "Ka jingshim ia ka audio...",
     "loadFailed": "Kata ka jingrwai kam shym la lah ban load. Ka lah ban long ba la weng noh.",
     "playbackFailed": "Ka jingpynrung ka la load, hynrei ka jingpyni kam lah ban sdang. Ka dang shah mark ba kam pat pule.",
@@ -381,7 +381,7 @@ export const kha: TranslationCatalogue = {
     "generating": "Ka jingpynmih...",
     "generate": "Pynmih ia u code pyniadei",
     "readOut": "Lane pule ia kane .",
-    "expired": "Kane ka code ka la kut por. Ki code ki neh laiphew minit kumta ia ka dur jong uwei ym lah ban pyndonkam hadien — pynmih ia kaba thymmai bad pyrshang biang.",
+    "expired": "Kane ka code ka la kut por. Ki code ki neh laiphew minit kumta ia ka dur jong uwei ym lah ban pyndonkam hadien - pynmih ia kaba thymmai bad pyrshang biang.",
     "expiresIn": "Ka por ka kut ha ka por {time}.",
     "singleUse": "Ki code ki long kiba pyndonkam tang shisien.",
     "generateNew": "Pynmih ia u code ba thymmai .",
@@ -390,7 +390,7 @@ export const kha: TranslationCatalogue = {
     "copy": "Kopi"
   },
   "auth": {
-    "brandMeaning": "Smriti (स्मृति) ka dei ka Sanskrit na ka bynta ka jingkynmaw — kaei kaba la buh, bad kaei kaba la pynphai.",
+    "brandMeaning": "Smriti (स्मृति) ka dei ka Sanskrit na ka bynta ka jingkynmaw - kaei kaba la buh, bad kaei kaba la pynphai.",
     "welcomeTitle": "To long kiba jan bad ka sngi jong ki, na kano kano ka jaka kaba phi don.",
     "welcomeDescription": "Sign in da u mobile number ba ka iing ka sem jong phi ka pyndonkam. Ngin sa phah ia u code uba don hynriew dak.",
     "demoNotice": "Ym shym la pynbeit ia ki jingpynshisha jong ka Supabase, kumta kane ka dei ka jingpyni. Uno uno u nombar bad uno uno u hynriew tylli ki dak kin sign ia phi, bad ym don kaei kaei kaba phi buh kaba shisha.",
@@ -420,15 +420,15 @@ export const kha: TranslationCatalogue = {
   "careGuide": {
     "eyebrow": "Ka jingpyniaid ia ka jingsumar",
     "title": "Kumno ban pule ia kine baroh .",
-    "description": "Ki jubab kiba lyngkot bad kiba shai sha ki jingkylli kiba ki longïing ki kylli kham bunsien ïa ngi — shaphang kaei kaba ka Smriti ka ïathuh ïa phi, bad shaphang ka jingsumar ïa ka {name} na kano kano ka jaka ba phi don.",
-    "safetyNotice": "Ym don ei ei hangne ​​kaba dei ka jingai jingmut jong ki doktor, bad ka Smriti kam ju lap ia kano kano ka jingpang. Lada phi sngewkhia ia ka koit ka khiah jong ki, kren bad u doktor jong ki — bad rah ia ka sla Report ryngkat bad phi.",
+    "description": "Ki jubab kiba lyngkot bad kiba shai sha ki jingkylli kiba ki longïing ki kylli kham bunsien ïa ngi - shaphang kaei kaba ka Smriti ka ïathuh ïa phi, bad shaphang ka jingsumar ïa ka {name} na kano kano ka jaka ba phi don.",
+    "safetyNotice": "Ym don ei ei hangne ​​kaba dei ka jingai jingmut jong ki doktor, bad ka Smriti kam ju lap ia kano kano ka jingpang. Lada phi sngewkhia ia ka koit ka khiah jong ki, kren bad u doktor jong ki - bad rah ia ka sla Report ryngkat bad phi.",
     "stillStuck": "Ka dang sahkut?",
     "stillStuckBody": "Don u briew uba shisha ha kawei pat ka tduh jong kane. Lada don kaei kaei ha kano kano na kine ki screen kam don jingmut, lane phim tip aiu ban leh shaphang ka lama, iakynduh bad ngin sa peit ia ka ryngkat bad phi.",
     "sections": [
       {
         "title": "Kaei kaba ka Smriti ka lah bad kam lah ban iathuh ia phi .",
         "body": [
-          "Smriti ka ianujor ia u kmie u kpa jong phi bad la ka jong ka jingim ba mynshuwa — ym ju pyrshah ia kiwei pat ki briew, bad ym ju pyrshah ia ka jingthew jong ka jingpang. Haba ka flag ia kaei kaei, ka ong “kane ka pher na kumno ki ju long”, bad ym don shuh kaba palat ia kata.",
+          "Smriti ka ianujor ia u kmie u kpa jong phi bad la ka jong ka jingim ba mynshuwa - ym ju pyrshah ia kiwei pat ki briew, bad ym ju pyrshah ia ka jingthew jong ka jingpang. Haba ka flag ia kaei kaei, ka ong “kane ka pher na kumno ki ju long”, bad ym don shuh kaba palat ia kata.",
           "Kam lah ban lap ia kano kano ka jingpang. Ka jingmareh jong ki score kiba kham duna ka lah ban mut ka jingpang sniehdoh, ka tablet kaba thymmai, ka taiew kaba sniew jong ka jingthiah, ka jingsngewsih, ka jingshit ar taiew, lane ym don ei ei satia. Kita baroh ki kham jylliew shibun ban ia kaei kaei kaba phi tieng.",
           "Kaei kaba ka tbit bha ka long ban iohi ia ka jingkylla kham kloi bad kham iaid beit ban ia kaba ka jingkhot phone man ka taiew ka lah ban leh, bad ban ai ia phi ia ki tarik bad ki jingkhein ban rah sha u doktor ha ka jaka jong ka jingsngew kaba phim lah ban pynshisha thikna."
         ]
@@ -444,7 +444,7 @@ export const kha: TranslationCatalogue = {
       {
         "title": "Ka jingioh ia ki jingpynkynmaw kiba dei",
         "body": [
-          "Ka por pynkynmaw kaba bha tam ka long kaba la dep pyniasoh bad kaei kaei kaba ki leh — hadien ka jingdih sha mynstep, shwa ka serial janmiet. Ka por ba la jied namar ba ka i kumba ka long kaba khuid ha ka form ka shah iehnoh bein.",
+          "Ka por pynkynmaw kaba bha tam ka long kaba la dep pyniasoh bad kaei kaei kaba ki leh - hadien ka jingdih sha mynstep, shwa ka serial janmiet. Ka por ba la jied namar ba ka i kumba ka long kaba khuid ha ka form ka shah iehnoh bein.",
           "Ka jingkhang ka long kaba kongsan katba kum ka jingsawa. Ka jingkhang kaba heh ka mut ba ki lah ban shim ia ka ynda ki la poi ha ka bad dang don ia ka ban khein; kaba rit ka pynmih ia ki dose ba la jah kiba ym shym la jah shisha.",
           "Lada ka Smriti ka hap ban khot ia phi bunsien, ka por pynkynmaw ka ju bakla ban ia ka jingkynmaw jong ki. Pynkylla ia ka shwa ba phin pynjur ia kano kano ka kam."
         ]
@@ -460,7 +460,7 @@ export const kha: TranslationCatalogue = {
       {
         "title": "Ka jingpeit ia lade",
         "body": [
-          "Kam donkam ban plie ia kane man ka sngi. Lada ym don ei ei kaba la pynpaw, ym don ei ei kaba donkam ia phi — kata ka long ka jingmut baroh kawei jong ki jingpynbna kiba don.",
+          "Kam donkam ban plie ia kane man ka sngi. Lada ym don ei ei kaba la pynpaw, ym don ei ei kaba donkam ia phi - kata ka long ka jingmut baroh kawei jong ki jingpynbna kiba don.",
           "Share ia ki para jong phi. Kaei kaba ki longïing ki ju ïathuh ïa ngi ka long ba ka kaiphod ba man ka taiew ka la pynkut noh ïa ka jingïakren, namar baroh ki la pule khatduh ha kajuh ka taiew.",
           "Ka jingjngai kam dei ka jingbymsuidniew. Ka jingjngai saw hajar mail bad ka jingtip ba ki la dih ia ki tablet jong ki ha ka por hynniew baje ka long ka rukom ba shisha jong ka jingdon hangta."
         ]
@@ -474,9 +474,9 @@ export const kha: TranslationCatalogue = {
     "range12": "Ha u snem ba la dep",
     "eyebrow": "Kaiphod",
     "title": "Kaei kaei kaba dei ban rah sha u doktor .",
-    "description": "Kawei ka sla kaba kdup ia ka por kaba phi jied — ki rukom leh ba la buh, ki dawai ba la pynskhem, kaei kaba la kylla, bad ki jingkylli kiba dei ban kylli ha ka jingiakynduh kaba hadien.",
+    "description": "Kawei ka sla kaba kdup ia ka por kaba phi jied - ki rukom leh ba la buh, ki dawai ba la pynskhem, kaei kaba la kylla, bad ki jingkylli kiba dei ban kylli ha ka jingiakynduh kaba hadien.",
     "generate": "Pynmih ia ka kaiphod",
-    "covering": "Ka jingtap jong ka {name}. Lah ban iasam bad ki para bad bad u doktor jong ki — kam don ia ki jingkhein ialehkai kiba nabar ka jinglong, tang ki rukom bad ki tarik.",
+    "covering": "Ka jingtap jong ka {name}. Lah ban iasam bad ki para bad bad u doktor jong ki - kam don ia ki jingkhein ialehkai kiba nabar ka jinglong, tang ki rukom bad ki tarik.",
     "pdfUnavailableTitle": "Ka PDF reports ym pat lah ban ioh .",
     "pdfUnavailable": "Ka kaiphod PDF kam lah ban ioh",
     "pdfNotice": "Ka jingpynmih ia ka kaiphod PDF kam pat sdang. Ki dur kiba don harum ki long kiba im bad ki pyndonkam ia ka por ba la jied; ym shym la phah ia ka jingkyrpad report.",
@@ -492,16 +492,16 @@ export const kha: TranslationCatalogue = {
   },
   "alerts": {
     "title": "Lada la duh ia ka dose .",
-    "description": "Kaei kaba ka Smriti ka leh haba ka {name} kam jubab ia ka jingpynkynmaw. Ka ap shuwa ba kan nang kiew, bad kawei ka jingkhot ka tap lut ia kaba dei ban siew — ym ju don kawei ka jingkhot ha kawei ka pill.",
+    "description": "Kaei kaba ka Smriti ka leh haba ka {name} kam jubab ia ka jingpynkynmaw. Ka ap shuwa ba kan nang kiew, bad kawei ka jingkhot ka tap lut ia kaba dei ban siew - ym ju don kawei ka jingkhot ha kawei ka pill.",
     "orderTitle": "Kaei kaba jia, ha ka jingpynbeit .",
     "noLadder": "Ym pat lah ban pynbeit ia kane ka profile haduh mynta. Ka Smriti kan dang sawa ha ka tablet; kan ym buh ia ki call tad haduh ban da set ia kawei.",
     "onTime": "Ha ka por",
     "minutesAfter": "+{minutes} min",
     "tabletChimes": "Ka tablet ka sawa, ha ka ktien jong ki.",
     "noResponse": "Lada dang don ka jingkynthoh, ka Smriti ka phah ia ka {channel}.",
-    "timingsNotice": "Ia kine ki por la buh da ka Smriti bad ym lah ban pynkylla hangne. Ki long kiei kiei kiba la tei ia ka jingshngain jong ka dose ba la jah — ka jingpynjrong ia ki kan pynlip noh ia ka da kaba sngap jar. Lada ki shisha kim iahap bad ki, iakynduh bad ngin sa peit bad phi.",
+    "timingsNotice": "Ia kine ki por la buh da ka Smriti bad ym lah ban pynkylla hangne. Ki long kiei kiei kiba la tei ia ka jingshngain jong ka dose ba la jah - ka jingpynjrong ia ki kan pynlip noh ia ka da kaba sngap jar. Lada ki shisha kim iahap bad ki, iakynduh bad ngin sa peit bad phi.",
     "contactsTitle": "Ki Smriti ki khot .",
-    "contactsDescription": "Ki jingkhot phone ba shisha, ba la buh tang hadien ba ka tablet ka la dep pyrshang arsien. Pynlong ia kine kiba mynta — u nombar bym don jubab u long kumjuh bad ka jingbym don jingda.",
+    "contactsDescription": "Ki jingkhot phone ba shisha, ba la buh tang hadien ba ka tablet ka la dep pyrshang arsien. Pynlong ia kine kiba mynta - u nombar bym don jubab u long kumjuh bad ka jingbym don jingda.",
     "viewOnly": "Ka don ka jingbit tang ban peit, kumta ia kine ki contact ym lah ban pynkylla hangne.",
     "firstCall": "Ka jingkhot nyngkong",
     "secondCall": "Lada kata ka call kam jubab .",
@@ -530,7 +530,7 @@ export const kha: TranslationCatalogue = {
     "skip": "Skip ia mynta",
     "basics": {
       "title": "Ngi peit iano?",
-      "description": "U Smriti u pyndonkam ia ka rta bad ka jingpule jong ki ban pynbeit ia ki jingialehkai ha ka rukom kaba dei — ym ban bishar ia kaei kaei. Baroh hangne ​​lah ban pynkylla hadien.",
+      "description": "U Smriti u pyndonkam ia ka rta bad ka jingpule jong ki ban pynbeit ia ki jingialehkai ha ka rukom kaba dei - ym ban bishar ia kaei kaei. Baroh hangne ​​lah ban pynkylla hadien.",
       "name": "Ka kyrteng jong ki .",
       "nameHint": "Kaei kaba ka tablet kan khot ia ki.",
       "age": "Yrta",
@@ -553,20 +553,20 @@ export const kha: TranslationCatalogue = {
     },
     "people": {
       "title": "Ki briew ha ki sngi jong ki .",
-      "description": "Ki khmat kiba ki dei ban iai iohi. Sdang da ki saw ne san ngut — ki khun, ka lok, u para marjan, uno uno uba wan jngoh. Phi lah ban pyndap shuh shuh katba phi kwah.",
+      "description": "Ki khmat kiba ki dei ban iai iohi. Sdang da ki saw ne san ngut - ki khun, ka lok, u para marjan, uno uno uba wan jngoh. Phi lah ban pyndap shuh shuh katba phi kwah.",
       "add": "Add ia uwei",
       "addAnother": "Pynrung ia uwei pat u briew .",
       "remove": "Pynduh noh ia ka {name}",
       "skip": "Skip ia mynta",
-      "next": "Kaba bud — ki sur jong ki ."
+      "next": "Kaba bud - ki sur jong ki ."
     },
     "voices": {
       "title": "Ki sur jong ki .",
       "description": "Ka jingjied, bad ka jingong kaba marwei kaba ki longïing ki ïathuh ïa ngi ka la pynlong ïa ka jingpher. Khyndiat sekhon jong uwei uba kren ia la ka jong ka kyrteng, la ialehkai hajan ka dur jong ki.",
       "noneTitle": "Ym pat don briew ban record haduh mynta",
-      "noneDescription": "Leit biang shi step bad pynrung shwa ia uwei — ka sur ka donkam ia ka khmat ban long ka jong ka.",
+      "noneDescription": "Leit biang shi step bad pynrung shwa ia uwei - ka sur ka donkam ia ka khmat ban long ka jong ka.",
       "prompt": "Ha u {name} u ong: “{name}, ka {relationship} jong phi.”",
-      "next": "Kaba bud — ki dawai ."
+      "next": "Kaba bud - ki dawai ."
     },
     "medicines": {
       "title": "Ki dawai jong ki .",
@@ -575,34 +575,34 @@ export const kha: TranslationCatalogue = {
       "add": "Pynrung dawai da ka kti .",
       "addAnother": "Pyndap sa kawei pat ka dawai da ka kti .",
       "remove": "Pynduh noh ia ka {name}",
-      "next": "Kaba bud — ka rukom jong ki ."
+      "next": "Kaba bud - ka rukom jong ki ."
     },
     "routine": {
       "title": "Ka dur jong ka sngi jong ki .",
-      "description": "Tea ha ka por hynriew baje, ka jingleit ha ka por shiteng san baje. Ka tablet ka pyni ia kine sha ki kum ka dur kaba suk jong ka sngi — ka dei ka bynta kaba bun ki briew ki ong ba ki sngewtynnad.",
+      "description": "Tea ha ka por hynriew baje, ka jingleit ha ka por shiteng san baje. Ka tablet ka pyni ia kine sha ki kum ka dur kaba suk jong ka sngi - ka dei ka bynta kaba bun ki briew ki ong ba ki sngewtynnad.",
       "add": "Pynrung ia kaei kaei",
       "addAnother": "Pyndap sa kawei pat",
       "remove": "Pynduh noh ia ka {name}",
-      "next": "Kaba bud — lada la pynduh ia ka dose ."
+      "next": "Kaba bud - lada la pynduh ia ka dose ."
     },
     "alerts": {
       "title": "Lada kim jubab .",
-      "description": "Ka tablet ka pyrta, ka ap bad ka pyrta biang. Tang hadien kata u Smriti u buh ia ka phone — kawei ka jingkhot kaba kynthup ia baroh kaba dei ban siew, ym ju don kawei na kawei ka pill.",
+      "description": "Ka tablet ka pyrta, ka ap bad ka pyrta biang. Tang hadien kata u Smriti u buh ia ka phone - kawei ka jingkhot kaba kynthup ia baroh kaba dei ban siew, ym ju don kawei na kawei ka pill.",
       "firstCall": "Ka jingkhot nyngkong",
       "secondCall": "Lada kata ka call kam jubab .",
-      "secondCallHint": "Ka jingjied, hynrei kaba donkam — kaba bha eh ka long ba u briew uba sah hajan.",
+      "secondCallHint": "Ka jingjied, hynrei kaba donkam - kaba bha eh ka long ba u briew uba sah hajan.",
       "name": "Kyrteng",
       "phone": "Ka phone",
-      "next": "Kaba bud — pyniasoh ia ka tablet .",
+      "next": "Kaba bud - pyniasoh ia ka tablet .",
       "primaryNameError": "Mano ba dei ban khot nyngkong?",
       "primaryPhoneError": "Kynthup lang ia u code jong ka ri .",
       "secondaryPhoneError": "Pynrung lang ia u code jong ka ri, lane ieh thylli ."
     },
     "pairing": {
       "title": "Kawei kaba khatduh",
-      "description": "Pyniasoh ia ka tablet jong ki bad ka Smriti kan tan ia baroh kaba phi dang shu buh — ki khmat, ki sur, ki dawai, ka rukom leh jong ki.",
+      "description": "Pyniasoh ia ka tablet jong ki bad ka Smriti kan tan ia baroh kaba phi dang shu buh - ki khmat, ki sur, ki dawai, ka rukom leh jong ki.",
       "fallbackName": "u nongpang",
-      "noTablet": "Ka tablet ha khmat jong phi? Kata ka long kaba bha — phi lah ban pair ia ka ha kano kano ka por naduh .",
+      "noTablet": "Ka tablet ha khmat jong phi? Kata ka long kaba bha - phi lah ban pair ia ka ha kano kano ka por naduh .",
       "manageTablet": "Pyniaid → Tablet",
       "finish": "Pyndep ia ka jingpynbeit",
       "loadingNamed": "Dang pynkhreh ia ka tablet jong {name}",
@@ -610,7 +610,7 @@ export const kha: TranslationCatalogue = {
     }
   },
   "dashboard": {
-    "description": "Kaei kaba la jia haduh mynta, bad kaba dang sah. Baroh hangne ​​ka wan na ka tablet — ym don ei ei kaba la pynkut.",
+    "description": "Kaei kaba la jia haduh mynta, bad kaba dang sah. Baroh hangne ​​ka wan na ka tablet - ym don ei ei kaba la pynkut.",
     "notices": "Kiei kiei kiba dei ban peit .",
     "today": "Mynta ka sngi",
     "dayTitle": "Ka sngi jong u {name}",
@@ -634,7 +634,7 @@ export const kha: TranslationCatalogue = {
     "routineTitle": "Ka rukom leh jong ki",
     "addRoutine": "Pyndap ia ka rukom",
     "noRoutine": "Ym pat don ka rukom",
-    "noRoutineDescription": "Ka sha ha ka por hynriew baje, ka jingleit kai ha ka por shiteng baje san — ki anchor barit jong ka sngi jong ki. Ka tablet ka pyni ia kine shadien sha ki.",
+    "noRoutineDescription": "Ka sha ha ka por hynriew baje, ka jingleit kai ha ka por shiteng baje san - ki anchor barit jong ka sngi jong ki. Ka tablet ka pyni ia kine shadien sha ki.",
     "routineNote": "Ki tick ki pyni ia kaei kaba ka kynta ka la iaid, ym ia kaei kaba ki la pynthikna.",
     "newFrom": "Bathymmai na ka {name}",
     "fallbackMemo": "Ka khubor sur ka dang ap.",
@@ -644,7 +644,7 @@ export const kha: TranslationCatalogue = {
   "trends": {
     "eyebrow": "Ki jinglong",
     "title": "Kumno kiei kiei ki iaid",
-    "description": "U Smriti u ianujor ia ki bad la ka jong ka jingim ba mynshuwa, ym ju ianujor bad uwei pat. Baroh kaba don harum ka long ka jingkylla ha ka rukom — kam dei ka jingpang, bad ki don bun ki daw kiba rit na ka bynta kawei.",
+    "description": "U Smriti u ianujor ia ki bad la ka jong ka jingim ba mynshuwa, ym ju ianujor bad uwei pat. Baroh kaba don harum ka long ka jingkylla ha ka rukom - kam dei ka jingpang, bad ki don bun ki daw kiba rit na ka bynta kawei.",
     "rangeDays": "{count} ki sngi",
     "notices": "Kiei kiei kiba u Smriti u la ïohi .",
     "noData": "Ym pat don ei ei ban chart",
@@ -658,25 +658,25 @@ export const kha: TranslationCatalogue = {
     "correct": "Badei",
     "changeLabel": "bujli",
     "domainTitle": "Da ka bynta jong ka jingpyrkhat .",
-    "domainDescription": "San tylli ki chart rit ba kyrpang ban ia ki san tylli ki lain ha kawei, namar ka jingkylli ka long hato don mano mano ba iaid lyngba — ym kano kaba heh tam.",
+    "domainDescription": "San tylli ki chart rit ba kyrpang ban ia ki san tylli ki lain ha kawei, namar ka jingkylli ka long hato don mano mano ba iaid lyngba - ym kano kaba heh tam.",
     "noDomain": "Ym pat don jingtip na ka bynta kawei pa kawei ka jaka",
     "noDomainDescription": "Kine ki pyndap shisien ba ki la ialehkai katto katne ki session ha kylleng ki jingialehkai bapher bapher.",
     "points": "{count} pts",
     "percentCorrect": "{percent}% kaba dei",
     "comingSoon": "Ka jingwan sha kane ka page .",
-    "comingSoonNotice": "Kine ki donkam ia ki jingpeit bniah kiba dang shna. La buh ia ki hangne ​​khnang ba phin iohi ia ka dur jong ka sla ba la dep — ym don ei ei kaba la buhrieh na phi.",
+    "comingSoonNotice": "Kine ki donkam ia ki jingpeit bniah kiba dang shna. La buh ia ki hangne ​​khnang ba phin iohi ia ka dur jong ka sla ba la dep - ym don ei ei kaba la buhrieh na phi.",
     "recognitionTitle": "Iano ki ithuh, katba nang mih ki sngi .",
     "recognitionDescription": "Ka lain na ka bynta uwei pa uwei u briew ha ka circle jong ki, kaba pyni haduh katno ki kloi ban buh ia kawei pa kawei ka khmat. Ka dak kaba long briew tam ka Smriti ka don, bad kawei kaba ki longïing ki pan nyngkong.",
     "retentionTitle": "Katno ki buh hapdeng ki jingïalang .",
     "retentionDescription": "Lada kaei kaei kaba la tip ha ka sngi Nyngkong ka dang don ha ka sngi Thohdieng. Ka dak kaba kham bha kaba kloi ban ia ka jingkhein kaba shisngi.",
     "timeOfDay": "Ka por jong ka sngi",
-    "afternoonsDescription": "La ki por mynstep bad janmiet jong ki ki iaid pher ne em na ki por mynstep jong ki — ka rukom kaba don shadien jong kaei kaba ki longiing ki khot ka jingsep sngi.",
+    "afternoonsDescription": "La ki por mynstep bad janmiet jong ki ki iaid pher ne em na ki por mynstep jong ki - ka rukom kaba don shadien jong kaei kaba ki longiing ki khot ka jingsep sngi.",
     "unavailable": "Ym pat lah ban ioh ."
   },
   "engagement": {
     "eyebrow": "Jingiatehktien",
     "title": "Hato ka Smriti ka dei kaba la pyndonkam shisha?",
-    "description": "La ki dang plie ia ka tablet, bad la ki dawai ki dang ioh dih. Ar tylli ki jingkylli bapher — ka taiew kaba sniew ha kawei kam mut ka taiew kaba sniew ha kawei pat.",
+    "description": "La ki dang plie ia ka tablet, bad la ki dawai ki dang ioh dih. Ar tylli ki jingkylli bapher - ka taiew kaba sniew ha kawei kam mut ka taiew kaba sniew ha kawei pat.",
     "rangeDays": "{count} ki sngi",
     "sessionsAria": "Ki jingïalang ha kine ki {count} sngi ba la dep",
     "noSession": "Ym don jingialang",
@@ -697,20 +697,20 @@ export const kha: TranslationCatalogue = {
     "noData": "Ym pat don ei ei hangne",
     "noDataDescription": "Shisien ba la pyndonkam ia ka tablet katto katne sngi, kane ka sla ka pyndap hi dalade.",
     "dosesTitle": "Kumno la pynthikna ia kawei pa kawei ka dose .",
-    "dosesReading": "La pynskhem ha ka tablet ia ka lynti kaba jem. Ka jingpynskhem hadien ka jingkhot ka mut ba ka Smriti ka la hap ban poi shano shano ruh — katto katne ka long kaba thikna, ka jingmareh kaba kiew ka long kaba kordor ban ïakren shaphang ka por pynkynmaw.",
+    "dosesReading": "La pynskhem ha ka tablet ia ka lynti kaba jem. Ka jingpynskhem hadien ka jingkhot ka mut ba ka Smriti ka la hap ban poi shano shano ruh - katto katne ka long kaba thikna, ka jingmareh kaba kiew ka long kaba kordor ban ïakren shaphang ka por pynkynmaw.",
     "onTablet": "Ha ka tablet",
     "afterCall": "Hadien ka jingkhot",
     "notConfirmed": "Ym shym la pynthikna",
     "weekOf": "Ka taiew jong ka",
     "minutesTitle": "Ki minit ha ka tablet, katkum ka taiew .",
-    "minutesReading": "Ka por baroh man la ka taiew. Ki mat kiba sngur ki kham kongsan ban ia kaba heh — arphew minit bunsien ki sngi ki tam ia ka shi kynta ha ka Sngi U Trai.",
+    "minutesReading": "Ka por baroh man la ka taiew. Ki mat kiba sngur ki kham kongsan ban ia kaba heh - arphew minit bunsien ki sngi ki tam ia ka shi kynta ha ka Sngi U Trai.",
     "calendarTitle": "Man la ka sngi ha ka jingpeit .",
     "calendarReading": "Kawei ka square ha ka shisngi, kaba kham dum na ka bynta ka jingïalang kaba kham jrong. Ki gap ki long kiba ai jingtip kum ka rong."
   },
   "flags": {
     "decline": {
       "title": "Ki score ki la hiar ha ki katto katne taiew .",
-      "body": "Ki jingialehkai ki la nang kham eh ia ki ban ia kaba ki ju long. Kane ka long kaba donkam ban kdew ha ka jingiakynduh jong ki kaba hadien — kam dei ka jingpang, bad bun kiei kiei kiba rit ki pynlong ia ka."
+      "body": "Ki jingialehkai ki la nang kham eh ia ki ban ia kaba ki ju long. Kane ka long kaba donkam ban kdew ha ka jingiakynduh jong ki kaba hadien - kam dei ka jingpang, bad bun kiei kiei kiba rit ki pynlong ia ka."
     },
     "engagementDrop": {
       "title": "Ki ialehkai kham duna ban ia kaba ki ju ialehkai .",
@@ -737,7 +737,7 @@ export const kha: TranslationCatalogue = {
     "evidence": "Peit ia ki sakhi .",
     "changeStart": "Ka jingkylla ka paw ban sdang .",
     "confidence": "Katno ka thikna ka Smriti ka long .",
-    "confidenceValue": "{percent}% — ym dei ka jingpang .",
+    "confidenceValue": "{percent}% - ym dei ka jingpang .",
     "compared": "Lada ianujor bad .",
     "recent": "Ka por ba dang shen",
     "usualByArea": "Katno ka jngai na la ka jong ka rukom, katkum ka jaka .",
@@ -754,7 +754,7 @@ export const kha: TranslationCatalogue = {
   },
   "identity": {
     "viewOnly": "Peit tang",
-    "switchAria": "{name} — ka jingkylla nongpang",
+    "switchAria": "{name} - ka jingkylla nongpang",
     "switchPatient": "Pynkylla ia u nongpang",
     "flags": "{count} tylli ki bynta ban peit",
     "playedToday": "La ialehkai mynta ka sngi",
@@ -798,7 +798,7 @@ export const kha: TranslationCatalogue = {
     "noMatches": "Ym don ki dkhot jong ka longïing kiba ïadei bad ka “{query}”.",
     "deleteOneTitle": "Pyndam noh ia ka {name}",
     "deleteManyTitle": "Pynduh noh ia ki nongpang {count}",
-    "deleteOneDescription": "Hato phi kwah ban pyndam noh shi syndon ia ka {name}? Baroh ki jingthoh kiba ïadei — kynthup ïa ki dawai, ki por ba man ka sngi, ki jingïakynduh bad ki briew, ki jingthoh ba la pynsawa, bad ki jingthoh ïa ki kam — yn sa pyndam noh shi syndon.",
+    "deleteOneDescription": "Hato phi kwah ban pyndam noh shi syndon ia ka {name}? Baroh ki jingthoh kiba ïadei - kynthup ïa ki dawai, ki por ba man ka sngi, ki jingïakynduh bad ki briew, ki jingthoh ba la pynsawa, bad ki jingthoh ïa ki kam - yn sa pyndam noh shi syndon.",
     "deleteManyDescription": "Hato phi thikna ba phi kwah ban pynduh noh shi syndon ia kine ki nongpang {count}: {names}? Baroh ki jingthoh ba iadei, ki dawai, ki rukom leh, bad ki file audio yn sa pyndam noh shisyndon na ka database bad ka jaka buh.",
     "cannotUndo": "Kane ka jingleh ka long kaba kloi bad ym lah ban pynphai biang.",
     "deleting": "Ka jingpyndam...",
@@ -810,7 +810,7 @@ export const kha: TranslationCatalogue = {
     "stories": "Ki khana",
     "getStarted": "Sdang noh",
     "heroTitle": "To long kiba jan bad ka sngi jong ki, na kano kano ka jaka kaba phi don.",
-    "heroBody": "Ka Smriti ka buh jingthoh sngap jar ïa ki rukom treikam jong ki kmie ki kpa jong phi, ki dawai bad ka jinglong jingman ha ïing — bad ka ïathuh ïa ka longïing kaei kaba kongsan ha ka jingshisha. Ym don ei ei ban phong. Ym don ei ei ban siew.",
+    "heroBody": "Ka Smriti ka buh jingthoh sngap jar ïa ki rukom treikam jong ki kmie ki kpa jong phi, ki dawai bad ka jinglong jingman ha ïing - bad ka ïathuh ïa ka longïing kaei kaba kongsan ha ka jingshisha. Ym don ei ei ban phong. Ym don ei ei ban siew.",
     "startTrial": "Sdang khlem jingsiew na ka bynta 30 sngi .",
     "seeHow": "Peit kumno ka treikam .",
     "heroFootnote": "Set ha kawei ka janmiet · U kmie u kpa jong phi u sah ha ka jingsynshar · Pynsangeh ia kano kano ka por",
@@ -822,9 +822,9 @@ export const kha: TranslationCatalogue = {
     "next": "Babud",
     "slide1Kicker": "Ki jingpeit bniah man ka sngi",
     "slide1Title": "Ka “khublei step” kaba jem kaba iathuh ia phi shibun kiei kiei.",
-    "slide1Body": "Ka jingthiah, ka jingkwah bam, ka jinglong — lai tylli ki tap ha la ka jong ka jong ka por, bad ka note ha ka sngi jong phi da ka hynniew baje.",
+    "slide1Body": "Ka jingthiah, ka jingkwah bam, ka jinglong - lai tylli ki tap ha la ka jong ka jong ka por, bad ka note ha ka sngi jong phi da ka hynniew baje.",
     "slide2Kicker": "Ki jingpynkynmaw ba jem",
-    "slide2Title": "Ka dawai, la kynmaw — khlem ka jingkynnoh.",
+    "slide2Title": "Ka dawai, la kynmaw - khlem ka jingkynnoh.",
     "slide2Body": "Ka jingsawa kaba jem ha ka por jong ki, ha ka ktien jong ki. Lada la pynduh arsien ia ka dose, dei ma phi uba iohsngew ia kata.",
     "slide3Kicker": "Ka kaiphod man ka taiew .",
     "slide3Title": "Ka taiew, la lum na ka bynta baroh kiba sngewkhia.",
@@ -833,20 +833,20 @@ export const kha: TranslationCatalogue = {
     "slide4Title": "Kawei ka jingiathuhkhana kaba rit, la iasam bad ka iing ka sem.",
     "slide4Body": "U Smriti u kylli ia ki shaphang ka dur, ka jaka, ka jingrwai. Kaei kaba ki ong ka kylla long kaei kaei kaba ki khun jong phi kin dang don.",
     "howTitle": "Lai tylli kiei kiei kiba rit ha ka shisngi. Kawei ka jubab kaba jem na ka bynta jong phi.",
-    "howBody": "Ka Smriti ka shong ha ka liang ba shadien jong ka ïing jong ki kmie ki kpa jong phi — ka tablet ne ka phone jong ki hi — bad ka pan tang khyndiat eh. Ia kaei kaba ka lum, ka kylla long kaei kaei kaba phi lah ban pule tang hapoh shiteng minit.",
+    "howBody": "Ka Smriti ka shong ha ka liang ba shadien jong ka ïing jong ki kmie ki kpa jong phi - ka tablet ne ka phone jong ki hi - bad ka pan tang khyndiat eh. Ia kaei kaba ka lum, ka kylla long kaei kaei kaba phi lah ban pule tang hapoh shiteng minit.",
     "step1Title": "Ki jubab ia ka jingkylli kaba jem .",
-    "step1Body": "Kawei ka karta, kawei ka tap. “Phi la iohthiah bha ne em?” — ym ju long ka dur, ym ju long ka alarm.",
+    "step1Body": "Kawei ka karta, kawei ka tap. “Phi la iohthiah bha ne em?” - ym ju long ka dur, ym ju long ka alarm.",
     "step2Title": "Smriti ka iohi ia ka rukom",
     "step2Body": "Ki rukom ba la leh, ki dawai ba la dih, ki sngi kiba sngew kham khia ban ia kaba ju long.",
     "step3Title": "U ioh ia ka dur kaba lyngkot .",
     "step3Body": "Ka lain kaba jem man ka sngi, ka kaiphod man ka taiew kaba ka iing ka sem baroh kawei ka lah ban iohi, bad kawei ka jingkynmaw kaba ki la jied ban iasam.",
     "stat1": "ki longïing kiba peitngor lang, ha ki 14 tylli ki ri",
-    "stat2": "ki jingpeit bniah la jubab — 91% khlem jingpynkynmaw .",
+    "stat2": "ki jingpeit bniah la jubab - 91% khlem jingpynkynmaw .",
     "stat3": "jong ki longïing ki dang pyndonkam ïa ka Smriti hadien shisnem .",
     "stat4": "Ka jingpynbeit kaba pdeng, bad u briew uba shisha ha ka jingkhot lada phi kwah ia uwei",
     "yourSide": "Ka liang jong ka",
     "previewTitle": "Ka sngi jong ki baroh kawei, ha kawei ka jingpeit kaba jem.",
-    "previewBody": "Plie ia ka Smriti ha ka por bam ja miet bad phi tip shano ka sngi ka ieng. Ym don ki dashboard, ym don ki chart ban batai — tang mynta ka sngi, ha ki kyntien kiba shai.",
+    "previewBody": "Plie ia ka Smriti ha ka por bam ja miet bad phi tip shano ka sngi ka ieng. Ym don ki dashboard, ym don ki chart ban batai - tang mynta ka sngi, ha ki kyntien kiba shai.",
     "promise1": "Mei rai ia kaei kaba la iasam, bad lah ban iohi ia baroh kaba phi iohi.",
     "promise2": "Khot ia ki para, ia u nongsumar ne ia u para marjan da la ka jong ka jingmut.",
     "promise3": "Ki kynta kiba sngap jar. Ngi pynbor tang haba ka long kaba kongsan.",
@@ -876,7 +876,7 @@ export const kha: TranslationCatalogue = {
     "about": "Shaphang ka Smriti",
     "careers": "Ki kam",
     "contact": "Ban ia tyngkhuh",
-    "footerMeaning": "Smriti (स्मृति) ka dei ka Sanskrit na ka bynta ka jingkynmaw — kaei kaba la buh, bad kaei kaba la pynphai."
+    "footerMeaning": "Smriti (स्मृति) ka dei ka Sanskrit na ka bynta ka jingkynmaw - kaei kaba la buh, bad kaei kaba la pynphai."
   },
   "marketingPreview": {
     "date": "Sngi Balang, 12 tarik u Naitung 2019.",

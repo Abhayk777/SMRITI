@@ -14,7 +14,7 @@ import { usePatientAccess, useSwitchPatient } from '@/patients/usePatientAccess.
  *
  * Photo-or-initials and name, on every single screen, never behind a click.
  * A caregiver managing two parents needs to be able to answer "whose medicines
- * am I looking at" without doing anything — and the moment that answer costs a
+ * am I looking at" without doing anything - and the moment that answer costs a
  * click is the moment someone edits the wrong person's dose.
  *
  * The sync line underneath is part of the same honesty: it says when the tablet
@@ -32,7 +32,7 @@ export function PatientIdentity({ compact = false }: { compact?: boolean }) {
   })
 
   const others = (overview.data ?? []).filter((p) => p.patient_id !== patientId)
-  const name = patient?.display_name ?? '—'
+  const name = patient?.display_name ?? '-'
   const health = deviceHealth(patient?.device_last_seen_at)
 
   const identity = (

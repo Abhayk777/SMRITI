@@ -2,10 +2,10 @@ import { color } from '@/styles/tokens.ts'
 import { PatternBand } from './PatternBand.tsx'
 
 /**
- * Naga shawl banding — Nagaland.
+ * Naga shawl banding - Nagaland.
  *
- * Naga shawls are built from horizontal bands — mostly red, white and a
- * blue-black from Assam indigo — with a motif band carrying lozenges, spear
+ * Naga shawls are built from horizontal bands - mostly red, white and a
+ * blue-black from Assam indigo - with a motif band carrying lozenges, spear
  * lines and ritual forms. Many specific patterns mark status (a Lotha shawl
  * can record the feasts its wearer has given), so this deliberately uses only
  * the shared vocabulary: the band structure, a double lozenge and a spear

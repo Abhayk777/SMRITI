@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
  * True once the page has scrolled past `threshold`.
  *
  * The reference landing page polled `window.scrollY` on a `requestAnimationFrame`
- * loop that never stopped — a workaround for its preview host, where scroll
+ * loop that never stopped - a workaround for its preview host, where scroll
  * events did not fire. In a real app that is a frame of work every frame,
  * forever, to answer a question that changes twice per visit. A passive scroll
  * listener does the same job and costs nothing when nobody is scrolling.

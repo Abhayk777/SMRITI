@@ -3,7 +3,7 @@ import type { CSSProperties } from 'react'
 import { cn } from '@/lib/utils.ts'
 
 /**
- * Twin star — Arunachal Pradesh.
+ * Twin star - Arunachal Pradesh.
  *
  * Apatani weavers work a twin-diamond into skirts and shawls, told as two
  * sisters who became stars. Two lozenges joined at a point, each with an open

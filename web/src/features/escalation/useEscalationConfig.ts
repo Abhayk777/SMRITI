@@ -35,7 +35,7 @@ export type EscalationStep = { step: number; minutes: number; channel: string }
  * thing that actually changes between families; timings are a clinical default.
  *
  * If the product decides otherwise, the editor belongs on the Alerts page and
- * `steps` goes through `useEscalationMutation` like any other content field —
+ * `steps` goes through `useEscalationMutation` like any other content field -
  * the write path already supports it.
  */
 export function parseSteps(steps: EscalationConfig['steps']): EscalationStep[] {

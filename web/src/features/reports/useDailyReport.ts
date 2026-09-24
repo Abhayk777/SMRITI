@@ -9,7 +9,7 @@ import { calendarDayRangeInZone, calendarMonthRangeInZone } from '@/lib/utils.ts
 import { assertPatientMatchAll } from '@/patients/usePatientAccess.ts'
 
 /**
- * The `daily_report` view — the only place any play, session or adherence
+ * The `daily_report` view - the only place any play, session or adherence
  * figure in this app comes from (frontend.md §6, §15 rule 2).
  *
  * Cached hard: once a day has passed, its row cannot change, so re-fetching
@@ -70,7 +70,7 @@ export function useDailyDomain(patientId: string, days: number, timezone?: strin
 
 /* ────────────────────────────────────────────────────────────────────────
    Derivations. All of them tolerate nulls, because `daily_report` is a
-   `full outer join` — a day with medicines and no play, or play and no
+   `full outer join` - a day with medicines and no play, or play and no
    medicines, is normal and produces a row with one half missing.
    ──────────────────────────────────────────────────────────────────────── */
 
@@ -83,7 +83,7 @@ export type AdherenceSummary = {
   missed: number
   viaTablet: number
   viaCall: number
-  /** `null` rather than 0 when nothing was ever scheduled — a different fact. */
+  /** `null` rather than 0 when nothing was ever scheduled - a different fact. */
   rate: number | null
 }
 

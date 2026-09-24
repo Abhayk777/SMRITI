@@ -15,7 +15,7 @@ export type InviteResult = { status: 'added' } | { status: 'pending'; message: s
 
 /**
  * `invite_member` matches on `auth.users.phone`. If nobody has signed up with
- * that number yet the RPC returns `pending` rather than failing — the row is
+ * that number yet the RPC returns `pending` rather than failing - the row is
  * not created, and the person has to sign in once before they appear. The UI
  * has to say that plainly, because otherwise a caregiver invites their brother,
  * sees no error, and assumes he has access when he does not.

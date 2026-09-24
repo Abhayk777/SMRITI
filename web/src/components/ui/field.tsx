@@ -20,7 +20,7 @@ export function Label({
 
 /*
  * Controls take the same warm 1.5px edge as the cards, darken under the
- * pointer, and on focus turn terracotta with a soft ring and a warm fill — so
+ * pointer, and on focus turn terracotta with a soft ring and a warm fill - so
  * the field being typed into is unmistakable on a busy form.
  */
 const controlClasses =
@@ -74,7 +74,7 @@ export type FieldProps = {
  * Label + control + hint + error, in the one arrangement used everywhere.
  *
  * The error is rendered in an `aria-live` region so a screen reader announces
- * a validation failure without the caregiver having to hunt for it — this app
+ * a validation failure without the caregiver having to hunt for it - this app
  * is used one-handed, at speed, often while on the phone to a parent.
  */
 export function Field({

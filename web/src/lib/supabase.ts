@@ -8,7 +8,7 @@
  *     VITE_SUPABASE_ANON_KEY=<the anon / publishable key>
  *
  * The **anon** key only. The service-role key must never appear anywhere under
- * `web/` — it bypasses RLS, and RLS is the entire authorization layer for this
+ * `web/` - it bypasses RLS, and RLS is the entire authorization layer for this
  * product (AGENTS.md non-negotiable 8).
  *
  * If either variable is missing the app does not crash: it drops into mock
@@ -27,7 +27,7 @@ import type { Database } from './database.types.ts'
  * Trimmed, and empty treated as absent.
  *
  * `VITE_SUPABASE_URL=` with nothing after it is far more common than the line
- * being missing altogether — it is what a `.env.local` looks like after someone
+ * being missing altogether - it is what a `.env.local` looks like after someone
  * strips their keys before committing. An empty string is falsy but not
  * nullish, so a `??` fallback would sail straight past it and hand
  * `createClient` an empty URL, which throws at module load and takes the whole
@@ -52,7 +52,7 @@ if (isMockMode) {
   // manages someone's medication would be the worst possible failure mode.
   console.warn(
     '[smriti] VITE_SUPABASE_URL / VITE_SUPABASE_ANON_KEY are not set. ' +
-      'Running against local fixtures — nothing you see or save is real.',
+      'Running against local fixtures - nothing you see or save is real.',
   )
 }
 

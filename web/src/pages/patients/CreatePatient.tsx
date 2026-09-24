@@ -65,7 +65,7 @@ import { cn } from '@/lib/utils.ts'
  * (§15 rule 5). That is enforced structurally: `PhotoPicker` and
  * `VoiceRecorder` only hand back a path once the object is committed, and the
  * forms cannot submit without one. A `people` row pointing at an unfinished
- * upload does not degrade into a missing photo — it aborts the tablet's entire
+ * upload does not degrade into a missing photo - it aborts the tablet's entire
  * content pull.
  */
 

@@ -33,7 +33,7 @@ import { useTranslation } from '@/i18n/index.ts'
  * families; the timings are a clinical default.
  *
  * Rendering the ladder as plain sentences rather than hiding it is the other
- * half of that decision — a caregiver is entitled to know exactly what Smriti
+ * half of that decision - a caregiver is entitled to know exactly what Smriti
  * will do and when, even where they cannot change it.
  */
 

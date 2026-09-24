@@ -3,13 +3,13 @@ import { motion } from 'framer-motion'
 import { cn } from '@/lib/utils.ts'
 
 /**
- * Japi rosette — Assam.
+ * Japi rosette - Assam.
  *
  * The japi is the wide bamboo-and-palm-leaf hat of Assam, and its crown is a
  * radial weave: rings of cane around a star. The same form is woven into
- * mekhela sador as the "japi" motif. This is that crown as line art — an outer
+ * mekhela sador as the "japi" motif. This is that crown as line art - an outer
  * woven ring, sixteen points, an inner ring of lozenges and a star at the
- * centre — drawn in `currentColor` so it takes the colour of wherever it sits.
+ * centre - drawn in `currentColor` so it takes the colour of wherever it sits.
  *
  * `draw` animates the rings in as strokes, which is what the full-page
  * loading state uses: the hat being woven while the app finds its feet.

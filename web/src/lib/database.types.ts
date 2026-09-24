@@ -2,7 +2,7 @@
  * The `Database` generic the client is parameterised on.
  *
  * `@smriti/shared` describes every table and RPC, but its `Views` entry is
- * still `Record<string, never>` — the backend package has not mirrored
+ * still `Record<string, never>` - the backend package has not mirrored
  * `0010_views.sql` yet. Since the web app reads *only* from views for anything
  * event-derived (frontend.md §6), those row shapes are declared here, copied
  * column-for-column from `docs/backend-spec.md` §6. Nothing is invented; when
@@ -10,7 +10,7 @@
  * point `Database` straight at the shared one.
  *
  * Every column is nullable because `daily_report` is built from a
- * `full outer join` — a day where the patient took their medicines but never played, and
+ * `full outer join` - a day where the patient took their medicines but never played, and
  * the reverse, both produce rows with one side missing.
  */
 import type { Database as SharedDatabase } from '@smriti/shared'

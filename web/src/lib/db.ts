@@ -13,7 +13,7 @@
  *      Ever. Those tables hold tens of thousands of rows per patient; every
  *      dashboard, trend and report figure comes from the `daily_*` views
  *      instead (frontend.md §6, §15 rule 2). If a screen needs an aggregate
- *      that no view provides, the fix is a new view on the server — not a
+ *      that no view provides, the fix is a new view on the server - not a
  *      query added below.
  *   2. **Storage paths in, storage paths out.** `uploadMedia` returns a path.
  *      Signed URLs are minted on demand for playback and never persisted
@@ -70,7 +70,7 @@ import { isMockMode, supabase } from './supabase.ts'
 export type { RealtimeChannel, Session, User }
 export type MedicationInsert = Database['public']['Tables']['medications']['Insert']
 
-/** The shape every export below resolves to — PostgREST's own. */
+/** The shape every export below resolves to - PostgREST's own. */
 export type DbResult<T> = { data: T | null; error: PostgrestError | Error | null }
 
 const ok = <T>(data: T): Promise<DbResult<T>> => Promise.resolve({ data, error: null })
@@ -93,13 +93,13 @@ export async function unwrap<T>(promise: PromiseLike<DbResult<T>>): Promise<T> {
 }
 
 /* ────────────────────────────────────────────────────────────────────────
-   Auth (frontend.md §3) — phone OTP and Google, Supabase's native flows.
+   Auth (frontend.md §3) - phone OTP and Google, Supabase's native flows.
    ──────────────────────────────────────────────────────────────────────── */
 
 /**
  * Mock mode needs a session too, or every guarded route would bounce to the
  * sign-in screen and there would be nothing to demo. It is a plain object with
- * the one field anything reads — `user.id` — and a subscriber list so the
+ * the one field anything reads - `user.id` - and a subscriber list so the
  * provider updates the same way it does against the real client.
  */
 const mockSession = {
@@ -123,7 +123,7 @@ const mockSession = {
  * Kept in `localStorage` rather than a module variable so a page refresh does
  * not sign the demo out. Module state resets on every full page load, which
  * would make a mock-mode session survive client-side navigation but not a
- * reload — the one behaviour guaranteed to look like a bug to whoever is
+ * reload - the one behaviour guaranteed to look like a bug to whoever is
  * evaluating this on a fresh clone.
  */
 const MOCK_SESSION_KEY = 'smriti:mock-session'
@@ -263,7 +263,7 @@ export const escalationConfigFor = (pid: string): PromiseLike<DbResult<Escalatio
     ? ok(mockEscalation[pid])
     : supabase.from('escalation_config').select('*').eq('patient_id', pid).single()
 
-/** `daily_report` — the view every dashboard/trend/engagement figure reads. */
+/** `daily_report` - the view every dashboard/trend/engagement figure reads. */
 export const dailyReportRange = (
   pid: string,
   fromDate: string,
@@ -283,7 +283,7 @@ export const dailyReportRange = (
         .lt('day', toDateExclusive)
         .order('day')
 
-/** `daily_domain` — per-cognitive-domain accuracy, for the Trends charts. */
+/** `daily_domain` - per-cognitive-domain accuracy, for the Trends charts. */
 export const dailyDomainRange = (
   pid: string,
   fromDate: string,
@@ -327,7 +327,7 @@ export const memosFor = (pid: string): PromiseLike<DbResult<Memo[]>> =>
  * Current members of a patient's circle.
  *
  * frontend.md §5 writes this as `.select('*, users(*)')`, but there is no
- * `users` table in the public schema — accounts live in `auth.users`, which
+ * `users` table in the public schema - accounts live in `auth.users`, which
  * PostgREST does not expose and RLS deliberately does not open up. Embedding
  * it would 400 against the live server. So this returns the membership rows
  * alone; the Access page shows role, join date and "you", and identifies other
@@ -340,7 +340,7 @@ export const membersFor = (pid: string): PromiseLike<DbResult<PatientMember[]>> 
     : supabase.from('patient_members').select('*').eq('patient_id', pid)
 
 /**
- * The caller's role for one patient — the explicit membership check
+ * The caller's role for one patient - the explicit membership check
  * `PatientRoute` runs on mount so an unauthorised URL shows "you don't have
  * access" rather than a blank screen (frontend.md §2). RLS refuses the row
  * anyway; this is purely so the UI can say something true.
@@ -363,7 +363,7 @@ export const myRoleFor = async (
 }
 
 /* ────────────────────────────────────────────────────────────────────────
-   Writes — RPCs
+   Writes - RPCs
    ──────────────────────────────────────────────────────────────────────── */
 
 /**
@@ -415,7 +415,7 @@ export const deletePatient = async (pid: string): Promise<DbResult<boolean>> => 
 }
 
 /* ────────────────────────────────────────────────────────────────────────
-   Writes — content tables
+   Writes - content tables
    These are called only by `hooks/useContentMutation.ts` (§15 rule 3).
    ──────────────────────────────────────────────────────────────────────── */
 
@@ -432,7 +432,7 @@ const keyColumn = (table: ContentTable) =>
 /**
  * `supabase.from()` over a union of table names produces a union of query
  * builders that TypeScript cannot narrow past, and the payload is genuinely
- * dynamic — the whole point of this hook is that four tables share one write
+ * dynamic - the whole point of this hook is that four tables share one write
  * path. So the type is loosened here, once, at the choke point, rather than at
  * every call site. Row shapes are still checked where it matters: the forms
  * that build these payloads are typed against `@smriti/shared`.
@@ -474,7 +474,7 @@ export const contentUpdate = (
     : contentTable(table).update(payload).eq(keyColumn(table), key).select().single()
 
 /**
- * Medications are retired, not deleted — `active: false` keeps the history
+ * Medications are retired, not deleted - `active: false` keeps the history
  * that `daily_adherence` is built from intact. People and routine items are
  * genuinely removed.
  */
@@ -493,7 +493,7 @@ export const contentDelete = (
 }
 
 /* ────────────────────────────────────────────────────────────────────────
-   Writes — small, single-purpose updates
+   Writes - small, single-purpose updates
    ──────────────────────────────────────────────────────────────────────── */
 
 export const acknowledgeFlag = (flagId: string): PromiseLike<DbResult<unknown>> =>
@@ -519,7 +519,7 @@ export const markMemoRead = (memoId: string): PromiseLike<DbResult<unknown>> =>
    ──────────────────────────────────────────────────────────────────────── */
 
 /**
- * Pairing token — live, deployed and tested. Expires 30 minutes server-side.
+ * Pairing token - live, deployed and tested. Expires 30 minutes server-side.
  */
 export const createPairingToken = async (
   pid: string,
@@ -729,7 +729,7 @@ export function subscribeToPatient(
 
 /**
  * The lighter subscription behind the multi-patient overview. One channel
- * covers every patient the caller can see — RLS filters server-side, so there
+ * covers every patient the caller can see - RLS filters server-side, so there
  * is nothing to filter here.
  */
 export function subscribeToCaregiverFeed(onChange: () => void): () => void {

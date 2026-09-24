@@ -12,7 +12,7 @@ import { color } from '@/styles/tokens.ts'
  * built pass by pass. The thread then drops away. Once settled the clip is
  * removed entirely, so shadows and focus rings are never cut off afterwards.
  *
- * Use it for the few blocks that should feel like arrivals — section step
+ * Use it for the few blocks that should feel like arrivals - section step
  * cards, story cards. Small rows keep the quieter `Reveal`.
  */
 export function WeaveIn({

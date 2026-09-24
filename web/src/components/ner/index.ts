@@ -2,7 +2,7 @@
  * Northeast textile motifs.
  *
  * Every component here is a hand-drawn geometric interpretation of a weave
- * from one of the eight Northeast states — not a copy of any single cloth.
+ * from one of the eight Northeast states - not a copy of any single cloth.
  * Each file names its tradition and sources in its header. The flat repeating
  * textures (cane twill, Ryndia check, Risa and Thara stripes) are CSS
  * utilities in `index.css` instead: `bg-cane-twill`, `bg-ryndia`, `bg-risa`,

@@ -5,7 +5,7 @@ import { color } from '@/styles/tokens.ts'
 import { arcProgress, skyPhase, type SkyPhase } from './sky.ts'
 
 /**
- * "Their sky" — a small window onto the time where the patient is.
+ * "Their sky" - a small window onto the time where the patient is.
  *
  * The first thing most caregivers do before calling a parent is work out what
  * time it is there. This answers it without the arithmetic: the hour, the part

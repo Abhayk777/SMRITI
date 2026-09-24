@@ -2,7 +2,7 @@ import { color } from '@/styles/tokens.ts'
 import { PatternBand } from './PatternBand.tsx'
 
 /**
- * Gamosa border — Assam.
+ * Gamosa border - Assam.
  *
  * The gamosa is a white cloth with a red border; the woven end carries the
  * *phool* (flower) and the plain stripes are the *pari*. This band is a
@@ -10,7 +10,7 @@ import { PatternBand } from './PatternBand.tsx'
  * lozenges (the *kasori* / diamond family of gamosa motifs), with short weft
  * floats between them.
  *
- * `rule` is the hairline version — just the pari with woven notches — for
+ * `rule` is the hairline version - just the pari with woven notches - for
  * places a full motif would be too loud, like under the app header.
  *
  * Source: Gamosa (Wikipedia); IJTK, "Gamosa: unique symbol of Assamese

@@ -3,7 +3,7 @@
  *
  * frontend.md §12 rule 1: **every patient-scoped key includes the patient id.**
  * A bare `['medications']` key would let one patient's medicine list be served
- * from cache on another patient's screen — in a medication app that is a
+ * from cache on another patient's screen - in a medication app that is a
  * safety failure, not a cosmetic bug. Building the keys here rather than
  * inline at each `useQuery` makes the rule mechanical instead of a thing to
  * remember, and gives `switchPatient` one place to look up what to evict.

@@ -5,7 +5,7 @@ import { cn } from '@/lib/utils.ts'
 import { color } from '@/styles/tokens.ts'
 
 /**
- * Three ridgelines, one behind the other — the Khasi and Jaintia hills as they
+ * Three ridgelines, one behind the other - the Khasi and Jaintia hills as they
  * look at dawn with cloud lying in the valleys (the `ner1` reference clip),
  * drawn flat rather than photographic.
  *

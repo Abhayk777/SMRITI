@@ -5,7 +5,7 @@ import { useTranslation } from '@/i18n/index.ts'
 /**
  * The full-page waiting state used while a route decides what to render.
  *
- * Not a skeleton, because there is no known shape yet — at this point the app
+ * Not a skeleton, because there is no known shape yet - at this point the app
  * genuinely does not know whether the next screen is a dashboard, an overview
  * or a setup wizard. It is the mark, breathing, inside a japi crown that
  * weaves itself in ring by ring and then turns slowly, with a label that says

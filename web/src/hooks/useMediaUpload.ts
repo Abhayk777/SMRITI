@@ -20,7 +20,7 @@ import { extensionOf } from '@/lib/utils.ts'
  * **Confirm the upload, then write the row.** The tablet's content puller
  * downloads every referenced path and aborts the *entire* pull if one 404s. A
  * `people` row pointing at an upload that never finished does not degrade
- * gracefully into a missing photo — it stops the patient's tablet from getting
+ * gracefully into a missing photo - it stops the patient's tablet from getting
  * any content update at all. So `uploadPatientMedia` resolves only once the
  * object is committed, and callers write the row afterwards, never in parallel.
  *

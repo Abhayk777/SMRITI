@@ -17,7 +17,7 @@ export function useRoutine(patientId: string) {
   })
 }
 
-/** Parameterised for the same reason as `usePeopleMutation` — forms submit drafts. */
+/** Parameterised for the same reason as `usePeopleMutation` - forms submit drafts. */
 export function useRoutineMutation<T extends object = RoutineItem>(patientId: string) {
   return useContentMutation<T>('routine_items', patientId)
 }
@@ -26,7 +26,7 @@ export function useRoutineMutation<T extends object = RoutineItem>(patientId: st
  * The icons the tablet knows how to draw.
  *
  * `icon_asset` is a free-text column server-side, but the tablet only ships a
- * fixed set of illustrations — anything else renders as a blank card in the
+ * fixed set of illustrations - anything else renders as a blank card in the
  * patient's home. So the caregiver picks from a list rather than typing, and
  * this is that list. It has to stay in step with the Flutter app's asset
  * bundle; `app-spec.md` is its owner, and this array is the web-side mirror.

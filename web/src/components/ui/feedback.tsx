@@ -9,8 +9,8 @@ import { cn } from '@/lib/utils.ts'
 /**
  * Empty states.
  *
- * Every list in this app can legitimately be empty — a newly created profile
- * has no memos, no flags and no history — so "nothing here" is a normal state,
+ * Every list in this app can legitimately be empty - a newly created profile
+ * has no memos, no flags and no history - so "nothing here" is a normal state,
  * not an error, and it gets a real design: what this list is for, and the one
  * action that fills it. A blank panel with the word "None" teaches a caregiver
  * nothing and makes a working app look broken.

@@ -11,7 +11,7 @@ import { useTranslation } from '@/i18n/index.ts'
  *
  * The table is not an accessibility box-tick. Contrast on a warm surface means
  * some marks sit near the 3:1 floor, and the rule there is that relief has to
- * exist — a legend, direct labels, and real numbers a caregiver can read out to
+ * exist - a legend, direct labels, and real numbers a caregiver can read out to
  * a doctor over the phone. That last one is the actual use case: nobody reads a
  * chart aloud, they read the numbers.
  */
@@ -144,7 +144,7 @@ export function ChartTooltip({
           <span className="numeral ml-auto text-ink">
             {formatter && entry.value !== undefined
               ? formatter(entry.value, entry.name)
-              : (entry.value ?? '—')}
+              : (entry.value ?? '-')}
           </span>
         </p>
       ))}

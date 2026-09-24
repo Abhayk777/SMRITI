@@ -6,7 +6,7 @@ import { minutesOfDayInZone } from '@/lib/utils.ts'
  * The patient's sky: which part of the day it is where they are.
  *
  * The app backdrop and the sidebar's "Their sky" clock both follow the
- * patient's local time, not the caregiver's — a caregiver abroad sees their
+ * patient's local time, not the caregiver's - a caregiver abroad sees their
  * parent's morning, not their own evening. It is the same rule the dashboard
  * already follows for "today", applied to the room the app is drawn in.
  */
@@ -21,8 +21,8 @@ export function skyPhase(minutes: number): SkyPhase {
 
 /**
  * Where the sun (5:00–19:30) or moon (19:30–5:00) sits on its arc, 0 to 1.
- * The Northeast's day starts early — sunrise over Shillong is before five in
- * summer — which is why the day here runs from five, not six.
+ * The Northeast's day starts early - sunrise over Shillong is before five in
+ * summer - which is why the day here runs from five, not six.
  */
 export function arcProgress(minutes: number): { body: 'sun' | 'moon'; t: number } {
   if (minutes >= 300 && minutes < 1170) {
